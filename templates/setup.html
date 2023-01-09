@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Up | SADI</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}">
+</head>
+<body>
+    <div class="w-screen h-screen flex items-center flex-col gap-8">
+        <div class="mt-16 lg:mt-40 md:w-3/4 lg:w-2/6 mx-auto">
+            <ol class="flex items-center w-full text-sm font-medium text-center text-gray-500 sm:text-base">
+                <li id="first" class="flex md:w-full items-center text-blue-600 sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10">
+                    <span class="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:font-light after:text-gray-200">
+                        <span class="mr-2">1</span>
+                        Personal <span class="hidden sm:inline-flex sm:ml-2">Info</span>
+                        
+                        <!-- Personal <span class="hidden sm:inline-flex sm:ml-2">Info</span> -->
+                    </span>
+                </li>
+                <li id="second" class="flex md:w-full items-center after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10">
+                    <span class="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:font-light after:text-gray-200">
+                        <span class="mr-2">2</span>
+                        Account <span class="hidden sm:inline-flex sm:ml-2">Info</span>
+                    </span>
+                </li>
+                <li id="last" class="flex items-center">
+                    <span class="mr-2">3</span>
+                    Confirmation
+                </li>
+            </ol>
+        </div>
+        
+        <div class="max-w-2xl w-full p-6 h-1/2 flex items-center">
+            <form class="w-full">
+                <section class="personal-info">
+                    <div class="mb-6">
+                        <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900">First Name</label>
+                        <input type="text" id="first_name"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            placeholder="Foo" required>
+                        <p class="error-firstn text-red-500 text-sm py-2"></p>
+                    </div>
+        
+                    <div class="mb-6">
+                        <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900">Last Name</label>
+                        <input type="text" id="last_name"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            placeholder="Bar" required>
+                        <p class="error-lastn text-red-500 text-sm py-2"></p>
+    
+                    </div>
+                    <button type="button" id="step-1"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Next</button>
+                </section>
+    
+                <section class="account-info hidden">
+                    <div class="mb-6">
+                        <label for="username" class="block mb-2 text-sm font-medium text-gray-900">Username</label>
+                        <input type="text" id="username"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            placeholder="foo.bar123" required>
+                        <p class="error-username text-red-500 text-sm py-2"></p>
+                    </div>
+        
+                    <div class="mb-6">
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900">Password</label>
+                        <input type="password" id="password"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            placeholder="Password" required>
+                        <p class="error-password text-red-500 text-sm py-2"></p>
+    
+                    </div>
+                    <button type="button" id="step-2"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Next</button>
+                </section>
+
+                <section class="confirmation hidden">
+                    <div class="flex items-center flex-col gap-7">
+                        <img class="w-72 h-72" src="{{url_for('static', filename='src/images/complete.png')}}" alt="Set-up Complete Image">
+                        <div class="flex flex-col gap-4 items-center">
+                            <p class="font-medium">Set-up Complete!</p>
+                            <a href="{{url_for('login')}}" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Proceed to Login</a>
+                        </div>
+                    </div>
+                </section>
+
+                
+                
+                
+                <!-- <div class="mb-6">
+                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Your email</label>
+                    <input type="email" id="email"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                        placeholder="name@flowbite.com" required>
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block mb-2 text-sm font-medium text-gray-900 ">Your
+                        password</label>
+                    <input type="password" id="password"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                        required>
+                </div> -->
+                
+            </form>
+        </div>
+        
+    </div>
+    <script src="{{url_for('static',filename='js/setup.js')}}"></script>
+
+</body>
+</html>
