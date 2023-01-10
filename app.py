@@ -52,9 +52,16 @@ def logout():
 	session.pop('username', None)
 	return redirect("/login")
 
-@app.route("/test")
-def test():
-	return render_template("register.html")
+@app.route("/users")
+def users():
+	if 'username' not in session:
+		return redirect("/login")
+	subfolders = [f.name for f in os.scandir("users") if f.is_dir()] or []
+	return render_template("users.html", users=subfolders)
+
+# @app.route("/test")
+# def test():
+# 	return render_template("register.html")
 
 @app.route('/scanner')
 def face_capture():

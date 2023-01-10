@@ -162,7 +162,7 @@ class FaceDetector():
             x, y, w, h = bbox[1]
             imgCrop = img[y:y+h, x:x+w]
             imgCrop = cv.resize(imgCrop, (width, height))
-            dirname = f'dataset/{user}/'
+            dirname = f'users/{user}/'
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
             cv.imwrite(f'{dirname}{user}_{img_id}.jpeg', imgCrop)
