@@ -69,7 +69,6 @@ step2.addEventListener('click', () => {
 })
 
 async function saveData() {
-    console.log(JSON.stringify(userData))
     const response = await fetch('/setup/process', {
       method: 'POST',
       headers: {

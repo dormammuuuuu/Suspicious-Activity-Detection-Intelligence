@@ -167,5 +167,4 @@ class FaceDetector():
                 os.makedirs(dirname)
             cv.imwrite(f'{dirname}{user}_{img_id}.jpeg', imgCrop)
 
-        print('Faces saved')
         return img_id + 1

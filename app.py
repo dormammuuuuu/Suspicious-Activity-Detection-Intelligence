@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, Response
-import aiohttp, os, json, secrets, cv2 as cv, time
+import aiohttp, os, json, secrets, cv2 as cv, time, shutil
 from urllib.parse import quote
 from classes.face_detector import FaceDetector
 
@@ -59,40 +59,51 @@ def users():
 	subfolders = [f.name for f in os.scandir("users") if f.is_dir()] or []
 	return render_template("users.html", users=subfolders)
 
-# @app.route("/test")
-# def test():
-# 	return render_template("register.html")
+@app.route("/user/delete", methods=['POST'])
+def delete_user():
+	if 'username' not in session:
+		return redirect("/login")
+	data = request.get_json()
+	user = data['name']
+	shutil.rmtree("users/{}".format(user))
+	return {"status": "success", "message": "User deleted successfully."}
 
-@app.route('/scanner')
-def face_capture():
-    # Create a VideoCapture object
+@app.route("/user/add/<user>")
+def add_user(user):
+	if 'username' not in session:
+		return redirect("/login")
+	return render_template("register.html", user=user)
+
+@app.route('/scanner/<user>')
+def face_capture(user):
     cap = cv.VideoCapture(0)
-
-    def gen():
+    should_stop = False
+    def gen(stop):
         detector = FaceDetector()
         img_id = 0
         status = ''
-        while True:
+        while not stop:
             success, img = cap.read()
             start = time.time()
             img, bboxs, status = detector.findFaces(img, start, img_id)
 
-            # save image
             if status == 'good':
-                img_id = detector.saveFaces("Test", img, bboxs, img_id)
+                img_id = detector.saveFaces(user, img, bboxs, img_id)
 
-            # Encode the frame as a JPEG image
+            if img_id == 500:
+                stop = True
+                continue
             ret, jpeg = cv.imencode('.jpg', img)
-
-            # Check if the encoding was successful
             if not ret:
                 break
-            # Yield the encoded frame
+
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
 
-    # Set the response headers and return the response
-    return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    res = Response(gen(should_stop), mimetype='multipart/x-mixed-replace; boundary=frame')
+    if should_stop:
+        return redirect('/users')
+    return res
 
 
 if __name__ == '__main__':
