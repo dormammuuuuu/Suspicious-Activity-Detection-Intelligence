@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, redirect, session, Response
+from flask import Flask, render_template, request, redirect, session, Response, send_from_directory, jsonify
 import aiohttp, os, json, secrets, cv2 as cv, time, shutil
 from urllib.parse import quote
 from classes.face_detector import FaceDetector
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
+app.config['UPLOAD_FOLDER'] = 'users'
 
 @app.route("/")
 @app.route("/index")
@@ -59,6 +60,12 @@ def users():
 	subfolders = [f.name for f in os.scandir("users") if f.is_dir()] or []
 	return render_template("users.html", users=subfolders)
 
+@app.route("/user/<user>")
+def user(user):
+	if 'username' not in session:
+		return redirect("/login")
+	return render_template("view-images.html", user=user)
+
 @app.route("/user/delete", methods=['POST'])
 def delete_user():
 	if 'username' not in session:
@@ -104,6 +111,18 @@ def face_capture(user):
     if should_stop:
         return redirect('/users')
     return res
+
+
+@app.route('/users/<user>/images')
+def get_images(user):
+    images = os.listdir(app.config['UPLOAD_FOLDER'] + '/' + user)
+    return jsonify(images)
+
+@app.route('/users/<user>/<path:filename>')
+def serve_image(user, filename):
+    print (user, filename)
+    return send_from_directory(app.config['UPLOAD_FOLDER'] + '/' + user + '/', filename)
+
 
 
 if __name__ == '__main__':

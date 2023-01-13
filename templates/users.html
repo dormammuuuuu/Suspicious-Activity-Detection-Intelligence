@@ -105,7 +105,7 @@
                 </thead>
                 <tbody>
                     {% for user in users %}
-                    <tr class="bg-white border-b ">
+                    <tr class="user-item bg-white border-b cursor-pointer hover:bg-gray-300 hover:bg-opacity-50" data-name="{{user}}">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                             {{ user }}
                         </th>
