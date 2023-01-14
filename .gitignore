@@ -1,1 +1,32 @@
-users/
+
+#? start - sadi-react 
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+sadi-react/node_modules
+sadi-react/.pnp
+sadi-react/.pnp.js
+
+# testing
+sadi-react/coverage
+
+# production
+sadi-react/build
+
+# misc
+sadi-react/.DS_Store
+sadi-react/.env.local
+sadi-react/.env.development.local
+sadi-react/.env.test.local
+sadi-react/.env.production.local
+
+sadi-react/npm-debug.log*
+sadi-react/yarn-debug.log*
+sadi-react/yarn-error.log*
+
+#? end - sadi-react 
+
+#? start - sadi-flask 
+sadi-flask/users/
+#? end - sadi-flask 
