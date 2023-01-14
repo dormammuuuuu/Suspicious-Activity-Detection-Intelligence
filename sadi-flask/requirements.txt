@@ -3,3 +3,4 @@ aiohttp
 numpy
 opencv-python
 mediapipe
+flask_cors 

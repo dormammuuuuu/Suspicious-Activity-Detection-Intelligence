@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, Response, send_from_directory, jsonify
+from flask_cors import CORS
 import aiohttp, os, json, secrets, cv2 as cv, time, shutil
 from urllib.parse import quote
 from classes.face_detector import FaceDetector
@@ -6,6 +7,10 @@ from classes.face_detector import FaceDetector
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 app.config['UPLOAD_FOLDER'] = 'users'
+
+
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "methods": ["GET", "POST"]}})
+
 
 @app.route("/")
 @app.route("/index")
@@ -40,15 +45,22 @@ def process():
 
 #! REACT SAMPLE LOGIN
 
+@app.route('/api/data', methods=['GET'])
+def get_data():
+	data = {'key': 'value'}
+	return jsonify(data)
+
+
 @app.route("/login")
 def login():
 	if 'username' in session:
 		return redirect("/dashboard")
-	error = request.args.get('error') or ''
-	return render_template('login.html', error=error)
+	print("login")
+	error = request.args.get('error') or ''  
+	return {"status": "success", "message": "Setup completed successfully."}
 
-
-@app.route("/3", methods=['POST'])
+# handle login form submission
+@app.route("/authenticate", methods=['POST'])
 def auth():
 	with open('user.json', 'r') as f:
 		data = json.load(f)
