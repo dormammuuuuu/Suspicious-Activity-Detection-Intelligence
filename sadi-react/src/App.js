@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import Sidebar from './Sidebar';
 
-function App() {
-  const [data, setData] = useState([{}])
-
-  useEffect(() => {
-    fetch('/')
-  })
+const App = ({ children }) => {
   return (
-    <div className="App">
-      <h1 className="text-5xl font-bold underline">
-        Hello world!
-      </h1>
-    </div>
+      <div>
+          <Sidebar />
+          {children}
+      </div>
   );
 }
 
