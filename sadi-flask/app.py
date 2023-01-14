@@ -14,39 +14,12 @@ def setup():
 		return redirect("/login")
 	return redirect("/setup")
 
-@app.route("/setup")
-def setup_page():
-	return render_template("setup.html")
-
-@app.route("/dashboard")
-def dashboard():
-	if 'username' not in session:
-		return redirect("/login")
-	return render_template("dashboard.html")
-
 @app.route("/setup/process", methods=['POST'])
 def process():
 	with open('user.json', 'w') as f:
 		data = request.get_json()
 		json.dump(data, f)
 	return {"status": "success", "message": "Setup completed successfully."}
-
-# @app.route("/login")
-# def login():
-# 	if 'username' in session:
-# 		return redirect("/dashboard")
-# 	error = request.args.get('error') or ''
-# 	return render_template('login.html', error=error)
-
-#! REACT SAMPLE LOGIN
-
-@app.route("/login")
-def login():
-	if 'username' in session:
-		return redirect("/dashboard")
-	error = request.args.get('error') or ''
-	return render_template('login.html', error=error)
-
 
 @app.route("/3", methods=['POST'])
 def auth():
@@ -63,19 +36,6 @@ def logout():
 	session.pop('username', None)
 	return redirect("/login")
 
-@app.route("/users")
-def users():
-	if 'username' not in session:
-		return redirect("/login")
-	subfolders = [f.name for f in os.scandir("users") if f.is_dir()] or []
-	return render_template("users.html", users=subfolders)
-
-@app.route("/user/<user>")
-def user(user):
-	if 'username' not in session:
-		return redirect("/login")
-	return render_template("view-images.html", user=user)
-
 @app.route("/user/delete", methods=['POST'])
 def delete_user():
 	if 'username' not in session:
@@ -84,12 +44,6 @@ def delete_user():
 	user = data['name']
 	shutil.rmtree("users/{}".format(user))
 	return {"status": "success", "message": "User deleted successfully."}
-
-@app.route("/user/add/<user>")
-def add_user(user):
-	if 'username' not in session:
-		return redirect("/login")
-	return render_template("register.html", user=user)
 
 @app.route('/scanner/<user>')
 def face_capture(user):
