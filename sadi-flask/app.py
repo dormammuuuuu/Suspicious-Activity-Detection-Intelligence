@@ -31,6 +31,15 @@ def process():
 		json.dump(data, f)
 	return {"status": "success", "message": "Setup completed successfully."}
 
+# @app.route("/login")
+# def login():
+# 	if 'username' in session:
+# 		return redirect("/dashboard")
+# 	error = request.args.get('error') or ''
+# 	return render_template('login.html', error=error)
+
+#! REACT SAMPLE LOGIN
+
 @app.route("/login")
 def login():
 	if 'username' in session:
@@ -38,7 +47,8 @@ def login():
 	error = request.args.get('error') or ''
 	return render_template('login.html', error=error)
 
-@app.route("/authenticate", methods=['POST'])
+
+@app.route("/3", methods=['POST'])
 def auth():
 	with open('user.json', 'r') as f:
 		data = json.load(f)
