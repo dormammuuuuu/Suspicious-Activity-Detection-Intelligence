@@ -57,7 +57,7 @@ def login():
 		return redirect("/dashboard")
 	print("login")
 	error = request.args.get('error') or ''  
-	return {"status": "success", "message": "Setup completed successfully."}
+	return render_template('login.html', error=error)
 
 # handle login form submission
 @app.route("/authenticate", methods=['POST'])

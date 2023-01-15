@@ -105,12 +105,14 @@
                 </thead>
                 <tbody>
                     {% for user in users %}
-                    <tr class="user-item bg-white border-b cursor-pointer hover:bg-gray-300 hover:bg-opacity-50" data-name="{{user}}">
+                    <tr class="user-item bg-white border-b cursor-pointer hover:bg-gray-300 hover:bg-opacity-50"
+                        data-name="{{user}}">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                             {{ user }}
                         </th>
                         <td class="px-6 py-4 text-right">
-                            <button data-name="{{ user }}" href="#" class="user-delete font-medium text-red-600 hover:underline">Delete</button>
+                            <button data-name="{{ user }}" href="#"
+                                class="user-delete font-medium text-red-600 hover:underline">Delete</button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -136,21 +138,22 @@
                         </svg>
                         <span class="sr-only">Close modal</span>
                     </button>
-                    
+
                     <div class="px-6 py-6 lg:px-8">
                         <h3 class="mb-4 text-xl font-medium text-gray-900">Register New User
                         </h3>
-                        <p class="mb-4 font-sm text-gray-500">Please note that the user's name cannot be modified after it has been saved.</p>
+                        <p class="mb-4 font-sm text-gray-500">Please note that the user's name cannot be modified after
+                            it has been saved.</p>
                         <div>
-                            <label for="email"
-                                class="block mb-2 text-sm font-medium text-gray-900">
+                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900">
                                 Name</label>
                             <input type="text" name="name" id="name"
                                 class="bg-gray-50 border mb-4 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                 placeholder="John Doe" required>
                         </div>
                         <button type="submit" id="add-user-submit"
-                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Create User</button>
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Create
+                            User</button>
                     </div>
                 </div>
             </div>

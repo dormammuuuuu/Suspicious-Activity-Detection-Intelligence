@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import Login from './components/Login';
+import Home from './pages/Home';
 
 function App() {
 
   return (
-    <div className="App">
-      <h1 className="text-5xl font-bold underline">
-        Test React Flask App
-      </h1>
-    </div>
+    <Routes>
+      <Route path='login' element={<Login />} />
+      <Route path='/*' element={<Home />} />
+    </Routes>
+
   );
 }
 

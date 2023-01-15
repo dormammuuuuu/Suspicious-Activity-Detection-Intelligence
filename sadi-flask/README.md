@@ -6,4 +6,9 @@
 
 ```npx tailwindcss -i ./static/src/input.css -o ./static/dist/css/output.css --watch```
 
-# in
+# React Script
+```
+cd sadi-react
+npm install && npm start 
+```
+
