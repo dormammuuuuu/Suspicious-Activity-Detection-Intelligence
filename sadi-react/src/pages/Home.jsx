@@ -7,9 +7,7 @@ import SadiMain from './SadiMain'
 const Home = () => {
    return (
       <>
-         <div>Home</div>
          <Sidebar />
-         <Dashboard />
 
          <div className="px-10 ml-64 mt-8">
             <Routes>
