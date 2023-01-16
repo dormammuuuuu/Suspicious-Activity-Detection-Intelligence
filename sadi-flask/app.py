@@ -10,13 +10,6 @@ app.config['UPLOAD_FOLDER'] = 'users'
 
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "methods": ["GET", "POST"]}})
 
-@app.route("/")
-@app.route("/index")
-def setup():
-	if os.path.exists("user.json"):
-		return redirect("/login")
-	return redirect("/setup")
-
 @app.route("/setup/process", methods=['POST'])
 def process():
 	with open('user.json', 'w') as f:
@@ -24,14 +17,20 @@ def process():
 		json.dump(data, f)
 	return {"status": "success", "message": "Setup completed successfully."}
 
-# @app.route("/login")
-# def login():
-# 	if 'username' in session:
-# 		return redirect("/dashboard")
-# 	error = request.args.get('error') or ''
-# 	return render_template('login.html', error=error)
+@app.route('/api/users/view', methods=['GET'])
+def get_users():
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.mkdir(app.config['UPLOAD_FOLDER'])
+    users = os.listdir(app.config['UPLOAD_FOLDER'])
+    return jsonify(users)
 
-#! REACT SAMPLE LOGIN
+@app.route('/api/users/delete', methods=['POST'])
+def delete_user():
+    data = request.get_json()
+    print(data)
+    user = data['name']
+    shutil.rmtree("users/{}".format(user))
+    return {"status": "success", "message": "User deleted successfully."}
 
 @app.route('/api/data', methods=['GET'])
 def get_data():
@@ -53,15 +52,6 @@ def auth():
 def logout():
 	session.pop('username', None)
 	return redirect("/login")
-
-@app.route("/user/delete", methods=['POST'])
-def delete_user():
-	if 'username' not in session:
-		return redirect("/login")
-	data = request.get_json()
-	user = data['name']
-	shutil.rmtree("users/{}".format(user))
-	return {"status": "success", "message": "User deleted successfully."}
 
 @app.route('/scanner/<user>')
 def face_capture(user):
