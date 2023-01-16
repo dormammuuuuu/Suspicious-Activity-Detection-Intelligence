@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, Response, send_from_directory, jsonify
-# from flask_cors import CORS
+from flask_cors import CORS
 import aiohttp, os, json, secrets, cv2 as cv, time, shutil
 from urllib.parse import quote
 from classes.face_detector import FaceDetector
@@ -8,9 +8,7 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 app.config['UPLOAD_FOLDER'] = 'users'
 
-
-# CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "methods": ["GET", "POST"]}})
-
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "methods": ["GET", "POST"]}})
 
 @app.route("/")
 @app.route("/index")
