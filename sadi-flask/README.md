@@ -12,3 +12,7 @@ cd sadi-react
 npm install && npm start 
 ```
 
+
+# Run the backend
+```python app.py```
+

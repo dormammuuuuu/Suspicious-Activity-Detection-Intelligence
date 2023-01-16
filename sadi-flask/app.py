@@ -10,6 +10,7 @@ app.config['UPLOAD_FOLDER'] = 'users'
 
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "methods": ["GET", "POST"]}})
 
+# The '/setup/process' route is used to process a setup and write the received data to a user.json file.
 @app.route("/setup/process", methods=['POST'])
 def process():
 	with open('user.json', 'w') as f:
@@ -17,6 +18,7 @@ def process():
 		json.dump(data, f)
 	return {"status": "success", "message": "Setup completed successfully."}
 
+# The '/api/users/view' route is used to get a list of all the users in the 'users' directory.
 @app.route('/api/users/view', methods=['GET'])
 def get_users():
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
@@ -24,6 +26,7 @@ def get_users():
     users = os.listdir(app.config['UPLOAD_FOLDER'])
     return jsonify(users)
 
+# The '/api/users/delete' route is used to delete a specific user.
 @app.route('/api/users/delete', methods=['POST'])
 def delete_user():
     data = request.get_json()
@@ -32,12 +35,13 @@ def delete_user():
     shutil.rmtree("users/{}".format(user))
     return {"status": "success", "message": "User deleted successfully."}
 
+# The '/api/data' route is used to get a json data.
 @app.route('/api/data', methods=['GET'])
 def get_data():
 	data = {'key': 'value'}
 	return jsonify(data) 
 
-# handle login form submission
+# The '/authenticate' route is used to handle login form submission and checks the credentials with the data in user.json file.
 @app.route("/authenticate", methods=['POST'])
 def auth():
 	with open('user.json', 'r') as f:
@@ -48,11 +52,13 @@ def auth():
 		error = "Error: Invalid username or password."
 		return redirect("/login?error={}".format(quote(error)))
 
+# The '/logout' route is used to logout and remove the username from the session.
 @app.route("/logout")
 def logout():
 	session.pop('username', None)
 	return redirect("/login")
 
+# The '/scanner/<user>' route is used to capture face images and detect the faces in the video.
 @app.route('/scanner/<user>')
 def face_capture(user):
     cap = cv.VideoCapture(0)
@@ -84,7 +90,7 @@ def face_capture(user):
         return redirect('/users')
     return res
 
-
+# The '/users/<user>/images' route is used to get a list of all the images of a specific user.
 @app.route('/users/<user>/images')
 def get_images(user):
     images = os.listdir(app.config['UPLOAD_FOLDER'] + '/' + user)
