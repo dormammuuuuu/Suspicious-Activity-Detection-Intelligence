@@ -4,5 +4,6 @@ export { default as UserList } from './UserList'
 export { default as Sidebar } from './Sidebar'
 export { default as Login } from './Login'
 export { default as Help } from './Help'
+export { default as Test } from './Test'
 
 

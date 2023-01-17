@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, Response, send_from_directory, jsonify
-# from flask_cors import CORS
+from flask_cors import CORS
 import aiohttp, os, json, secrets, cv2 as cv, time, shutil
 from urllib.parse import quote
 from classes.face_detector import FaceDetector
@@ -8,17 +8,9 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 app.config['UPLOAD_FOLDER'] = 'users'
 
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "methods": ["GET", "POST"]}})
 
-# CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "methods": ["GET", "POST"]}})
-
-
-@app.route("/")
-@app.route("/index")
-def setup():
-	if os.path.exists("user.json"):
-		return redirect("/login")
-	return redirect("/setup")
-
+# The '/setup/process' route is used to process a setup and write the received data to a user.json file.
 @app.route("/setup/process", methods=['POST'])
 def process():
 	with open('user.json', 'w') as f:
@@ -26,21 +18,30 @@ def process():
 		json.dump(data, f)
 	return {"status": "success", "message": "Setup completed successfully."}
 
-# @app.route("/login")
-# def login():
-# 	if 'username' in session:
-# 		return redirect("/dashboard")
-# 	error = request.args.get('error') or ''
-# 	return render_template('login.html', error=error)
+# The '/api/users/view' route is used to get a list of all the users in the 'users' directory.
+@app.route('/api/users/view', methods=['GET'])
+def get_users():
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.mkdir(app.config['UPLOAD_FOLDER'])
+    users = os.listdir(app.config['UPLOAD_FOLDER'])
+    return jsonify(users)
 
-#! REACT SAMPLE LOGIN
+# The '/api/users/delete' route is used to delete a specific user.
+@app.route('/api/users/delete', methods=['POST'])
+def delete_user():
+    data = request.get_json()
+    print(data)
+    user = data['name']
+    shutil.rmtree("users/{}".format(user))
+    return {"status": "success", "message": "User deleted successfully."}
 
+# The '/api/data' route is used to get a json data.
 @app.route('/api/data', methods=['GET'])
 def get_data():
 	data = {'key': 'value'}
 	return jsonify(data) 
 
-# handle login form submission
+# The '/authenticate' route is used to handle login form submission and checks the credentials with the data in user.json file.
 @app.route("/authenticate", methods=['POST'])
 def auth():
 	with open('user.json', 'r') as f:
@@ -51,20 +52,13 @@ def auth():
 		error = "Error: Invalid username or password."
 		return redirect("/login?error={}".format(quote(error)))
 
+# The '/logout' route is used to logout and remove the username from the session.
 @app.route("/logout")
 def logout():
 	session.pop('username', None)
 	return redirect("/login")
 
-@app.route("/user/delete", methods=['POST'])
-def delete_user():
-	if 'username' not in session:
-		return redirect("/login")
-	data = request.get_json()
-	user = data['name']
-	shutil.rmtree("users/{}".format(user))
-	return {"status": "success", "message": "User deleted successfully."}
-
+# The '/scanner/<user>' route is used to capture face images and detect the faces in the video.
 @app.route('/scanner/<user>')
 def face_capture(user):
     cap = cv.VideoCapture(0)
@@ -96,7 +90,7 @@ def face_capture(user):
         return redirect('/users')
     return res
 
-
+# The '/users/<user>/images' route is used to get a list of all the images of a specific user.
 @app.route('/users/<user>/images')
 def get_images(user):
     images = os.listdir(app.config['UPLOAD_FOLDER'] + '/' + user)
