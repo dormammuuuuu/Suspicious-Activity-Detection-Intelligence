@@ -41,6 +41,28 @@ def get_data():
 	data = {'key': 'value'}
 	return jsonify(data) 
 
+@app.route('/api/video_feed')
+def video_feed():
+    cap = cv.VideoCapture(0)
+    if not cap.isOpened():
+        return Response("Error opening video stream", status=500)
+    
+    def generate():
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+            ret, jpeg = cv.imencode('.jpg', frame)
+            if not ret:
+                continue
+            frame = jpeg.tobytes()
+            yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+
+    return Response(generate(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
 # The '/authenticate' route is used to handle login form submission and checks the credentials with the data in user.json file.
 @app.route("/authenticate", methods=['POST'])
 def auth():
@@ -51,12 +73,6 @@ def auth():
 			return redirect("/dashboard")
 		error = "Error: Invalid username or password."
 		return redirect("/login?error={}".format(quote(error)))
-
-# The '/logout' route is used to logout and remove the username from the session.
-@app.route("/logout")
-def logout():
-	session.pop('username', None)
-	return redirect("/login")
 
 # The '/scanner/<user>' route is used to capture face images and detect the faces in the video.
 @app.route('/scanner/<user>')

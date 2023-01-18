@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, Route, Routes } from 'react-router-dom';
-import { Dashboard, Documentation, UserList, Help, Test } from '../components'
+import { Dashboard, Documentation, UserList, Help, Test, VideoStream } from '../components'
 
 
 
@@ -13,6 +13,7 @@ const SadiMain = () => {
             <Route path='/Documentation' element={<Documentation />} />
             <Route path='/Help' element={<Help />} />
             <Route path='/Test' element={<Test />} />
+            <Route path='/VideoStream' element={<VideoStream />} />
             {/* <Route path='/search' element={<Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} /> */}
          </Routes>
       </div>

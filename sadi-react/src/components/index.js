@@ -6,5 +6,6 @@ export { default as Login } from './Login'
 export { default as Help } from './Help'
 export { default as Test } from './Test'
 export { default as Modal } from './Modal' 
+export { default as VideoStream } from './VideoStream'
 
 
