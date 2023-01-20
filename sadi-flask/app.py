@@ -3,7 +3,7 @@ from flask_cors import CORS
 import aiohttp, os, json, secrets, cv2 as cv, time, shutil
 from urllib.parse import quote
 from classes.face_detector import FaceDetector
-from database import init_app, get_all_items, insert_user, update_item, delete_item
+from database import init_app, insert_user
 import configparser
 
 

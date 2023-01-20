@@ -6,13 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | SADI</title>
-    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}">
+    <link rel="stylesheet" href="../static/dist/css/output.css">
 </head>
 
 <body>
     <div class="max-w-xl h-screen m-auto flex items-center">
         <form class="w-full" action="/authenticate" method="post">
-            <p class="text-red-500 text-sm my-3">{{error}}</p>
             <div class="mb-6">
                 <label for="username" class="block mb-2 text-sm font-medium text-gray-900">Username</label>
                 <input type="text" id="username" name="username"
