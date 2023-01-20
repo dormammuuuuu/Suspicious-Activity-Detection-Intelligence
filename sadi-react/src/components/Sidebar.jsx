@@ -21,7 +21,7 @@ const sidebar = () => {
                </li>
                <li>
                   <NavLink
-                     to="/UserList"
+                     to="/user"
                      className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100">
                      <svg aria-hidden="true"
                         className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
@@ -36,7 +36,7 @@ const sidebar = () => {
             </ul>
             <ul className="pt-4 mt-4 space-y-2 border-t border-gray-200">
                <li>
-                  <NavLink to="/Documentation"
+                  <NavLink to="/documentation"
                      className="flex items-center p-2 text-base font-normal text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100">
                      <svg aria-hidden="true"
                         className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
@@ -50,7 +50,7 @@ const sidebar = () => {
                   </NavLink>
                </li>
                <li>
-                  <NavLink to="/Help"
+                  <NavLink to="/help"
                      className="flex items-center p-2 text-base font-normal text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100">
                      <svg aria-hidden="true"
                         className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
@@ -63,7 +63,7 @@ const sidebar = () => {
                   </NavLink>
                </li>
                <li>
-                  <NavLink to="/Test"
+                  <NavLink to="/test"
                      className="flex items-center p-2 text-base font-normal text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100">
                      <svg aria-hidden="true"
                         className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
@@ -76,7 +76,7 @@ const sidebar = () => {
                   </NavLink>
                </li>
                <li>
-                  <NavLink to="/VideoStream"
+                  <NavLink to="/video-stream"
                      className="flex items-center p-2 text-base font-normal text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100">
                      <svg aria-hidden="true"
                         className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
@@ -96,13 +96,3 @@ const sidebar = () => {
 }
 
 export default sidebar
-
-
-
-
-
-{/* <p>sidebar</p>
-         <NavLink to="/">Dashboard</NavLink><br />
-         <NavLink to="/UserList">Users</NavLink><br />
-         <NavLink to="/Documentation">Documentation</NavLink><br />
-         <NavLink to="/">Help</NavLink> */}

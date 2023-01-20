@@ -1,11 +1,27 @@
-from flask import Flask, render_template, request, redirect, session, Response, send_from_directory, jsonify
+from flask import Flask,  request, redirect, session, Response, send_from_directory, jsonify
 from flask_cors import CORS
 import aiohttp, os, json, secrets, cv2 as cv, time, shutil
 from urllib.parse import quote
 from classes.face_detector import FaceDetector
+from database import init_app, get_all_items, insert_user, update_item, delete_item
+import configparser
+
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)
+init_app(app)
+
+if not os.path.exists('user.ini'):
+    # Create a config file to create a uuid for the user
+    config = configparser.ConfigParser()
+    config['sadi-config'] = {'uuid': secrets.token_hex(16)}
+    # Writing the configuration file to 'example.ini'
+    with open('user.ini', 'w') as configfile:
+        config.write(configfile)
+else:
+    config = configparser.ConfigParser()
+    config.read('user.ini')
+
+app.secret_key = config['sadi-config']['uuid']
 app.config['UPLOAD_FOLDER'] = 'users'
 
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "methods": ["GET", "POST"]}})
@@ -17,6 +33,18 @@ def process():
 		data = request.get_json()
 		json.dump(data, f)
 	return {"status": "success", "message": "Setup completed successfully."}
+
+@app.route("/api/users/setup", methods=['post'])
+def setup_user():
+    data = request.get_json()
+    user = {
+        "firstname": data['name'],
+        "lastname": data['description'],
+        "username": data['username'],
+        "password": data['password'],
+    }
+    data = insert_user("users", user)
+    return data
 
 # The '/api/users/view' route is used to get a list of all the users in the 'users' directory.
 @app.route('/api/users/view', methods=['GET'])

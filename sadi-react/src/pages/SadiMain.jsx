@@ -9,11 +9,11 @@ const SadiMain = () => {
       <div className="h-full">
          <Routes>
             <Route path='/' element={<Dashboard />} />
-            <Route path='/UserList' element={<UserList />} />
-            <Route path='/Documentation' element={<Documentation />} />
-            <Route path='/Help' element={<Help />} />
-            <Route path='/Test' element={<Test />} />
-            <Route path='/VideoStream' element={<VideoStream />} />
+            <Route path='/user' element={<UserList />} />
+            <Route path='/documentation' element={<Documentation />} />
+            <Route path='/help' element={<Help />} />
+            <Route path='/test' element={<Test />} />
+            <Route path='/video-stream' element={<VideoStream />} />
             {/* <Route path='/search' element={<Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} /> */}
          </Routes>
       </div>
