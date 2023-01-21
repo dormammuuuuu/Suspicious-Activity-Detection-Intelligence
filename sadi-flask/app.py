@@ -26,13 +26,23 @@ app.config['UPLOAD_FOLDER'] = 'users'
 
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "methods": ["GET", "POST"]}})
 
-# The '/setup/process' route is used to process a setup and write the received data to a user.json file.
-@app.route("/setup/process", methods=['POST'])
-def process():
-	with open('user.json', 'w') as f:
-		data = request.get_json()
-		json.dump(data, f)
-	return {"status": "success", "message": "Setup completed successfully."}
+
+
+def input_validation(data):
+    required_fields = list(data.keys())
+    error = {}
+    for field in required_fields:
+        if not data.get(field):
+            error[field] = f"{field.capitalize()} is required."
+    return error
+
+@app.route("/api/login", methods=['post'])
+def login():
+    data = request.get_json()
+    error = input_validation(data)
+    if error:
+        return {"status": "error", "error": error}
+    return {"status": "success", "message": "Login successful."}
 
 @app.route("/api/users/setup", methods=['post'])
 def setup_user():
@@ -145,7 +155,13 @@ def serve_image(user, filename):
     print (user, filename)
     return send_from_directory(app.config['UPLOAD_FOLDER'] + '/' + user + '/', filename)
 
-
+# The '/setup/process' route is used to process a setup and write the received data to a user.json file.
+@app.route("/setup/process", methods=['POST'])
+def process():
+	with open('user.json', 'w') as f:
+		data = request.get_json()
+		json.dump(data, f)
+	return {"status": "success", "message": "Setup completed successfully."}
 
 if __name__ == '__main__':
 	app.run(debug=True)
