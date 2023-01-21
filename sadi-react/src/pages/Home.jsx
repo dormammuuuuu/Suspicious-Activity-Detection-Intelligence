@@ -1,10 +1,22 @@
 import React from 'react'
+import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 import { Sidebar } from '../components'
 import SadiMain from './SadiMain'
 
 const Home = () => {
+   const navigate = useNavigate();
+   useEffect (() => {
+      const token = Cookies.get('token');
+      
+      if (!token) {
+         navigate('/login');
+      }
+   })
+
    return (
       <>
          <Sidebar />
@@ -14,7 +26,6 @@ const Home = () => {
                <Route path="/*" element={<SadiMain />} />
             </Routes>
          </div>
-
       </>
 
    )

@@ -6,3 +6,5 @@ mediapipe
 flask_cors
 pymongo[srv]
 Flask-PyMongo
+PyJWT
+bcrypt

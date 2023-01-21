@@ -2,7 +2,7 @@ import React from 'react'
 
 const InputBox = (props) => {
     return (
-        <div className='flex flex-col gap-2 mb-5'>
+        <div className='flex flex-col gap-2 mb-2'>
             <label htmlFor={props.label} className='text-slate-600'>{props.label}</label>
             <input
                 type={props.type}

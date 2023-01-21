@@ -6,7 +6,7 @@ const VideoStream = () => {
 
   return (
     <div>
-      <img key={location.pathname} src="http://localhost:5000/api/video_feed" alt="Video"/>
+      {/* <img key={location.pathname} src="http://localhost:5000/api/video_feed" alt="Video"/> */}
     </div>
   );
 }

@@ -1,10 +1,10 @@
 from flask import Flask,  request, redirect, session, Response, send_from_directory, jsonify
 from flask_cors import CORS
-import aiohttp, os, json, secrets, cv2 as cv, time, shutil
+import aiohttp, os, json, secrets, cv2 as cv, time, shutil, re, configparser, jwt, bcrypt
 from urllib.parse import quote
 from classes.face_detector import FaceDetector
-from database import init_app, insert_user
-import configparser
+from classes.validation import is_valid_email, setup_validation, login_validation
+from database import init_app, insert_user, get_user
 
 
 app = Flask(__name__)
@@ -26,35 +26,46 @@ app.config['UPLOAD_FOLDER'] = 'users'
 
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "methods": ["GET", "POST"]}})
 
-
-
-def input_validation(data):
-    required_fields = list(data.keys())
-    error = {}
-    for field in required_fields:
-        if not data.get(field):
-            error[field] = f"{field.capitalize()} is required."
-    return error
-
 @app.route("/api/login", methods=['post'])
 def login():
     data = request.get_json()
-    error = input_validation(data)
+    error = login_validation(data)
+    if error:
+        return {"status": "error", "error": error, "message": ""}
+    user = {
+        'username': data['username'],
+    }
+    data = get_user("users", user, bytes(data['password'], 'utf-8'))
+    if data:
+        payload = {'username': data['username'], 'email': data['email']}
+        token = jwt.encode(payload, app.secret_key, algorithm='HS256')
+        test = jwt.decode(token, app.secret_key, algorithms=['HS256'])
+        return {"status": "success", "message": "Login successful.", "token": token}
+    else:
+        return {"status": "error", "message": "Invalid Credentials", "error" : ""}
+
+@app.route("/api/setup", methods=['post'])
+def setup_user():
+    salt = bcrypt.gensalt()
+    data = request.get_json()
+    error = setup_validation(data)
     if error:
         return {"status": "error", "error": error}
-    return {"status": "success", "message": "Login successful."}
-
-@app.route("/api/users/setup", methods=['post'])
-def setup_user():
-    data = request.get_json()
     user = {
-        "firstname": data['name'],
-        "lastname": data['description'],
-        "username": data['username'],
-        "password": data['password'],
+        'firstname': data['firstname'],
+        'lastname': data['lastname'],
+        'email': data['email'],
+        'number': data['number'],
+        'username': data['username'],
+        'password': bcrypt.hashpw(bytes(data['password'], 'utf-8'), salt),
+        'token': config['sadi-config']['uuid'],
+        'salt': salt
     }
     data = insert_user("users", user)
-    return data
+    if data.status == '200 OK':
+        return {"status": "success", "message": "Setup Complete"}
+    return {"status": "error", "message": "Setup Failed"}
+
 
 # The '/api/users/view' route is used to get a list of all the users in the 'users' directory.
 @app.route('/api/users/view', methods=['GET'])
@@ -68,7 +79,6 @@ def get_users():
 @app.route('/api/users/delete', methods=['POST'])
 def delete_user():
     data = request.get_json()
-    print(data)
     user = data['name']
     shutil.rmtree("users/{}".format(user))
     return {"status": "success", "message": "User deleted successfully."}
@@ -154,14 +164,6 @@ def get_images(user):
 def serve_image(user, filename):
     print (user, filename)
     return send_from_directory(app.config['UPLOAD_FOLDER'] + '/' + user + '/', filename)
-
-# The '/setup/process' route is used to process a setup and write the received data to a user.json file.
-@app.route("/setup/process", methods=['POST'])
-def process():
-	with open('user.json', 'w') as f:
-		data = request.get_json()
-		json.dump(data, f)
-	return {"status": "success", "message": "Setup completed successfully."}
 
 if __name__ == '__main__':
 	app.run(debug=True)

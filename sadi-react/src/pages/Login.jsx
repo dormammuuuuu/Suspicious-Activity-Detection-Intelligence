@@ -1,41 +1,57 @@
 import React, { useState } from 'react'
-import InputBox from './InputBox'
-import InputCheckBox from './InputCheckBox'
-import Button from './Button'
+import InputBox from '../components/InputBox'
+import InputCheckBox from '../components/InputCheckBox'
+import Button from '../components/Button'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import Cookies from 'js-cookie';
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
+
+
 
 const Login = () => {
-   const [username, setUsername] = useState('');
-   const [password, setPassword] = useState('');
-   const [error, setError] = useState('');
+   const navigate = useNavigate();
+
+   const [username, setUsername] = useState('')
+   const [password, setPassword] = useState('')
+   const [error, setError] = useState('')
+   const [message, setMessage] = useState('')
+
+   useEffect(() => {
+      const token = Cookies.get('token');
+      if (token) {
+         navigate("/dashboard");
+      }
+   }, []);
 
    const handleUsernameChange = (event) => {
-      setUsername(event.target.value);
+      setUsername(event.target.value)
    }
 
    const handlePasswordChange = (event) => {
-      setPassword(event.target.value);
+      setPassword(event.target.value)
    }
 
    const handleLogin = async () => {
-      console.log(username, password)
       try{
          axios.post('http://localhost:5000/api/login', {
             username: username,
             password: password
          })
          .then(res => {
-            console.log("Then")
             console.log(res.data)
             if (res.data.status === 'success'){
-               console.log("Success")
+               console.log(res.data)
+               Cookies.set('token', res.data.token, { expires: 3600 });
+               window.location.href = '/dashboard'
             } else {
                setError(res.data.error)
+               setMessage(res.data.message)
             }
          })
       } catch (error) {
-         console.error(error);
+         console.error(error)
       }
    }
 
@@ -47,6 +63,7 @@ const Login = () => {
                <h1 className='text-white text-3xl font-medium'>SADI</h1>
             </div>
             <div className='p-6 rounded-tl-3xl rounded-tr-3xl bg-white'>
+               <p className='text-red-500 text-xs mb-3'>{message}</p>
                <InputBox label='Username' type='text' name='username' onChange={handleUsernameChange} error={error.username}/>
                <InputBox label='Password' type='password' name='password' onChange={handlePasswordChange} error={error.password}/>
                <InputCheckBox label='Remember Me' type='checkbox' name='remember-me'/>

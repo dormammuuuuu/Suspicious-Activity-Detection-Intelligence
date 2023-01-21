@@ -3,8 +3,9 @@ import { Route, Routes } from 'react-router-dom';
 import { Dashboard, Documentation, UserList, Help, Test, VideoStream } from '../components'
 
 
-
 const SadiMain = () => {
+   
+
    return (
       <div className="h-full">
          <Routes>
@@ -16,7 +17,6 @@ const SadiMain = () => {
             <Route path='/video-stream' element={<VideoStream />} />
          </Routes>
       </div>
-
    )
 }
 
