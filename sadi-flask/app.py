@@ -44,6 +44,7 @@ def login():
     else:
         return {"status": "error", "message": "Invalid Credentials", "error" : ""}
 
+# insert user to database
 @app.route("/api/setup", methods=['post'])
 def setup_user():
     salt = bcrypt.gensalt()

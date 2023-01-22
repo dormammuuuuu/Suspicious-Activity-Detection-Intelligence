@@ -20,6 +20,7 @@ const Login = () => {
 
    useEffect(() => {
       const token = Cookies.get('token');
+      console.log("token", token)
       if (token) {
          navigate("/dashboard");
       }
@@ -34,22 +35,22 @@ const Login = () => {
    }
 
    const handleLogin = async () => {
-      try{
+      try {
          axios.post('http://localhost:5000/api/login', {
             username: username,
             password: password
          })
-         .then(res => {
-            console.log(res.data)
-            if (res.data.status === 'success'){
+            .then(res => {
                console.log(res.data)
-               Cookies.set('token', res.data.token, { expires: 3600 });
-               window.location.href = '/dashboard'
-            } else {
-               setError(res.data.error)
-               setMessage(res.data.message)
-            }
-         })
+               if (res.data.status === 'success') {
+                  console.log(res.data)
+                  Cookies.set('token', res.data.token, { expires: 3600 });
+                  window.location.href = '/dashboard'
+               } else {
+                  setError(res.data.error)
+                  setMessage(res.data.message)
+               }
+            })
       } catch (error) {
          console.error(error)
       }
@@ -58,16 +59,16 @@ const Login = () => {
 
    return (
       <div className='w-screen h-screen flex items-center justify-center'>
-         <div className="flex flex-col h-full w-full shadow-md bg-gradient-to-tr from-indigo-500 to-cyan-300 sm:h-fit sm:rounded-xl sm:max-w-md "> 
+         <div className="flex flex-col h-full w-full shadow-md bg-gradient-to-tr from-indigo-500 to-cyan-300 sm:h-fit sm:rounded-xl sm:max-w-md ">
             <div className='flex grow items-center justify-center sm:h-48'>
                <h1 className='text-white text-3xl font-medium'>SADI</h1>
             </div>
             <div className='p-6 rounded-tl-3xl rounded-tr-3xl bg-white'>
                <p className='text-red-500 text-xs mb-3'>{message}</p>
-               <InputBox label='Username' type='text' name='username' onChange={handleUsernameChange} error={error.username}/>
-               <InputBox label='Password' type='password' name='password' onChange={handlePasswordChange} error={error.password}/>
-               <InputCheckBox label='Remember Me' type='checkbox' name='remember-me'/>
-               <Button className='w-full mt-5 bg-indigo-500' label='Login' onClick={handleLogin}/>
+               <InputBox label='Username' type='text' name='username' onChange={handleUsernameChange} error={error.username} />
+               <InputBox label='Password' type='password' name='password' onChange={handlePasswordChange} error={error.password} />
+               <InputCheckBox label='Remember Me' type='checkbox' name='remember-me' />
+               <Button className='w-full mt-5 bg-indigo-500' label='Login' onClick={handleLogin} />
                <Link to='/forgot' className='text-indigo-500 text-xs mt-8 mb-2 block'>Reset password</Link>
             </div>
          </div>

@@ -1,8 +1,8 @@
 import React from 'react'
-import { useGlobalContext } from '../context'
+import { useStateContext } from '../context/StateContext'
 
 const Documentation = () => {
-   const { samplePassData } = useGlobalContext()
+   const { samplePassData } = useStateContext()
 
    console.log('samplePassData: ', samplePassData)
 

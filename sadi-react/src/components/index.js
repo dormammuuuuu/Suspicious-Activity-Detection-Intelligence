@@ -1,11 +1,13 @@
-export { default as Documentation } from '../pages/Documentation'
-export { default as Dashboard } from '../pages/Dashboard'
-export { default as UserList } from '../pages/Users'
+export { default as Button }  from './Button'
+export { default as Dashboard } from './Dashboard'
+export { default as Help } from './Help'
+export { default as InputBox } from './InputBox'
+export { default as InputCheckBox } from './InputCheckBox'
+export { default as Modal } from './Modal'
 export { default as Sidebar } from './Sidebar'
-export { default as Login } from '../pages/Login'
-export { default as Help } from '../pages/Help'
 export { default as Test } from './Test'
-export { default as Modal } from './Modal' 
+export { default as UserList } from './Users'
 export { default as VideoStream } from './VideoStream'
+
 
 

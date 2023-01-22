@@ -5,13 +5,13 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 
 import { Sidebar } from '../components'
-import SadiMain from './SadiMain'
+import { SadiMain } from '../pages'
 
 const Home = () => {
    const navigate = useNavigate();
-   useEffect (() => {
+   useEffect(() => {
       const token = Cookies.get('token');
-      
+
       if (!token) {
          navigate('/login');
       }

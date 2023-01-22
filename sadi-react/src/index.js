@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom'
-import { AppProvider } from './context';
+import { AppProvider } from './context/StateContext';
 import reportWebVitals from './reportWebVitals';
 
 import './index.css';
