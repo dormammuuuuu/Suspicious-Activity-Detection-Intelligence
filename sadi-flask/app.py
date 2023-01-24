@@ -90,14 +90,23 @@ def get_data():
 	data = {'key': 'value'}
 	return jsonify(data) 
 
+stop_stream = False
+
 @app.route('/api/video_feed')
 def video_feed():
+    timestamp = request.args.get('ts')
+    if timestamp:
+        if int(timestamp) == int(time.time()):
+            return "Video already running", 200
+    global stop_stream
+    stop_stream = False
+
     cap = cv.VideoCapture(0)
     if not cap.isOpened():
         return Response("Error opening video stream", status=500)
     
     def generate():
-        while cap.isOpened():
+        while cap.isOpened() and not stop_stream:
             ret, frame = cap.read()
             if not ret:
                 break
@@ -107,10 +116,15 @@ def video_feed():
             frame = jpeg.tobytes()
             yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-
-
     return Response(generate(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/api/stop_video_feed')
+def stop_video_feed():
+    global stop_stream
+    stop_stream = True
+    return "Video stream stopped"
+
 
 # The '/authenticate' route is used to handle login form submission and checks the credentials with the data in user.json file.
 @app.route("/authenticate", methods=['POST'])
