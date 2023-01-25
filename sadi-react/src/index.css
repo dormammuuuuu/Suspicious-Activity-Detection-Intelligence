@@ -16,3 +16,25 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+
+.input-txt-bg input[type="text"]:focus~.input-text,
+.input-txt-bg input[type="text"]:not(:placeholder-shown)~.input-text {
+  @apply text-blue-600 bg-white transform -translate-y-5 -translate-x-3 scale-75;
+}
+
+.input-txt-bg input[type="text"]:focus,
+.input-txt-bg input[type="text"]:not(:placeholder-shown) {
+  @apply border-blue-600 bg-white;
+}
+
+.input-txt-bg-dark input[type="text"]:focus~.input-text,
+.input-txt-bg-dark input[type="text"]:not(:placeholder-shown)~.input-text {
+  @apply text-blue-600 bg-gray-800 transform -translate-y-5 -translate-x-3 scale-75;
+}
+
+.input-txt-bg-dark input[type="text"]:focus,
+.input-txt-bg-dark input[type="text"]:not(:placeholder-shown) {
+  @apply border-blue-600 bg-gray-800;
+}

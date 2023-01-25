@@ -3,12 +3,13 @@ import { useLocation } from "react-router-dom";
 
 const VideoStream = () => {
   let location = useLocation();
-  const [src, setSrc] = useState(`http://localhost:5000/api/video_feed?ts=${Date.now()}`);
+  // const [src, setSrc] = useState(`http://localhost:5000/api/video_feed?ts=${Date.now()}`);
+  const [src, setSrc] = useState(`http://localhost:5000/api/scanner/d`);
   const [isVideoRunning, setIsVideoRunning] = useState(true);
 
   useEffect(() => {
     if (isVideoRunning) {
-      setSrc(`http://localhost:5000/api/video_feed?ts=${Date.now()}`);
+      setSrc(`http://localhost:5000/api/scanner/d`);
     }
   }, [location.pathname, isVideoRunning]);
 

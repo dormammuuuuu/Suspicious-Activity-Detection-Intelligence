@@ -138,7 +138,7 @@ def auth():
 		return redirect("/login?error={}".format(quote(error)))
 
 # The '/scanner/<user>' route is used to capture face images and detect the faces in the video.
-@app.route('/scanner/<user>')
+@app.route('/api/scanner/<user>')
 def face_capture(user):
     cap = cv.VideoCapture(0)
     should_stop = False

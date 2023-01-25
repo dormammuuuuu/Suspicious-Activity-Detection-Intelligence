@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import Modal from './Modal';
+import { Modal } from './';
+
+
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -82,25 +84,10 @@ const UserList = () => {
         )}
       </div>
 
-      {activeModal === 'add-user' &&
-        <Modal closeModal={closeModal}>
-          <h3 className="mb-4 text-xl font-medium text-gray-900">Register New User</h3>
-          <p className="mb-4 font-sm text-gray-500">Please note that the user's name cannot be modified after it has been saved.</p>
-          <div>
-            <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900">
-              Name
-            </label>
-            <input type="text" id="name" name="name"
-              className="w-full px-4 py-4 text-base bg-gray-100 rounded-lg text-gray-700 leading-tight focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Name" required />
-          </div>
-          <div className="mt-4">
-            <button type="submit"
-              className="w-full py-2 px-4 text-center text-white bg-indigo-500 rounded-lg hover:bg-indigo-600">
-              Register
-            </button>
-          </div>
-        </Modal>
+      {activeModal &&
+        <Modal closeModal={closeModal} />
+
+
       }
     </div>
   )
