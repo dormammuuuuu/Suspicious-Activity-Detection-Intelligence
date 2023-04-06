@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import { useLocation } from "react-router-dom";
 import { BreadcrumbStepper } from './'
 import { IoClose } from 'react-icons/io5'
@@ -8,10 +7,8 @@ import { IoIosArrowDown } from 'react-icons/io'
 
 const SADI_API_URL = 'http://localhost:5000/api'
 
-
 const Modal = ({ closeModal }) => {
   let location = useLocation();
-
   const [newUser, setNewUser] = useState('');
   const [showError, setShowError] = useState(false); //Todo: add error handling
   const [newUserErrorText, setNewUserErrorText] = useState('')
@@ -19,8 +16,6 @@ const Modal = ({ closeModal }) => {
   const [showDropDown, setshowDropDown] = useState(false)
   const [vidSrc, setVidSrc] = useState('');
   const [showScanner, setShowScanner] = useState(false);
-
-
 
   const handleNewUserInput = () => {
     const namePattern = /^[a-zA-Z\s]*$/;
@@ -41,7 +36,7 @@ const Modal = ({ closeModal }) => {
 
 
   const handleRegisterBtn = () => {
-    if (newUser.length == 0) {
+    if (newUser.length === 0) {
       setShowError(true);
       setNewUserErrorText("Name field cannot be empty");
     } else if (showError) {
@@ -76,8 +71,6 @@ const Modal = ({ closeModal }) => {
   useEffect(() => {
     console.log(newUser)
   }, [newUser])
-
-
 
   return (
     <div
@@ -270,4 +263,3 @@ const Modal = ({ closeModal }) => {
 }
 
 export default Modal
-
