@@ -9,6 +9,4 @@ export { default as Sidebar } from './Sidebar'
 export { default as Test } from './Test'
 export { default as UserList } from './Users'
 export { default as VideoStream } from './VideoStream'
-
-
-
+export { default as Logo } from './Logo'

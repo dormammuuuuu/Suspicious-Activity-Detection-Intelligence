@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import InputBox from '../components/InputBox'
 import InputCheckBox from '../components/InputCheckBox'
 import Button from '../components/Button'
+import Logo from '../components/Logo'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import Cookies from 'js-cookie';
@@ -59,18 +60,15 @@ const Login = () => {
 
    return (
       <div className='w-screen h-screen flex items-center justify-center'>
-         <div className="flex flex-col h-full w-full shadow-md bg-gradient-to-tr from-indigo-500 to-cyan-300 sm:h-fit sm:rounded-xl sm:max-w-md ">
-            <div className='flex grow items-center justify-center sm:h-48'>
-               <h1 className='text-white text-3xl font-medium'>SADI</h1>
-            </div>
-            <div className='p-6 rounded-tl-3xl rounded-tr-3xl bg-white'>
-               <p className='text-red-500 text-xs mb-3'>{message}</p>
-               <InputBox label='Username' type='text' name='username' onChange={handleUsernameChange} error={error.username} />
-               <InputBox label='Password' type='password' name='password' onChange={handlePasswordChange} error={error.password} />
-               <InputCheckBox label='Remember Me' type='checkbox' name='remember-me' />
-               <Button className='w-full mt-5 bg-indigo-500' label='Login' onClick={handleLogin} />
-               <Link to='/forgot' className='text-indigo-500 text-xs mt-8 mb-2 block'>Reset password</Link>
-            </div>
+         
+         <div className='rounded-xl bg-white p-7 sm:max-w-xs w-full 2xl:max-w-sm'>
+            <Logo />
+            <h1 className='text-center mt-6 mb-10 text-2xl font-semibold text-neutral-600'>Login</h1>
+            <p className='text-red-500 text-xs mb-3'>{message}</p>
+            <InputBox label='Username' type='text' name='username' onChange={handleUsernameChange} error={error.username} />
+            <InputBox label='Password' type='password' name='password' onChange={handlePasswordChange} error={error.password} />
+            <Link to='/forgot' className='text-indigo-500 text-xs text-right block'>Forgot password?</Link>
+            <Button className='w-full mt-20 bg-indigo-500' label='Login' onClick={handleLogin} />
          </div>
       </div>
    )
