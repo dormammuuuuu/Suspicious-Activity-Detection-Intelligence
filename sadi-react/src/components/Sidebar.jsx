@@ -5,7 +5,6 @@ import { IoVideocam, IoHelpCircle, IoLogOut } from 'react-icons/io5'
 import { MdSpaceDashboard } from 'react-icons/md'
 import { FaUser } from 'react-icons/fa'
 import Logo from '../components/Logo'
-import clsx from 'clsx'
 import SidebarLink from './SidebarLink'
 
 const sidebar = () => {
@@ -15,7 +14,7 @@ const sidebar = () => {
    }
 
    return (
-      <aside className="w-64 bg-gray-50 fixed top-3 left-3 bottom-3 rounded-xl" aria-label="Sidebar">
+      <aside className="w-full bg-gray-50 rounded-xl h-full" aria-label="Sidebar">
          <div className="p-4 overflow-y-auto h-full flex flex-col justify-between">
             <div>
                <ul className="space-y-2">

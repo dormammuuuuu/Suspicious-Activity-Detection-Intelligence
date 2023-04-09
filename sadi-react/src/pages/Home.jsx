@@ -19,13 +19,23 @@ const Home = () => {
 
    return (
       <>
-         <Sidebar />
-         <div className="px-10 ml-64 mt-8">
-            <Routes>
-               {/* <Route path="/user-profile/:userId" element={<UserProfile />} /> */}
-               <Route path="/*" element={<SadiMain />} />
-            </Routes>
+         {/* <Sidebar />
+         <div className="ml-64">
+            
+         </div> */}
+
+         <div class="p-5 grid grid-cols-6 grid-rows-8 gap-5 h-screen">
+            <div class="row-start-1 row-end-9 col-start-1 col-end-2 flex justify-center items-center">
+               <Sidebar />
+            </div>
+            <div class="bg-green-300 grid-row-1 grid-row-5 col-start-2 col-end-7 flex justify-center items-center"></div>
+            <div class="bg-blue-300 row-start-2 row-end-9 col-start-2 col-end-7">
+               <Routes>
+                  <Route path="/*" element={<SadiMain />} />
+               </Routes>
+            </div>
          </div>
+
       </>
 
    )
