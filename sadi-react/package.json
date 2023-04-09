@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.2.2",
     "classnames": "^2.3.2",
+    "clsx": "^1.2.1",
     "flowbite": "^1.6.3",
     "flowbite-react": "^0.3.7",
     "js-cookie": "^3.0.1",
