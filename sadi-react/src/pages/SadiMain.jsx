@@ -1,7 +1,6 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom';
-import { Dashboard, UserList, Help, Test, VideoStream } from '../components'
-
+import { Dashboard, UserList, Help, Test, VideoStream, AccountSettings } from '../components'
 
 const SadiMain = () => {
 
@@ -12,8 +11,8 @@ const SadiMain = () => {
             <Route path='/' element={<Dashboard />} />
             <Route path='/user' element={<UserList />} />
             <Route path='/help' element={<Help />} />
-            <Route path='/test' element={<Test />} />
             <Route path='/video-stream' element={<VideoStream />} />
+            <Route path='/account-settings' element={<AccountSettings />} />
          </Routes>
       </div>
    )

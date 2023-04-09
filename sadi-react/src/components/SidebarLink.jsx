@@ -14,7 +14,7 @@ const SidebarLink = (props) => {
             isActive ? "text-blue-500 bg-violet-50" : " text-neutral-400"
             )}>
                 {children}
-                <span className="ml-3">{label}</span>
+                <span className="ml-3 text-lg">{label}</span>
         </NavLink>
     )
 }

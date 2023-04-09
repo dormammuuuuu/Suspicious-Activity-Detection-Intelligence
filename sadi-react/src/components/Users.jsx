@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Modal } from './';
 
-
-
 const UserList = () => {
   const [users, setUsers] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
@@ -30,8 +28,8 @@ const UserList = () => {
 
   return (
     <div >
-      <div className="container relative overflow-x-auto">
-        <div className="p-5 text-lg font-bold text-left text-gray-900 bg-white flex items-center justify-between">
+      <div className="relative overflow-x-auto">
+        <div className="p-5 text-lg font-bold text-left text-gray-900 flex items-center justify-between">
           <div className="inline-block">
             List of Faces
             <p className="mt-1 text-sm font-normal text-gray-500 ">
@@ -63,7 +61,7 @@ const UserList = () => {
             </thead>
             <tbody>
               {users.map((user, index) => (
-                <tr key={index} className="user-item bg-white border-b cursor-pointer hover:bg-gray-300 hover:bg-opacity-50"
+                <tr key={index} className="user-item border-b cursor-pointer hover:bg-gray-300 hover:bg-opacity-50"
                   data-name="">
                   <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                     {user}
@@ -92,7 +90,5 @@ const UserList = () => {
     </div>
   )
 };
-
-
 
 export default UserList
