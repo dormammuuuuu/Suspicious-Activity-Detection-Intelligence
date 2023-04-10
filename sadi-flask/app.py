@@ -1,13 +1,15 @@
 from flask import Flask,  request, redirect, session, Response, send_from_directory, jsonify
 from flask_cors import CORS
-import aiohttp, os, json, secrets, cv2 as cv, time, shutil, re, configparser, jwt, bcrypt
+import aiohttp, os, json, secrets, cv2 as cv, time, shutil, re, configparser, jwt, bcrypt, torch, numpy as np
 from urllib.parse import quote
 from classes.face_detector import FaceDetector
 from classes.validation import is_valid_email, setup_validation, login_validation
 from database import init_app, insert_user, get_user
+from detect import Detect
 
 
 app = Flask(__name__)
+detect = Detect()
 init_app(app)
 
 if not os.path.exists('user.ini'):
@@ -125,6 +127,16 @@ def stop_video_feed():
     stop_stream = True
     return "Video stream stopped"
 
+# def video_inference():
+#     result_frame = detect.detect() # detect objects in the frame
+#     # ret, buffer = cv.imencode('.jpg', result_frame)
+#     # frame = buffer.tobytes()
+#     # yield (b'--frame\r\n'
+#     #         b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n') 
+
+@app.route('/api/yolov5', methods=['GET'])
+def inference():
+    return Response(detect.detect(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 # The '/authenticate' route is used to handle login form submission and checks the credentials with the data in user.json file.
 @app.route("/authenticate", methods=['POST'])

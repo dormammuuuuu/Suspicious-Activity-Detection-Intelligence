@@ -29,6 +29,7 @@ sadi-react/yarn-error.log*
 
 #? start - sadi-flask 
 sadi-flask/users/
+sadi-flask/test/
 **/__pycache__/
 #? end - sadi-flask 
 sadi-flask/user.ini

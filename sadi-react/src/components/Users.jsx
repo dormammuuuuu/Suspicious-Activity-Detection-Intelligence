@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Modal } from './';
+import { div } from '@tensorflow/tfjs';
+import { MdPersonAddAlt1 } from 'react-icons/md';
+import { FaTrash } from 'react-icons/fa';
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
   const closeModal = () => setActiveModal(null);
+  const [selectedDelete, setSelectedDelete] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/users/view')
@@ -26,66 +30,74 @@ const UserList = () => {
     });
   }
 
+  const toggleDelete = () => {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]')
+    checkboxes.forEach(checkbox => {
+      checkbox.classList.toggle('hidden')
+      checkbox.checked = false
+    });
+    setSelectedDelete([]);
+  }
+
+  const deleteToggle = (index) => {
+    let checkbox = index.target.id.split("-")[1]
+    if (selectedDelete.includes(checkbox)) {
+      setSelectedDelete(selectedDelete.filter(item => item !== checkbox));
+    } else {
+      setSelectedDelete([...selectedDelete, checkbox]);
+    }
+  }
+
   return (
-    <div >
-      <div className="relative overflow-x-auto">
+    <div className='h-fill p-5 relative'>
+      <div className="relative overflow-x-auto h-full">
         <div className="p-5 text-lg font-bold text-left text-gray-900 flex items-center justify-between">
           <div className="inline-block">
-            List of Faces
-            <p className="mt-1 text-sm font-normal text-gray-500 ">
-              {users.length > 0 ? (
-                "This is the list of all the faces registered at the system."
-              ) : (
-                "There are no faces registered at the system."
-              )}
-            </p>
+            <p>List of Faces</p>
           </div>
-          <button type="button" id="add-user"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2"
-            onClick={() => setActiveModal('add-user')}>
-            Add User
-          </button>
+          <div className='flex gap-2'>
+            <button type="button" id="add-user"
+              className="flex gap-2 items-center text-green-500 bg-green-50 focus:ring-4 focus:ring-green-300 font-medium rounded-xl text-base px-5 py-2.5"
+              onClick={() => setActiveModal('add-user')}>
+                <MdPersonAddAlt1 />
+                <span>Add</span>
+            </button>
+            <button type="button" id="add-user"
+              className="flex gap-2 items-center text-rose-500 bg-rose-100 focus:ring-4 focus:ring-rose-300 font-medium rounded-xl text-base px-5 py-2.5"
+              onClick={toggleDelete}>
+                <FaTrash />
+                <span>Delete</span>
+            </button>
+          </div>
+
+
         </div>
         {users.length > 0 ? (
-          <table className="w-full text-sm text-left text-gray-500">
-
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3">
-                  Name
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  <span className="sr-only">Actions</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+          <div className='w-full overflow-hidden space-y-2'>
               {users.map((user, index) => (
-                <tr key={index} className="user-item border-b cursor-pointer hover:bg-gray-300 hover:bg-opacity-50"
-                  data-name="">
-                  <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                <div key={index} className=" select-none px-4 py-4 rounded-xl cursor-pointer hover:bg-violet-50 flex items-center gap-5">
+                  <input className='hidden' type="checkbox" id={"user-" + index} onChange={(e) => deleteToggle(e)}/>
+                  <label htmlFor={"user-" + index} className=" font-medium text-gray-900 whitespace-nowrap">
                     {user}
-                  </th>
-                  <td className="px-6 py-4 text-right">
-                    <button data-name="" href="#"
-                      className="user-delete font-medium text-red-600 hover:underline" onClick={() => deleteUser(user)}>Delete</button>
-                  </td>
-                </tr>
+                  </label>
+                </div>
               ))}
-
-            </tbody>
-          </table>
+          </div>
         ) : (
-          <div className='bg-red-400 p-5 bg-opacity-40 text-red-500 border border-red-500 rounded-lg text-center mx-5 my-5'>
+          <div className='flex items-center justify-center h-fill'>
             <p>No user found</p>
           </div>
         )}
       </div>
+      
+      {selectedDelete.length > 0 &&
+        <button className='absolute right-10 bottom-10 z-30 bg-blue-500 text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 px-4 py-3 rounded-xl'>
+          Delete Selected
+        </button> 
+      }
 
       {activeModal &&
         <Modal closeModal={closeModal} />
-
-
       }
     </div>
   )

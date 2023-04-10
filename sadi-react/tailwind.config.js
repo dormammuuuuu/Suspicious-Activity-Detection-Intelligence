@@ -20,6 +20,25 @@ module.exports = {
         '11': '11',
         '12': '12',
       },
+      width: {
+        'fill': '-webkit-fill-available',
+      },
+      height: {
+        'fill': '-webkit-fill-available',
+      },
+      minHeight: {
+        'fill': '-webkit-fill-available',
+      },
+      maxHeight: {
+        'fill': '-webkit-fill-available',
+      },
+      minWidth: {
+        'fill': '-webkit-fill-available',
+      },
+      maxWidth: {
+        'fill': '-webkit-fill-available',
+      },
+      
     },
   },
   plugins: [
