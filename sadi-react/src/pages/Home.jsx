@@ -32,14 +32,14 @@ const Home = () => {
 
    return (
       <>
-         <div class=" p-5 grid grid-cols-6 grid-rows-9 gap-5 h-screen">
-            <div class="bg-white rounded-xl row-start-1 row-end-10 col-start-1 col-end-2 flex justify-center items-center">
+         <div className=" p-5 grid grid-cols-6 grid-rows-9 gap-5 h-screen">
+            <div className="bg-white rounded-xl row-start-1 row-end-10 col-start-1 col-end-2 flex justify-center items-center">
                <Sidebar />
             </div>
-            <div class="bg-white grid-row-1 grid-row-5 col-start-2 col-end-7 rounded-xl px-6 flex items-center">
-               <h1 class=" text-2xl text-neutral-600">{ title }</h1>
+            <div className="bg-white grid-row-1 grid-row-5 col-start-2 col-end-7 rounded-xl px-6 flex items-center">
+               <h1 className=" text-2xl text-neutral-600">{ title }</h1>
             </div>
-            <div class="bg-white row-start-2 row-end-10 col-start-2 col-end-7 rounded-xl">
+            <div className="bg-white row-start-2 row-end-10 col-start-2 col-end-7 rounded-xl">
                <Routes>
                   <Route path="/*" element={<SadiMain />} />
                </Routes>

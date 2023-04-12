@@ -96,14 +96,14 @@ const Modal = ({ closeModal }) => {
             <BreadcrumbStepper />
             {progressCount === 0 &&
               <div className='md:w-5/6 md:mx-auto  h-4/5 '>
-                <div class="bg-blue-50 border-t-4 border-blue-300 rounded-md text-gray-900 px-2 py-1 shadow-sm mx-14" role="alert">
-                  <div class="flex">
-                    <div class="py-1">
+                <div className="bg-blue-50 border-t-4 border-blue-300 rounded-md text-gray-900 px-2 py-1 shadow-sm mx-14" role="alert">
+                  <div className="flex">
+                    <div className="py-1">
                       <HiOutlineInformationCircle className='h-6 w-6 text-blue-500 mr-4' />
                     </div>
                     <div>
-                      <p class="font-bold">Register New User</p>
-                      <p class="text-sm">
+                      <p className="font-bold">Register New User</p>
+                      <p className="text-sm">
                         Please note that the user's name cannot be modified after it has been saved.
                       </p>
                     </div>
@@ -124,7 +124,7 @@ const Modal = ({ closeModal }) => {
                         value={newUser}
                         onChange={(e) => setNewUser(e.target.value)} />
                       <span className='text-base  text-gray-600  text-opacity-80 bg-gray-100 absolute left-5 top-[-2px] px-1 transition duration-200 input-text '>Name</span>
-                      {showError && <p class="text-red-500 pl-2 pt-1  text-center text-xs italic">{newUserErrorText}</p>}
+                      {showError && <p className="text-red-500 pl-2 pt-1  text-center text-xs italic">{newUserErrorText}</p>}
 
                     </label>
                   </div>
@@ -141,14 +141,14 @@ const Modal = ({ closeModal }) => {
             }
             {progressCount === 1 &&
               <div className='flex flex-col items-center md:w-5/6 md:mx-auto  h-4/5 mt-2'>
-                <div class="bg-blue-50 border-t-4 border-blue-300 rounded-b text-gray-900 px-2 py-1 shadow-sm mx-10" role="alert">
-                  <div class="flex">
-                    <div class="py-1">
+                <div className="bg-blue-50 border-t-4 border-blue-300 rounded-b text-gray-900 px-2 py-1 shadow-sm mx-10" role="alert">
+                  <div className="flex">
+                    <div className="py-1">
                       <HiOutlineInformationCircle className='h-6 w-6 text-blue-500 mr-4' />
                     </div>
                     <div>
-                      <p class="font-bold">Face Registration</p>
-                      <p class="text-sm">   Please register your face to set up the device.
+                      <p className="font-bold">Face Registration</p>
+                      <p className="text-sm">   Please register your face to set up the device.
                         By doing so, the device will know that you are the owner and it will only respond to your face,
                         ensuring better accuracy and security.
                       </p>
@@ -156,25 +156,25 @@ const Modal = ({ closeModal }) => {
                   </div>
                 </div>
 
-                <figure class="h-[300px] mt-4 mb-5">
+                <figure className="h-[300px] mt-4 mb-5">
                   {
                     showScanner ?
                       <img
                         key={location.pathname}
                         src={vidSrc}
                         alt="Webcam Video"
-                        class="w-auto max-h-full rounded-lg object-cover drop-shadow-lg "
+                        className="w-auto max-h-full rounded-lg object-cover drop-shadow-lg "
 
                       /> :
                       <img
                         src="https://flowbite.com/docs/images/examples/image-3@2x.jpg"
                         alt="Webcam Video"
-                        class="w-auto max-h-full rounded-lg object-cover  drop-shadow-lg"
+                        className="w-auto max-h-full rounded-lg object-cover  drop-shadow-lg"
 
                       />
                   }
 
-                  {/* <figcaption class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">
+                  {/* <figcaption className="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">
                     Webcam Stream
                   </figcaption> */}
                 </figure>
@@ -182,7 +182,7 @@ const Modal = ({ closeModal }) => {
                   <button
                     id="dropdownRadioBgHoverButton"
                     data-dropdown-toggle="dropdownRadioBgHover"
-                    class=" relative text-blue-600 bg-transparent w-72 border-blue-600 border-[1px] hover:bg-gray-100 focus:ring-4 focus:outline-none
+                    className=" relative text-blue-600 bg-transparent w-72 border-blue-600 border-[1px] hover:bg-gray-100 focus:ring-4 focus:outline-none
                    focus:ring-blue-100 font-medium rounded-lg text-sm px-4 
                 py-2.5 text-center inline-flex items-center "
                     type="button"
@@ -194,45 +194,45 @@ const Modal = ({ closeModal }) => {
 
                   {/* <!-- Dropdown menu --> */}
                   {showDropDown &&
-                    <div id="dropdownRadioBgHover" class="z-10 w-72 absolute bg-white divide-y divide-gray-100 rounded-lg shadow ">
-                      <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioBgHoverButton">
+                    <div id="dropdownRadioBgHover" className="z-10 w-72 absolute bg-white divide-y divide-gray-100 rounded-lg shadow ">
+                      <ul className="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioBgHoverButton">
                         <li>
-                          <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                          <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                             <input
                               id="default-radio-4"
                               type="radio"
                               value=""
                               name="default-radio"
-                              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700
                          dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                             />
-                            <label for="default-radio-4" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Default radio</label>
+                            <label htmlhtmlFor="default-radio-4" className="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Default radio</label>
                           </div>
                         </li>
                         <li>
-                          <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                          <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                             <input
                               checked
                               id="default-radio-5"
                               type="radio"
                               value=""
                               name="default-radio"
-                              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700
                         dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                             />
-                            <label for="default-radio-5" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Checked state</label>
+                            <label htmlhtmlFor="default-radio-5" className="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Checked state</label>
                           </div>
                         </li>
                         <li>
-                          <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                          <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                             <input id="default-radio-6"
                               type="radio"
                               value=""
                               name="default-radio"
-                              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700
                         dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                             />
-                            <label for="default-radio-6" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Default radio</label>
+                            <label htmlhtmlFor="default-radio-6" className="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Default radio</label>
                           </div>
                         </li>
                       </ul>
