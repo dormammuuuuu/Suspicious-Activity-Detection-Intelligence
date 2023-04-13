@@ -1,6 +1,3 @@
-
-  
-
 # Front End
 Start the front-end
 
@@ -27,8 +24,7 @@ npm install
 ```
 npm start
 ```
-
-  
+ 
 
 # Back End
 Start the back-end
