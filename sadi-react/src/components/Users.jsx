@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { Modal } from './';
+import { Layout, Modal } from './';
 import { div } from '@tensorflow/tfjs';
 import { MdPersonAddAlt1 } from 'react-icons/md';
 import { FaTrash } from 'react-icons/fa';
@@ -49,11 +49,10 @@ const UserList = () => {
   }
 
   return (
-    <div className='h-fill p-5 relative'>
-      <div className="relative overflow-x-auto h-full">
-        <div className="p-5 text-lg font-bold text-left text-gray-900 flex items-center justify-between">
-          <div className="inline-block">
-            <p>List of Faces</p>
+    <Layout>
+        <div className='flex justify-between items-center p-2'>
+          <div>
+            <p className="font-semibold">List of Faces</p>
           </div>
           <div className='flex gap-2'>
             <button type="button" id="add-user"
@@ -69,13 +68,12 @@ const UserList = () => {
                 <span>Delete</span>
             </button>
           </div>
-
-
         </div>
+
         {users.length > 0 ? (
           <div className='w-full overflow-hidden space-y-2'>
               {users.map((user, index) => (
-                <div key={index} className=" select-none px-4 py-4 rounded-xl cursor-pointer hover:bg-violet-50 flex items-center gap-5">
+                <div key={index} className="text-base select-none px-4 py-4 rounded-xl cursor-pointer hover:bg-violet-50 flex items-center gap-5">
                   <input className='hidden' type="checkbox" id={"user-" + index} onChange={(e) => deleteToggle(e)}/>
                   <label htmlFor={"user-" + index} className=" font-medium text-gray-900 whitespace-nowrap">
                     {user}
@@ -88,18 +86,17 @@ const UserList = () => {
             <p>No user found</p>
           </div>
         )}
-      </div>
-      
-      {selectedDelete.length > 0 &&
-        <button className='absolute right-10 bottom-10 z-30 bg-blue-500 text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 px-4 py-3 rounded-xl'>
-          Delete Selected
-        </button> 
-      }
 
-      {activeModal &&
-        <Modal closeModal={closeModal} />
-      }
-    </div>
+        {selectedDelete.length > 0 &&
+          <button className='absolute right-10 bottom-10 z-30 bg-blue-500 text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 px-4 py-3 rounded-xl'>
+            Delete Selected
+          </button> 
+        }
+
+        {activeModal &&
+          <Modal closeModal={closeModal} />
+        }
+    </Layout>
   )
 };
 
