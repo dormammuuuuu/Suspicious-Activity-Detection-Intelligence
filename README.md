@@ -40,10 +40,11 @@ Start the back-end
 cd sadi-flask
 ```
 
-2. Install Packages
+2. Install Packages 
 
 ```
 pip install -r requirements.txt
+# for failed installations use conda-forge if you're using conda for env.
 ```
 
 3. Install Pytorch and TorchVision
