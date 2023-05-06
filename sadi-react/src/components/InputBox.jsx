@@ -1,4 +1,6 @@
 import React from 'react'
+import { FaExclamationCircle } from 'react-icons/fa'
+
 
 const InputBox = (props) => {
     return (
@@ -11,9 +13,13 @@ const InputBox = (props) => {
                 name={props.name}
                 onChange={props.onChange}
             />
-            <p className='text-red-500 text-xs'>
-                {props.error}
-            </p>
+            {props.error && (<span className='flex items-center text-red-500 text-xs gap-x-2'><FaExclamationCircle />
+                <p>
+                    {props.error}
+                </p>
+            </span>)}
+
+
         </div>
     )
 }

@@ -10,6 +10,7 @@ const Setup = () => {
     const [number, setNumber] = useState('')
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('')
+    const [confPassword, setConfPassword] = useState('')
     const [error, setError] = useState('');
 
     const handleFirstnameChange = (event) => {
@@ -36,6 +37,10 @@ const Setup = () => {
         setPassword(event.target.value);
     }
 
+    const handleConfPasswordChange = (event) => {
+        setConfPassword(event.target.value)
+    }
+
 
     const handleSetup = async () => {
         try {
@@ -46,6 +51,7 @@ const Setup = () => {
                 number: number,
                 username: username,
                 password: password,
+                confirmpassword: confPassword,
             }).then(res => {
                 console.log(JSON.stringify(res.data, null, 2));
                 if (res.data.status === 'success') {
@@ -72,9 +78,10 @@ const Setup = () => {
                     <InputBox label='First Name' type='text' name='firstname' onChange={handleFirstnameChange} error={error.firstname} />
                     <InputBox label='Last Name' type='text' name='lastname' onChange={handleLastnameChange} error={error.lastname} />
                     <InputBox label='Email' type='email' name='email' onChange={handleEmailChange} error={error.email} />
-                    <InputBox label='Number' type='text' name='number' onChange={handleNumberChange} error={error.number} />
+                    <InputBox label='Mobile no.' type='text' name='number' onChange={handleNumberChange} error={error.number} />
                     <InputBox label='Username' type='text' name='username' onChange={handleUsernameChange} error={error.username} />
                     <InputBox label='Password' type='password' name='password' onChange={handlePasswordChange} error={error.password} />
+                    <InputBox label='Confirm Password' type='password' name='confirmpassword' onChange={handleConfPasswordChange} error={error.confirmpassword} />
                     <Button className='w-full mt-5 bg-indigo-500' label='Set Up' onClick={handleSetup} />
                 </div>
             </div>

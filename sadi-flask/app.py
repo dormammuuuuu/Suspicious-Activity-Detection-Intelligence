@@ -32,23 +32,30 @@ CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "methods": 
 @app.route("/api/login", methods=['post'])
 def login():
     data = request.get_json()
-    error = login_validation(data)
-    if error:
-        return {"status": "error", "error": error, "message": ""}
     user = {
         'username': data['username'],
     }
+    error = login_validation(data,user)
+    if error:
+        return {"status": "error", "error": error, "message": ""}
+
     data = get_user("users", user, bytes(data['password'], 'utf-8'))
+    print("data", data)
     if data:
         payload = {'username': data['username'], 'email': data['email']}
         token = jwt.encode(payload, app.secret_key, algorithm='HS256')
         return {"status": "success", "message": "Login successful.", "token": token}
+    elif data == None:
+        error = {"username": "Could'nt find your sadi account."}
     else:
-        return {"status": "error", "message": "Invalid Credentials", "error" : ""}
+        error = {"password": "Wrong password. Try again or click Forgot password to reset it"}
+        
+    return {"status": "error", "message": "", "error" : error}
 
 # insert user to database
 @app.route("/api/setup", methods=['post'])
 def setup_user():
+    print("data", request.get_json())
     salt = bcrypt.gensalt()
     data = request.get_json()
     error = setup_validation(data)

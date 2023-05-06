@@ -25,7 +25,7 @@ const Login = () => {
       if (token) {
          navigate("/dashboard");
       }
-   }, []);
+   }, [navigate]);
 
    const handleUsernameChange = (event) => {
       setUsername(event.target.value)
@@ -60,7 +60,7 @@ const Login = () => {
 
    return (
       <div className='w-screen h-screen flex items-center justify-center'>
-         
+
          <div className='rounded-xl bg-white p-7 sm:max-w-xs w-full 2xl:max-w-sm'>
             <Logo />
             <h1 className='text-center mt-6 mb-10 text-2xl font-semibold text-neutral-600'>Login</h1>

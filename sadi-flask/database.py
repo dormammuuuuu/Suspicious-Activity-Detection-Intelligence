@@ -6,7 +6,7 @@ mongo = PyMongo()
 
 def init_app(app):
     app.config["MONGO_URI"] = "mongodb+srv://dormammu:S3YLkUE7UQsv0GuB@cluster0.3skq370.mongodb.net/user?retryWrites=true&w=majority"
-    mongo.  init_app(app)
+    mongo.init_app(app)
 
 def insert_user(collection, user):
     try:
@@ -15,17 +15,39 @@ def insert_user(collection, user):
         return jsonify({"status": "error"})
     return jsonify({"status": "success"})
 
-def get_user(collection, user, password=None):
+def get_user(collection, query, password=None):
     try:
-        data = mongo.db[collection].find_one(user)
+        data = mongo.db[collection].find_one(query)
         if data:
             salt = data["salt"]
             hashed_password = data["password"]
             if bcrypt.checkpw(password, hashed_password):
                 data["_id"] = str(data["_id"])
                 return data
+            else: 
+                return False
+        else:
             return None
     except Exception as e:
         return None
-
     
+    
+
+
+def is_existing_email(collection, email):
+    try:
+        existing_user = mongo.db[collection].find_one({"email": email})
+        if existing_user:
+            return True  # Email already exists
+        return False
+    except Exception as e:
+        return False
+    
+def is_existing_username(collection, username):
+    try:
+        existing_user = mongo.db[collection].find_one({"username": username})
+        if existing_user:
+            return True  # Username already exists
+        return False
+    except Exception as e:
+        return False
