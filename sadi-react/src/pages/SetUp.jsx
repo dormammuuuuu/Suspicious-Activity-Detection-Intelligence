@@ -47,7 +47,7 @@ const Setup = () => {
                 username: username,
                 password: password,
             }).then(res => {
-                console.log(res.data)
+                console.log(JSON.stringify(res.data, null, 2));
                 if (res.data.status === 'success') {
                     console.log('Success')
                     window.location.href = '/login'

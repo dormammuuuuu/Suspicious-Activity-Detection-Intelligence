@@ -4,6 +4,7 @@ import aiohttp, os, json, secrets, cv2 as cv, time, shutil, re, configparser, jw
 from urllib.parse import quote
 from classes.face_detector import FaceDetector
 from classes.validation import is_valid_email, setup_validation, login_validation
+
 from database import init_app, insert_user, get_user
 from detect import Detect
 
@@ -41,7 +42,6 @@ def login():
     if data:
         payload = {'username': data['username'], 'email': data['email']}
         token = jwt.encode(payload, app.secret_key, algorithm='HS256')
-        test = jwt.decode(token, app.secret_key, algorithms=['HS256'])
         return {"status": "success", "message": "Login successful.", "token": token}
     else:
         return {"status": "error", "message": "Invalid Credentials", "error" : ""}

@@ -6,7 +6,7 @@ mongo = PyMongo()
 
 def init_app(app):
     app.config["MONGO_URI"] = "mongodb+srv://dormammu:S3YLkUE7UQsv0GuB@cluster0.3skq370.mongodb.net/user?retryWrites=true&w=majority"
-    mongo.init_app(app)
+    mongo.  init_app(app)
 
 def insert_user(collection, user):
     try:
