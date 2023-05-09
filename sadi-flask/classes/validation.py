@@ -1,4 +1,4 @@
-import re, bcrypt 
+import re 
 from database import is_existing_email, is_existing_username, get_user 
 
 # def is_valid_email(email):
@@ -81,26 +81,12 @@ def setup_validation(data):
         #         error[field] = f"{field.capitalize()} should be at least 2 characters long."
     return error
 
-def login_validation(data, userNameQuery):
+def login_validation(data):
     required_fields = list(data.keys())
     error = {}
     for field in required_fields:
         if not data.get(field):
             error[field] = f"{field.capitalize()} is required."
-            
-    # username = data.get('username')
-    # password = data.get('password')
-    
 
-    # print("user", userNameQuery)
-    # # Check if user exists in MongoDB
-    # data = get_user("users", userNameQuery, bytes(password, 'utf-8'))
-    # print("user_doc", data)
-    # if not data:
-    #     error['username'] = "Username not found."
-    # else:
-    #     # Check if password is correct
-    #     if not check_password_hash(user_doc['password'], password):
-    #         error['password'] = "Invalid password."
     
     return error

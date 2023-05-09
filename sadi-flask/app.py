@@ -1,17 +1,20 @@
 from flask import Flask,  request, redirect, session, Response, send_from_directory, jsonify
 from flask_cors import CORS
-import aiohttp, os, json, secrets, cv2 as cv, time, shutil, re, configparser, jwt, bcrypt, torch, numpy as np
+import aiohttp, os, json, secrets, cv2 as cv, time, shutil, configparser, jwt, bcrypt
 from urllib.parse import quote
 from classes.face_detector import FaceDetector
 from classes.validation import is_valid_email, setup_validation, login_validation
 
 from database import init_app, insert_user, get_user
-from detect import Detect
+from yolov5lite.detect import Detect
 
 
 app = Flask(__name__)
-detect = Detect()
 init_app(app)
+
+# Initialize the YOLOv5 Detector
+yoloLiveStream = Detect()
+
 
 if not os.path.exists('user.ini'):
     # Create a config file to create a uuid for the user
@@ -35,7 +38,7 @@ def login():
     user = {
         'username': data['username'],
     }
-    error = login_validation(data,user)
+    error = login_validation(data)
     if error:
         return {"status": "error", "error": error, "message": ""}
 
@@ -143,7 +146,8 @@ def stop_video_feed():
 
 @app.route('/api/yolov5', methods=['GET'])
 def inference():
-    return Response(detect.detect(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    print('inference')
+    return Response(yoloLiveStream.detect(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 # The '/authenticate' route is used to handle login form submission and checks the credentials with the data in user.json file.
 @app.route("/authenticate", methods=['POST'])

@@ -1,15 +1,13 @@
 import argparse
 import time
 from pathlib import Path
-import pyttsx3
 import cv2
 import torch
 import torch.backends.cudnn as cudnn
-import threading
+import sys 
+sys.path.insert(0, './yolov5lite')
 
-from flask import Flask, request
 from numpy import random
-
 from models.experimental import attempt_load
 from utils.datasets import LoadStreams, LoadImages
 from utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
@@ -36,7 +34,7 @@ class Detect:
                                      source='0',
                                      update=False, 
                                      view_img=False, 
-                                     weights='weights/v5lite-s.pt', 
+                                     weights='yolov5lite/weights/v5lite-s.pt', 
                                      read = False)
     
     def detect(self, save_img=False):
@@ -190,7 +188,7 @@ class Detect:
         
     def parse_opt(self):
         parser = argparse.ArgumentParser()
-        parser.add_argument('--weights', nargs='+', type=str, default='weights/v5lite-s.pt', help='model.pt path(s)')
+        parser.add_argument('--weights', nargs='+', type=str, default='yolov5lite/weights/v5lite-s.pt', help='model.pt path(s)')
         parser.add_argument('--source', type=str, default='sample', help='source')  # file/folder, 0 for webcam
         parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)')
         parser.add_argument('--conf-thres', type=float, default=0.45, help='object confidence threshold')
@@ -220,7 +218,8 @@ class Detect:
             else:
                 self.detect()
 
+#! CLEAN UP or Call it froom app.py
 def inference(): 
     detect = Detect()
-    detect.config('weights/v5lite-s.pt', '0', None, False, False)
+    detect.config('yolov5lite/weights/v5lite-s.pt', '0', None, False, False)
     detect.detect()
