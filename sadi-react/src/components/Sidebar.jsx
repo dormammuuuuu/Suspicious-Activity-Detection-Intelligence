@@ -5,7 +5,7 @@ import { IoVideocam, IoHelpCircle, IoLogOut } from 'react-icons/io5'
 import { MdSpaceDashboard } from 'react-icons/md'
 import { FaUser } from 'react-icons/fa'
 import { IoMdSettings } from 'react-icons/io'
-import Logo from '../components/Logo'
+import { Logo } from '../components'
 import SidebarLink from './SidebarLink'
 
 const sidebar = () => {
@@ -41,7 +41,7 @@ const sidebar = () => {
                      <IoHelpCircle className="flex-shrink-0 w-6 h-6 transition duration-75 group-hover:text-gray-900" />
                   </SidebarLink>
                </div>
-               
+
             </div>
             <div>
                <button onClick={handleLogout}

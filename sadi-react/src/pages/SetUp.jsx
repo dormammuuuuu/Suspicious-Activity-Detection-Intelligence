@@ -1,89 +1,99 @@
-import React, { useState } from 'react'
-import InputBox from '../components/InputBox'
-import Button from '../components/Button'
+import React, { useState, useRef, useEffect } from 'react'
+import LoadingBar from 'react-top-loading-bar'
 import axios from 'axios'
 
+import {
+    HeaderSetup,
+    RegisterInputsSetup,
+    FaceRegistrationSetup,
+    RegistrationDoneSetup
+} from '../components'
+
+
+
 const Setup = () => {
-    const [firstname, setFirstname] = useState('')
-    const [lastname, setLastname] = useState('')
-    const [email, setEmail] = useState('')
-    const [number, setNumber] = useState('')
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('')
-    const [confPassword, setConfPassword] = useState('')
+    const loadingRef = useRef(null)
     const [error, setError] = useState('');
-
-    const handleFirstnameChange = (event) => {
-        setFirstname(event.target.value);
-    }
-
-    const handleLastnameChange = (event) => {
-        setLastname(event.target.value);
-    }
-
-    const handleEmailChange = (event) => {
-        setEmail(event.target.value);
-    }
-
-    const handleNumberChange = (event) => {
-        setNumber(event.target.value);
-    }
-
-    const handleUsernameChange = (event) => {
-        setUsername(event.target.value);
-    }
-
-    const handlePasswordChange = (event) => {
-        setPassword(event.target.value);
-    }
-
-    const handleConfPasswordChange = (event) => {
-        setConfPassword(event.target.value)
-    }
+    const [setupStep, setSetupStep] = useState(1);
 
 
-    const handleSetup = async () => {
+
+    const registerUserAPI = async (userCredential) => {
         try {
-            axios.post('http://localhost:5000/api/setup', {
-                firstname: firstname,
-                lastname: lastname,
-                email: email,
-                number: number,
-                username: username,
-                password: password,
-                confirmpassword: confPassword,
-            }).then(res => {
+            loadingRef.current.continuousStart();
+            axios.post('http://localhost:5000/api/setup', userCredential).then(res => {
+                loadingRef.current.complete();
+
                 console.log(JSON.stringify(res.data, null, 2));
                 if (res.data.status === 'success') {
+
                     console.log('Success')
-                    window.location.href = '/login'
+                    setSetupStep(2);
+                    // window.location.href = '/login'
                 } else {
+
                     console.log('Failed')
                     setError(res.data.error)
                 }
+
             })
         } catch (error) {
+            loadingRef.current.complete();
+
             console.log("Catched")
         }
     }
 
+    // STEP 1 BUTTON
+    const registerUserCredentials = (userData) => {
+        // registerUserAPI(userData);
+        // increment the step
+        setSetupStep(2);
+    }
+
+
 
     return (
-        <div className='w-screen h-screen flex items-center justify-center'>
-            <div className="flex flex-col h-full w-full shadow-md bg-gradient-to-tr from-indigo-500 to-cyan-300 sm:h-fit sm:rounded-xl sm:max-w-md ">
-                <div className='flex grow items-center justify-center sm:h-48'>
-                    <h1 className='text-white text-3xl font-medium'>SADI</h1>
+        <div className='flex items-center justify-center h-screen bg-sblue-alt'>
+            <div className='flex flex-col items-center justify-center max-w-lg w-full h-[733px] px-9 py-7 rounded-lg bg-white relative overflow-hidden'>
+                <LoadingBar
+                    color='#6875F5'
+                    ref={loadingRef}
+                    height={5}
+                    transitionTime={100}
+                    containerStyle={{ position: 'absolute', top: '0', left: '0', width: '100%' }}
+                />
+                <HeaderSetup stepperLabel={setupStep} />
+
+                <div className='flex align-center justify-center w-full  relative'>
+                    {/* STEP 1 */}
+                    <div
+                        className={` absolute transform duration-500 w-full  transition-transform  ${setupStep === 1 ? 'translate-x-0' : '-translate-x-[512px]'
+                            }`}
+                    >
+                        <RegisterInputsSetup registerUserCredentials={registerUserCredentials} error={error} />
+                    </div>
+
+                    {/* STEP 2 */}
+                    <div
+                        className={`transform duration-500 w-full  transition-transform ${setupStep === 2 ? 'translate-x-0' : 'translate-x-[512px]'
+                            }`}
+                    >
+                        {/* <RegisterInputsSetup registerUserCredentials={registerUserCredentials} error={error} /> */}
+                        <FaceRegistrationSetup />
+                    </div>
+
+                    {/* STEP 3 */}
+                    <div
+                        className={`transform transition-transform ${setupStep === 3 ? 'translate-x-0' : '-translate-x-[140%]'
+                            }`}
+                    >
+                        {/* <RegisterInputsSetup registerUserCredentials={registerUserCredentials} error={error} /> */}
+                        {/* <RegistrationDoneSetup /> */}
+                    </div>
+
                 </div>
-                <div className='p-6 rounded-tl-3xl rounded-tr-3xl bg-white'>
-                    <InputBox label='First Name' type='text' name='firstname' onChange={handleFirstnameChange} error={error.firstname} />
-                    <InputBox label='Last Name' type='text' name='lastname' onChange={handleLastnameChange} error={error.lastname} />
-                    <InputBox label='Email' type='email' name='email' onChange={handleEmailChange} error={error.email} />
-                    <InputBox label='Mobile no.' type='text' name='number' onChange={handleNumberChange} error={error.number} />
-                    <InputBox label='Username' type='text' name='username' onChange={handleUsernameChange} error={error.username} />
-                    <InputBox label='Password' type='password' name='password' onChange={handlePasswordChange} error={error.password} />
-                    <InputBox label='Confirm Password' type='password' name='confirmpassword' onChange={handleConfPasswordChange} error={error.confirmpassword} />
-                    <Button className='w-full mt-5 bg-indigo-500' label='Set Up' onClick={handleSetup} />
-                </div>
+
             </div>
         </div>
     )

@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
-import InputBox from '../components/InputBox'
-import InputCheckBox from '../components/InputCheckBox'
-import Button from '../components/Button'
-import Logo from '../components/Logo'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import Cookies from 'js-cookie';
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 
+
+
+
+import InputBox from '../components/InputBox'
+import InputCheckBox from '../components/InputCheckBox'
+import Button from '../components/Button'
+import { Logo } from '../components'
 
 
 const Login = () => {

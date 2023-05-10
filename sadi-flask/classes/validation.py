@@ -73,9 +73,9 @@ def setup_validation(data):
         elif field == 'password':
             if not is_valid_password(value):
                 error[field] = "Password should have at least 8 characters, one uppercase letter, one lowercase letter, and one number."
-        elif field == 'confirmpassword':
-            if value != data.get('password'):
-                error[field] = "Passwords do not match."
+        # elif field == 'confirmpassword':
+        #     if value != data.get('password'):
+        #         error[field] = "Passwords do not match."
         # else:
         #     if len(value) < 2:
         #         error[field] = f"{field.capitalize()} should be at least 2 characters long."

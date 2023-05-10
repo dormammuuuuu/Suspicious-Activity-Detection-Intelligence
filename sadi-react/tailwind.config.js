@@ -6,6 +6,19 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        'sblue': '#3D73FF',
+        'sblue-alt': '#F4F7FF',
+        'sgray-400': '#565656',
+        'sgray-300': '#999999',
+        'sgray-200': '#D9D9D9',
+        'sgray-100': '#F6F6F6',
+        'success': '#4CB83B',
+        'success-alt': '#4CB83B33',
+        'error': '#FF7575',
+        'error-alt': '#FF757533'
+
+      },
       gridTemplateRows: {
         '8': 'repeat(8, minmax(0, 1fr))',
         '9': 'repeat(9, minmax(0, 1fr))',
@@ -25,6 +38,7 @@ module.exports = {
       },
       height: {
         'fill': '-webkit-fill-available',
+        '45rem': '733px'
       },
       minHeight: {
         'fill': '-webkit-fill-available',
@@ -38,7 +52,7 @@ module.exports = {
       maxWidth: {
         'fill': '-webkit-fill-available',
       },
-      
+
     },
   },
   plugins: [

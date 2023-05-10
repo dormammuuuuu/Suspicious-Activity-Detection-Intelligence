@@ -70,7 +70,6 @@ auth_blueprint.add_url_rule(
     view_func=registration_view,
     methods=['POST']
 )
-
 auth_blueprint.add_url_rule(
     '/api/login',
     view_func=login_view,
