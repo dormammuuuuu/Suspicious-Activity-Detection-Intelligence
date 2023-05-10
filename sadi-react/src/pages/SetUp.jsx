@@ -51,11 +51,16 @@ const Setup = () => {
         setSetupStep(2);
     }
 
-
+    // STEP 2 BUTTON
+    const registerUserFace = () => {
+        // registerUserAPI(userData);
+        // increment the step
+        setSetupStep(3);
+    }
 
     return (
         <div className='flex items-center justify-center h-screen bg-sblue-alt'>
-            <div className='flex flex-col items-center justify-center max-w-lg w-full h-[733px] px-9 py-7 rounded-lg bg-white relative overflow-hidden'>
+            <div className='flex flex-col items-center  max-w-lg w-full  h-[733px] px-9 py-7 rounded-lg bg-white relative overflow-hidden'>
                 <LoadingBar
                     color='#6875F5'
                     ref={loadingRef}
@@ -65,10 +70,10 @@ const Setup = () => {
                 />
                 <HeaderSetup stepperLabel={setupStep} />
 
-                <div className='flex align-center justify-center w-full  relative'>
+                <div className='flex items-center justify-center w-full relative'>
                     {/* STEP 1 */}
                     <div
-                        className={` absolute transform duration-500 w-full  transition-transform  ${setupStep === 1 ? 'translate-x-0' : '-translate-x-[512px]'
+                        className={` transform duration-500 w-full  transition-transform  ${setupStep === 1 ? 'translate-x-0' : '-translate-x-[512px]'
                             }`}
                     >
                         <RegisterInputsSetup registerUserCredentials={registerUserCredentials} error={error} />
@@ -76,11 +81,11 @@ const Setup = () => {
 
                     {/* STEP 2 */}
                     <div
-                        className={`transform duration-500 w-full  transition-transform ${setupStep === 2 ? 'translate-x-0' : 'translate-x-[512px]'
+                        className={`absolute transform duration-500 w-full  transition-transform ${setupStep === 2 ? 'translate-x-0' : 'translate-x-[512px]'
                             }`}
                     >
-                        {/* <RegisterInputsSetup registerUserCredentials={registerUserCredentials} error={error} /> */}
-                        <FaceRegistrationSetup />
+
+                        <FaceRegistrationSetup registerUserFace={registerUserFace} />
                     </div>
 
                     {/* STEP 3 */}

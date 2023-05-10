@@ -49,7 +49,7 @@ const RegisterInputsSetup = ({ registerUserCredentials, error }) => {
    };
 
    return (
-      <div className='w-full mt-5'>
+      <div className='w-full '>
          <div className='flex gap-5'>
             <InputBox label="First Name" type="text" name="firstname" onChange={handleFirstnameChange} error={error.firstname} />
             <InputBox label="Last Name" type="text" name="lastname" onChange={handleLastnameChange} error={error.lastname} />
