@@ -5,9 +5,7 @@ export { default as HeaderSetup } from './auth_components/HeaderSetup'
 export { default as RegisterInputsSetup } from './auth_components/RegisterInputsSetup'
 export { default as FaceRegistrationSetup } from './auth_components/FaceRegistrationSetup'
 export { default as RegistrationDoneSetup } from './auth_components/RegistrationDoneSetup'
-export { default as CameraSourceDropdownSetup } from './auth_components/CameraSourceDropdownSetup'
-
-
+export { default as CameraSourceSetup } from './auth_components/CameraSourceSetup'
 
 // DASHBOARD
 

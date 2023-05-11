@@ -6,8 +6,10 @@ import {
     HeaderSetup,
     RegisterInputsSetup,
     FaceRegistrationSetup,
-    RegistrationDoneSetup
+    RegistrationDoneSetup,
 } from '../components'
+
+
 
 
 
