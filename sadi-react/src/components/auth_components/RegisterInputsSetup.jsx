@@ -49,7 +49,7 @@ const RegisterInputsSetup = ({ registerUserCredentials, error }) => {
    };
 
    return (
-      <div className='w-full '>
+      <div className='w-full h-full '>
          <div className='flex gap-5'>
             <InputBox label="First Name" type="text" name="firstname" onChange={handleFirstnameChange} error={error.firstname} />
             <InputBox label="Last Name" type="text" name="lastname" onChange={handleLastnameChange} error={error.lastname} />
@@ -58,7 +58,7 @@ const RegisterInputsSetup = ({ registerUserCredentials, error }) => {
          <InputBox label="Username" type="text" name="username" onChange={handleUsernameChange} error={error.username} />
          <InputBox label="Password" type="password" name="password" onChange={handlePasswordChange} error={error.password} />
          <InputBox label="Mobile no." type="text" name="number" onChange={handleNumberChange} error={error.number} />
-         <div className="flex justify-end">
+         <div className="absolute bottom-0 right-0">
             <Button className="w-32 mt-3" label="NEXT" onClick={handleStoreData} />
          </div>
       </div>

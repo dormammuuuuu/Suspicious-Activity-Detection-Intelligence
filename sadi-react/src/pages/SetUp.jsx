@@ -70,10 +70,10 @@ const Setup = () => {
                 />
                 <HeaderSetup stepperLabel={setupStep} />
 
-                <div className='flex items-center justify-center w-full relative'>
+                <div className='flex items-center justify-center h-full w-full relative'>
                     {/* STEP 1 */}
                     <div
-                        className={` transform duration-500 w-full  transition-transform  ${setupStep === 1 ? 'translate-x-0' : '-translate-x-[512px]'
+                        className={` transform duration-500 w-full   h-full transition-transform  ${setupStep === 1 ? 'translate-x-0' : '-translate-x-[512px]'
                             }`}
                     >
                         <RegisterInputsSetup registerUserCredentials={registerUserCredentials} error={error} />
@@ -81,7 +81,7 @@ const Setup = () => {
 
                     {/* STEP 2 */}
                     <div
-                        className={`absolute transform duration-500 w-full  transition-transform ${setupStep === 2 ? 'translate-x-0' : 'translate-x-[512px]'
+                        className={`absolute transform duration-500 w-full h-full transition-transform ${setupStep === 2 ? 'translate-x-0' : 'translate-x-[512px]'
                             }`}
                     >
 

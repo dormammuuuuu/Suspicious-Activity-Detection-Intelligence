@@ -1,39 +1,79 @@
-import React, { useState } from 'react'
-import { Dropdown } from "flowbite-react";
+import React, { useState, useEffect } from 'react';
+import { HiChevronUp, HiOutlineVideoCamera } from 'react-icons/hi';
+import classNames from 'classnames';
 
 const CameraSourceDropdownSetup = ({ sources }) => {
    const [isOpen, setIsOpen] = useState(false);
+   const [selectedSource, setSelectedSource] = useState(null);
 
    const handleClick = () => {
       setIsOpen(!isOpen);
    };
 
-   return (
-      <div>
-         <button
+   const handleSourceSelect = (event) => {
+      const target = event.target;
+      const sourceId = target.closest('li').dataset.sourceId;
+      const source = target.closest('li').innerText;
 
-            class=" relative w-full text-sblue border border-sblue focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex justify-between items-center"
+      setSelectedSource({
+         id: sourceId,
+         name: source
+      });
+   };
+
+   useEffect(() => {
+      // Apply class changes immediately when selectedSource changes
+      const listItems = document.querySelectorAll('.dropdown-item');
+      listItems.forEach((item) => {
+         const sourceId = item.dataset.sourceId;
+         const isSelected = selectedSource && selectedSource.id === sourceId;
+         const childElement = item.querySelector('.dd-span'); // Replace '.child-element' with the actual class or selector of your child element
+         childElement.classList.toggle('bg-sblue-alt', isSelected);
+         childElement.classList.toggle('text-sblue', isSelected);
+         item.classList.toggle('selected', isSelected);
+      });
+   }, [selectedSource]);
+
+   return (
+      <div className='relative'>
+         <button
+            className="relative w-full text-sgray-400 hover:text-sblue focus:text-sblue border border-sgray-400 hover:border-sblue focus:border-sblue focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex justify-between items-center transition duration-300 ease-in-out"
             type="button"
             onClick={handleClick}
          >
-            Dropdown button
-            <svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
+            {selectedSource ? selectedSource.name : 'Select a source'}
+            <HiChevronUp className='text-2xl' />
          </button>
          {isOpen && (
-            <div class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute">
-               <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" >
+            <div className="z-10 bg-white rounded-lg shadow w-full absolute bottom-0 left-0 mb-14 border border-sgray-200 transition duration-300 ease-in-out">
+               <ul className="py-2 text-sm text-sgray-400 overflow-hidden">
                   {sources.map((source) => (
-                     <li key={source.id}>
-                        <span class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{source.name}</span>
+                     <li
+                        key={source.id}
+                        data-source-id={source.id}
+                        onClick={handleSourceSelect}
+                        className='dropdown-item'
+                     >
+                        <span
+                           className={classNames(
+                              'dd-span flex items-center  rounded-lg mx- px-4 py-2.5 font-semibold transition duration-200',
+                              {
+                                 'bg-sblue-alt': selectedSource && selectedSource.id === source.id,
+                              }
+                           )}
+                        >
+                           <HiOutlineVideoCamera className="text-xl mr-2" />
+                           {source.name}
+                        </span>
+
                      </li>
                   ))}
                </ul>
             </div>
-         )}
-      </div>
+         )
+         }
+      </div >
    );
-}
+};
 
-export default CameraSourceDropdownSetup
+export default CameraSourceDropdownSetup;

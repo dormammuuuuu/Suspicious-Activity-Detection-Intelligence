@@ -12,19 +12,19 @@ const FaceRegistrationSetup = ({ registerUserFace }) => {
    const items = [
       {
          id: 1,
-         name: "Dashboard",
+         name: "Fullhan Webcam",
       },
       {
          id: 2,
-         name: "Settings",
+         name: "DroidCam Source 1",
       },
       {
          id: 3,
-         name: "Earnings",
+         name: "GoPro Webcam",
       },
       {
          id: 4,
-         name: "Sign out",
+         name: "OBS Virtual camera",
       },
    ];
 
@@ -40,7 +40,7 @@ const FaceRegistrationSetup = ({ registerUserFace }) => {
    };
 
    return (
-      <div className='w-full mt-10'>
+      <div className='w-full h-full'>
          <div className='w-full rounded-xl bg-sblue-alt  p-3'>
             <span className='flex items-center  gap-x-2 text-sblue text-base'>
                <span className=' text-2xl '><HiOutlineInformationCircle /></span> Register your face</span>
@@ -52,7 +52,7 @@ const FaceRegistrationSetup = ({ registerUserFace }) => {
          </div>
 
          <CameraSourceDropdownSetup sources={items} />
-         <div className="flex justify-end">
+         <div className="absolute bottom-0 right-0">
             <Button className="w-32 mt-3" label="NEXT" onClick={handleStoreFaceData} />
          </div>
 
