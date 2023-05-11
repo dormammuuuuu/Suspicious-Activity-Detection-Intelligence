@@ -83,20 +83,19 @@ const Setup = () => {
 
                     {/* STEP 2 */}
                     <div
-                        className={`absolute transform duration-500 w-full h-full transition-transform ${setupStep === 2 ? 'translate-x-0' : 'translate-x-[512px]'
-                            }`}
+                        className={`absolute transform duration-500 w-full h-full transition-transform ${setupStep === 2 ? 'translate-x-0' : 'translate-x-[512px]'} ${setupStep > 2 ? 'translate-x-[512px]' : ''}`}
                     >
 
-                        <FaceRegistrationSetup registerUserFace={registerUserFace} />
+                        {setupStep === 2 && <FaceRegistrationSetup registerUserFace={registerUserFace} />}
                     </div>
 
-                    {/* STEP 3 */}
+                    {/* STEP 2 */}
                     <div
-                        className={`transform transition-transform ${setupStep === 3 ? 'translate-x-0' : '-translate-x-[140%]'
+                        className={`absolute transform duration-500 w-full h-full transition-transform ${setupStep === 3 ? 'translate-x-0' : 'translate-x-[512px]'
                             }`}
                     >
-                        {/* <RegisterInputsSetup registerUserCredentials={registerUserCredentials} error={error} /> */}
-                        {/* <RegistrationDoneSetup /> */}
+
+                        <RegistrationDoneSetup />
                     </div>
 
                 </div>
