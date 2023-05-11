@@ -9,11 +9,13 @@ const Input = ({ label, type, placeholder, name, onChange, error }) => {
             <label
                 htmlFor={name}
                 className={` pl-1 text-sm ${isFocused ? 'text-blue-500' : 'text-sgray-400'} ${error ? 'text-error' : ''}`}
-            >{label}</label>
+            >
+                {label}
+            </label>
             <input
                 type={type}
                 placeholder={placeholder}
-                className={`p-2 rounded-lg bg-sblue-alt focus:border-sblue focus:border-1 text-sm font-medium text-sgray-400 
+                className={`px-2 py-3 rounded-lg bg-sblue-alt focus:border-sblue focus:border-1 text-sm font-medium text-sgray-400 
                 ${error ? 'border-error ' : 'border-none'}
                 `}
                 name={name}

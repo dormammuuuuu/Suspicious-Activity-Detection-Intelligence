@@ -26,9 +26,9 @@ const Setup = () => {
             axios.post('http://localhost:5000/api/setup', userCredential).then(res => {
                 loadingRef.current.complete();
 
+
                 console.log(JSON.stringify(res.data, null, 2));
                 if (res.data.status === 'success') {
-
                     console.log('Success')
                     setSetupStep(2);
                     // window.location.href = '/login'
@@ -48,7 +48,8 @@ const Setup = () => {
 
     // STEP 1 BUTTON
     const registerUserCredentials = (userData) => {
-        // registerUserAPI(userData);
+        console.log(userData)
+        registerUserAPI(userData);
         // increment the step
         setSetupStep(2);
     }

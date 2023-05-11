@@ -14,4 +14,4 @@ const InputCheckBox = (props) => {
     )
 }
 
-export default InputCheckBox
+export default InputCheckBox   

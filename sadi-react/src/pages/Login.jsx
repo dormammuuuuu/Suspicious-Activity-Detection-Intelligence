@@ -1,21 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import Cookies from 'js-cookie';
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
+import LoadingBar from 'react-top-loading-bar'
+
 
 
 
 
 import InputBox from '../components/InputBox'
-import InputCheckBox from '../components/InputCheckBox'
 import Button from '../components/Button'
-import { Logo } from '../components'
+import { Logov2 } from '../components'
 
 
 const Login = () => {
    const navigate = useNavigate();
+   const loadingRef = useRef(null);
 
    const [username, setUsername] = useState('')
    const [password, setPassword] = useState('')
@@ -40,11 +42,13 @@ const Login = () => {
 
    const handleLogin = async () => {
       try {
+         loadingRef.current.continuousStart();
          axios.post('http://localhost:5000/api/login', {
             username: username,
             password: password
          })
             .then(res => {
+               loadingRef.current.complete();
                console.log(res.data)
                if (res.data.status === 'success') {
                   console.log(res.data)
@@ -62,16 +66,23 @@ const Login = () => {
 
 
    return (
-      <div className='w-screen h-screen flex items-center justify-center'>
+      <div className='w-screen h-screen flex items-center justify-center bg-sblue-alt'>
 
-         <div className='rounded-xl bg-white p-7 sm:max-w-xs w-full 2xl:max-w-sm'>
-            <Logo />
-            <h1 className='text-center mt-6 mb-10 text-2xl font-semibold text-neutral-600'>Login</h1>
-            <p className='text-red-500 text-xs mb-3'>{message}</p>
+         <div className='rounded-xl bg-white p-7 max-w-lg w-full relative overflow-hidden'>
+            <LoadingBar
+               color='#6875F5'
+               ref={loadingRef}
+               height={5}
+               transitionTime={100}
+               containerStyle={{ position: 'absolute', top: '0', left: '0', width: '100%' }}
+            />
+            <Logov2 />
+            <h1 className='text-center mt-5 mb-10 text-2xl font-semibold text-sblue  '>Login</h1>
+            {/* <p className='text-red-500 text-xs mb-3'>{message}</p> */}
             <InputBox label='Username' type='text' name='username' onChange={handleUsernameChange} error={error.username} />
             <InputBox label='Password' type='password' name='password' onChange={handlePasswordChange} error={error.password} />
-            <Link to='/forgot' className='text-indigo-500 text-xs text-right block'>Forgot password?</Link>
-            <Button className='w-full mt-20 bg-indigo-500' label='Login' onClick={handleLogin} />
+            <Link to='/forgot' className='text-sblue hover:text-blue-700 font-bold text-xs text-right mr-2 block'>Forgot Password?</Link>
+            <Button className='w-full mt-20 bg-sblue' label='Login' onClick={handleLogin} />
          </div>
       </div>
    )
