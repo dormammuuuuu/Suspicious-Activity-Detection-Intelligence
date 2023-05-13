@@ -28,7 +28,7 @@ const FaceRegistrationSetup = ({ registerUserFace }) => {
 
          <CameraSourceDropdownSetup />
          <div className="absolute bottom-0 right-0">
-            <Button className="w-32 mt-3" label="NEXT" onClick={handleStoreFaceData} />
+            <Button className="w-32 mt-3 bg-sblue hover:bg-blue-700 text-white" label="NEXT" onClick={handleStoreFaceData} />
          </div>
 
       </div>

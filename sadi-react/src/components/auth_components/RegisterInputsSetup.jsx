@@ -59,7 +59,7 @@ const RegisterInputsSetup = ({ registerUserCredentials, error }) => {
          <InputBox label="Password" type="password" name="password" onChange={handlePasswordChange} error={error.password} />
          <InputBox label="Mobile no." type="text" name="number" onChange={handleNumberChange} error={error.number} />
          <div className="absolute bottom-0 right-0">
-            <Button className="w-32 mt-3" label="NEXT" onClick={handleStoreData} />
+            <Button className="w-32 mt-3 bg-sblue hover:bg-blue-700 text-white" label="NEXT" onClick={handleStoreData} />
          </div>
       </div>
    );

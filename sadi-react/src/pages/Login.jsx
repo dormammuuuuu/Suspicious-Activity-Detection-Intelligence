@@ -1,18 +1,11 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import Cookies from 'js-cookie';
-import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import LoadingBar from 'react-top-loading-bar'
 
-
-
-
-
-import InputBox from '../components/InputBox'
-import Button from '../components/Button'
-import { Logov2 } from '../components'
+import { InputBox, Button, Logov2 } from '../components'
 
 
 const Login = () => {
@@ -68,7 +61,7 @@ const Login = () => {
    return (
       <div className='w-screen h-screen flex items-center justify-center bg-sblue-alt'>
 
-         <div className='rounded-xl bg-white p-7 max-w-lg w-full relative overflow-hidden'>
+         <div className='rounded-xl bg-white p-7 max-w-md w-full relative overflow-hidden'>
             <LoadingBar
                color='#6875F5'
                ref={loadingRef}
@@ -81,8 +74,8 @@ const Login = () => {
             {/* <p className='text-red-500 text-xs mb-3'>{message}</p> */}
             <InputBox label='Username' type='text' name='username' onChange={handleUsernameChange} error={error.username} />
             <InputBox label='Password' type='password' name='password' onChange={handlePasswordChange} error={error.password} />
-            <Link to='/forgot' className='text-sblue hover:text-blue-700 font-bold text-xs text-right mr-2 block'>Forgot Password?</Link>
-            <Button className='w-full mt-20 bg-sblue' label='Login' onClick={handleLogin} />
+            <Link to='/forgotpassword' className='text-sblue hover:text-blue-700 font-bold text-xs text-right mr-2 block'>Forgot Password?</Link>
+            <Button className='w-full mt-20 bg-sblue hover:bg-blue-700 text-white' label='Login' onClick={handleLogin} />
          </div>
       </div>
    )
