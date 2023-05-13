@@ -1,5 +1,5 @@
 import re 
-from database import is_existing_email, is_existing_username, get_user 
+from database import is_existing_email, is_existing_username 
 
 # def is_valid_email(email):
 #     # Regular expression to match an email address
@@ -90,3 +90,13 @@ def login_validation(data):
 
     
     return error
+
+
+def forgot_password_validation(data):
+    error = {}
+    if data['username'] == '':
+        error['username'] = 'Username is required.'
+    return error
+
+    
+    

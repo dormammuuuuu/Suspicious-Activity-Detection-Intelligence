@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import LoadingBar from 'react-top-loading-bar'
 
 import { InputBox, Button, Logov2 } from '../components'
-
+const API_BASE_URL = 'http://localhost:5000/api'
 
 const Login = () => {
    const navigate = useNavigate();
@@ -15,7 +15,6 @@ const Login = () => {
    const [username, setUsername] = useState('')
    const [password, setPassword] = useState('')
    const [error, setError] = useState('')
-   const [message, setMessage] = useState('')
 
    useEffect(() => {
       const token = Cookies.get('token');
@@ -36,7 +35,7 @@ const Login = () => {
    const handleLogin = async () => {
       try {
          loadingRef.current.continuousStart();
-         axios.post('http://localhost:5000/api/login', {
+         axios.post(`${API_BASE_URL}/login`, {
             username: username,
             password: password
          })
@@ -46,16 +45,34 @@ const Login = () => {
                if (res.data.status === 'success') {
                   console.log(res.data)
                   Cookies.set('token', res.data.token, { expires: 3600 });
-                  window.location.href = '/dashboard'
+                  navigate("/dashboard");
                } else {
                   setError(res.data.error)
-                  setMessage(res.data.message)
                }
             })
       } catch (error) {
          console.error(error)
       }
    }
+
+   const handleForgotPassword = async () => {
+      try {
+         loadingRef.current.continuousStart();
+         const response = await axios.post(`${API_BASE_URL}/forgot-password`, { username: username });
+
+         console.log(response.data);
+         if (response.data.status === 'success') {
+            loadingRef.current.complete();
+            navigate('/forgotpassword', { state: response.data });
+         } else {
+            loadingRef.current.complete();
+            setError(response.data.error);
+         }
+      } catch (error) {
+         loadingRef.current.continuousStart();
+         console.error(error);
+      }
+   };
 
 
    return (
@@ -65,6 +82,7 @@ const Login = () => {
             <LoadingBar
                color='#6875F5'
                ref={loadingRef}
+               waitingTime={100}
                height={5}
                transitionTime={100}
                containerStyle={{ position: 'absolute', top: '0', left: '0', width: '100%' }}
@@ -74,7 +92,11 @@ const Login = () => {
             {/* <p className='text-red-500 text-xs mb-3'>{message}</p> */}
             <InputBox label='Username' type='text' name='username' onChange={handleUsernameChange} error={error.username} />
             <InputBox label='Password' type='password' name='password' onChange={handlePasswordChange} error={error.password} />
-            <Link to='/forgotpassword' className='text-sblue hover:text-blue-700 font-bold text-xs text-right mr-2 block'>Forgot Password?</Link>
+            <span
+               type='button'
+               className='text-sblue hover:text-blue-700 font-bold text-xs flex  justify-end mr-2 cursor-pointer'
+               onClick={handleForgotPassword}
+            >Forgot Password?</span>
             <Button className='w-full mt-20 bg-sblue hover:bg-blue-700 text-white' label='Login' onClick={handleLogin} />
          </div>
       </div>

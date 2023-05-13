@@ -47,7 +47,7 @@ def is_existing_username(collection, username):
     try:
         existing_user = mongo.db[collection].find_one({"username": username})
         if existing_user:
-            return True  # Username already exists
-        return False
+            return existing_user  # Return the found object
+        return None  # Username does not exist
     except Exception as e:
-        return False
+        return None

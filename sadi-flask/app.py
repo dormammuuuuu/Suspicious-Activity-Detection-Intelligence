@@ -3,6 +3,8 @@ from flask_cors import CORS
 import os, json, secrets, cv2 as cv, time, shutil, configparser
 from urllib.parse import quote
 
+
+
 from database import init_app
 from yolov5lite.detect import Detect
 from classes.face_detector import FaceDetector
@@ -10,10 +12,27 @@ from classes.face_detector import FaceDetector
 #? Views
 from views.auth import auth_blueprint
 
+#!Test
+from flask_mail import Mail,Message # pip install flask_mail
+from datetime import datetime, timedelta
+from classes.validation import forgot_password_validation
+from database import  is_existing_username
+import jwt
+
 
 
 app = Flask(__name__)
 init_app(app)
+# Config
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'sad.intelligence@gmail.com'
+app.config['MAIL_PASSWORD'] = 'ktykxsnyxxxxwodu' # On Allow less secure app in gmail manage settings
+
+# mail = Mail(app)
+
+
 
 # Initialize the YOLOv5 Detector
 yoloLiveStream = Detect()
@@ -33,12 +52,9 @@ else:
 app.secret_key = config['sadi-config']['uuid']
 #! pwede tamggalin
 app.config['UPLOAD_FOLDER'] = 'users'
-print("appconi", app.config['UPLOAD_FOLDER'])
+# print("appconi", app.config['UPLOAD_FOLDER'])
 
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "methods": ["GET", "POST"]}})
-
-
-app.register_blueprint(auth_blueprint)
 
 
 
@@ -166,4 +182,7 @@ def serve_image(user, filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'] + '/' + user + '/', filename)
 
 if __name__ == '__main__':
-	app.run(debug=True)
+    #? Views
+    from views.auth import auth_blueprint     
+    app.register_blueprint(auth_blueprint)
+    app.run(debug=True)

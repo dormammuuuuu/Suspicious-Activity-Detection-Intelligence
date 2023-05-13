@@ -1,56 +1,140 @@
-import React, { useState, useRef } from 'react'
-import { InputBox, Button, Logov2 } from '../components'
-import { useNavigate } from 'react-router-dom';
-import LoadingBar from 'react-top-loading-bar'
+import React, { useState, useRef, useEffect } from 'react';
+import { InputBox, Button } from '../components';
+import { useNavigate, useLocation } from 'react-router-dom';
+import LoadingBar from 'react-top-loading-bar';
+import axios from 'axios'
+const API_BASE_URL = 'http://localhost:5000/api'
 
 const ForgotPassword = () => {
    const navigate = useNavigate();
+   const location = useLocation();
+   const state = location.state;
+
    const loadingRef = useRef(null);
 
-   const [code, setcode] = useState('');
-   const [error, setError] = useState('')
+   const [expTime, setExpTime] = useState(state.exp);
+   const [userVerificationCode, setUserVerificationCode] = useState('');
+   const [verificationCode, setVerificationCode] = useState(state.verification_code);
+   const [error, setError] = useState('');
+
+   if (!state || !state.token || !state.email) {
+      navigate('/404'); // Redirect to the login page if the state is invalid or missing required properties
+      console.log("4040");
+   }
+
+
+
+   useEffect(() => {
+      console.log('userVerificationCode', userVerificationCode);
+      console.log('verificationCode', verificationCode);
+   }, [userVerificationCode, verificationCode]);
+
 
    const handleCodeChange = (event) => {
-      setcode(event.target.value)
+      setUserVerificationCode(event.target.value);
+   };
+
+   const handleCancel = () => {
+      navigate('/login');
+   };
+
+   const handleConfirm = async () => {
+      try {
+         loadingRef.current.continuousStart();
+         const expirationTime = Date.parse(expTime) / 1000;
+         const remainingSeconds = expirationTime - Math.floor(Date.now() / 1000);
+         const response = await axios.post(`${API_BASE_URL}/confirm-code`, {
+            user_verification_code: userVerificationCode,
+            verification_code: verificationCode,
+            expirationTime: expirationTime,
+            remaining_seconds: remainingSeconds
+         });
+
+         console.log(response.data);
+         if (response.data.status === 'success') {
+            loadingRef.current.complete();
+            // const { exp } = response.data;
+            console.log(response.data);
+
+            // // Check if the token has expired
+            // if (exp < currentTimestamp) {
+            //    navigate('/login'); // Token expired, navigate back to the login page
+            // } else {
+            //    navigate('/forgotpassword', { state: response.data });
+            // }
+         } else {
+            loadingRef.current.complete();
+            setError(response.data.error);
+         }
+      } catch (error) {
+         loadingRef.current.continuousStart();
+         console.error(error);
+      }
+      // loadingRef.current.continuousStart();
+
+      // loadingRef.current.complete();
+      // navigate('/reset-password');
+   };
+
+   const resendCode = async () => {
+      try {
+         loadingRef.current.continuousStart();
+         const response = await axios.post(`${API_BASE_URL}/resend-code`, { email: state.email });
+
+         console.log(response.data);
+         if (response.data.status === 'success') {
+            loadingRef.current.complete();
+            console.log(response.data);
+            setExpTime(response.data.exp);
+            setVerificationCode(response.data.verification_code);
+
+         } else {
+            loadingRef.current.complete();
+            setError(response.data.error);
+         }
+      } catch (error) {
+         loadingRef.current.continuousStart();
+         console.error(error);
+      }
    }
-
-   const handleCancel = () => { navigate('/login') }
-
-   const handleConfirm = () => {
-      loadingRef.current.continuousStart();
-      loadingRef.current.complete();
-      navigate('/reset-password')
-   }
-
    return (
-      <div className='w-screen h-screen flex items-center justify-center bg-sblue-alt'>
-
-         <div className='rounded-xl bg-white p-7 max-w-md w-full relative overflow-hidden'>
+      <div className="w-screen h-screen flex items-center justify-center bg-sblue-alt">
+         <div className="rounded-xl bg-white p-7 max-w-md w-full relative overflow-hidden">
             <LoadingBar
-               color='#6875F5'
+               color="#6875F5"
                ref={loadingRef}
                height={5}
                transitionTime={100}
                containerStyle={{ position: 'absolute', top: '0', left: '0', width: '100%' }}
             />
 
-            <h1 className=' mb-3  text-2xl font-semibold text-sblue  '>Please check your email</h1>
-            <p className='text-sm text-sgray-400 mb-10'>We’ve sent a code to <span className='font-semibold'>shrnatienza@gmail.com</span></p>
-            {/* <p className='text-red-500 text-xs mb-3'>{message}</p> */}
-            <InputBox
-               label='Enter the code below'
-               type='text'
-               name='code'
-               onChange={handleCodeChange}
-               error={error.username}
-            />
-            <div className="flex justify-end gap-3">
-               <Button className='w-32 mt-20 bg-sblue-alt hover:bg-blue-100 text-sblue' label='Cancel' onClick={handleCancel} />
-               <Button className='w-32 mt-20 bg-sblue hover:bg-blue-700 text-white' label='Confirm' onClick={handleConfirm} />
-            </div>
+            <h1 className="mb-3 text-2xl font-semibold text-sblue">Please check your email</h1>
+            {state && (
+               <>
+                  <p className="text-sm text-sgray-400 mb-10">
+                     We’ve sent a code to <span className="font-semibold">{state.email}</span>
+                  </p>
+                  <InputBox
+                     label="Enter the code below"
+                     type="text"
+                     name="code"
+                     onChange={handleCodeChange}
+                     error={error.code}
+                  />
+                  <p className="text-[11px] flex  justify-end text-sgray-400 mt-3  mr-2 ">
+                     Didn’t get a code? <span type="button" className='ml-0.5 cursor-pointer' onClick={resendCode}>
+                        <u>Click to resend.</u>
+                     </span>
+                  </p>
+                  <div className="flex justify-end gap-3">
+                     <Button className="w-32 mt-20 bg-sblue-alt hover:bg-blue-100 text-sblue" label="Cancel" onClick={handleCancel} />
+                     <Button className="w-32 mt-20 bg-sblue hover:bg-blue-700 text-white" label="Confirm" onClick={handleConfirm} />
+                  </div>
+               </>
+            )}
          </div>
       </div>
-   )
-}
+   );
+};
 
-export default ForgotPassword
+export default ForgotPassword;
