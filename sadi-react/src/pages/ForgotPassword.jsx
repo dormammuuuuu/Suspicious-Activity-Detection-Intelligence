@@ -12,16 +12,20 @@ const ForgotPassword = () => {
 
    const loadingRef = useRef(null);
 
-   const [expTime, setExpTime] = useState(state.exp);
+   const [expTime, setExpTime] = useState('');
    const [userVerificationCode, setUserVerificationCode] = useState('');
-   const [verificationCode, setVerificationCode] = useState(state.verification_code);
+   const [verificationCode, setVerificationCode] = useState('');
    const [error, setError] = useState('');
 
-   if (!state || !state.token || !state.email) {
-      navigate('/404'); // Redirect to the login page if the state is invalid or missing required properties
-      console.log("4040");
-   }
-
+   useEffect(() => {
+      if (state === null || !state.token || !state.email) {
+         navigate('/404'); // Redirect to the login page if the state is invalid or missing required properties
+         console.log("4040");
+      } else {
+         setExpTime(state.exp);
+         setVerificationCode(state.verification_code);
+      }
+   }, [navigate, state])
 
 
    useEffect(() => {
@@ -53,27 +57,20 @@ const ForgotPassword = () => {
          console.log(response.data);
          if (response.data.status === 'success') {
             loadingRef.current.complete();
-            // const { exp } = response.data;
             console.log(response.data);
-
-            // // Check if the token has expired
-            // if (exp < currentTimestamp) {
-            //    navigate('/login'); // Token expired, navigate back to the login page
-            // } else {
-            //    navigate('/forgotpassword', { state: response.data });
-            // }
+            navigate('/reset-password', { state: response.data });
          } else {
             loadingRef.current.complete();
             setError(response.data.error);
          }
       } catch (error) {
-         loadingRef.current.continuousStart();
+         loadingRef.current.complete();
          console.error(error);
       }
       // loadingRef.current.continuousStart();
 
       // loadingRef.current.complete();
-      // navigate('/reset-password');
+
    };
 
    const resendCode = async () => {

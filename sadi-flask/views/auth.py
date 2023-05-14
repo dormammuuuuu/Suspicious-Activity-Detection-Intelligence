@@ -131,15 +131,15 @@ class confirmCodeAPI(MethodView):
       data = request.get_json()
       print("data", data)
       if 'remaining_seconds' in data and data['remaining_seconds'] <= 0:
-         error = {"code": "The verification code has expired. Please request a new one.", "expired": True, "remaining_seconds": data['remaining_seconds']}
+         error = {"code": "The verification code has expired. Please request a new one.",  "remaining_seconds": data['remaining_seconds']}
          return {"status": "error", "message": "", "error": error}
       elif 'user_verification_code' not in data or data['user_verification_code'] == '':
-         error = {"code": "Please enter the verification code."}
+         error = {"code": "Please enter the verification code.",  "remaining_seconds": data['remaining_seconds']}
          return {"status": "error", "message": "", "error": error}
       elif data['user_verification_code'] == data['verification_code']:
          return {"status": "success", "message": "Verification successful."}
       else:
-         error = {"code": "Invalid verification code."}
+         error = {"code": "Invalid verification code.",  "remaining_seconds": data['remaining_seconds']}
          return {"status": "error", "message": "", "error": error}
      
 

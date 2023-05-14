@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import axios from 'axios'
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
@@ -63,7 +62,7 @@ const Login = () => {
          console.log(response.data);
          if (response.data.status === 'success') {
             loadingRef.current.complete();
-            navigate('/forgotpassword', { state: response.data });
+            navigate('/forgot-password', { state: response.data });
          } else {
             loadingRef.current.complete();
             setError(response.data.error);
