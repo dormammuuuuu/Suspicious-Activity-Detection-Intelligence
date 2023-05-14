@@ -12,13 +12,6 @@ from classes.face_detector import FaceDetector
 #? Views
 from views.auth import auth_blueprint
 
-#!Test
-from flask_mail import Mail,Message # pip install flask_mail
-from datetime import datetime, timedelta
-from classes.validation import forgot_password_validation
-from database import  is_existing_username
-import jwt
-
 
 
 app = Flask(__name__)

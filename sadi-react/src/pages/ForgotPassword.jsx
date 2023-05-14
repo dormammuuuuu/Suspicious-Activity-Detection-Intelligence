@@ -59,7 +59,14 @@ const ForgotPassword = () => {
          if (response.data.status === 'success') {
             loadingRef.current.complete();
             console.log(response.data);
-            navigate('/reset-password', { state: response.data });
+            navigate('/reset-password', {
+               state: {
+                  id: state.id,
+                  token: state.token,
+                  email: state.email
+
+               }
+            });
          } else {
             loadingRef.current.complete();
             setError(response.data.error);

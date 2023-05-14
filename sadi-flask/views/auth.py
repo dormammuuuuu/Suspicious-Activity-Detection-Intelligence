@@ -1,6 +1,7 @@
 
 import secrets
 import string
+from bson import ObjectId
 from flask import Blueprint, request, current_app, jsonify
 import jwt, bcrypt
 from datetime import datetime, timedelta
@@ -9,7 +10,7 @@ from flask_mail import Message, Mail
 
 
 from classes.validation import login_validation, setup_validation, forgot_password_validation, reset_password_validation
-from database import get_user, insert_user, is_existing_username
+from database import get_user, insert_user, is_existing_username, update_user
 from flask.views import MethodView
 
 
@@ -19,7 +20,28 @@ auth_blueprint = Blueprint('auth', __name__)
 
 
 
+def generate_verification_code():
+      # Generate a unique verification code with 6 characters
+    characters = string.ascii_uppercase + string.digits  # Use uppercase letters and digits
+    code = ''.join(secrets.choice(characters) for _ in range(6))
+    return code
 
+
+def send_email_verification_code(email, verification_code):
+   mail = Mail(current_app)
+ 
+   subject = "Email Verification Code"
+   sender = "noreply@sadi.com"
+   email = "johnangelo.silvestre@tup.edu.ph"
+   try:
+      msg = Message(subject, sender=sender, recipients=[email])
+      msg.body = f'Hello! Your verification code is: {verification_code}'
+      mail.send(msg)
+      return True
+   except Exception as e:
+      error = str(e)
+      print(f"An error occurred while sending the email: {str(e)}")
+      return error
 
 class RegisterAPI(MethodView):
    def post(self):
@@ -70,28 +92,7 @@ class LoginAPI(MethodView):
    
    
 
-def generate_verification_code():
-      # Generate a unique verification code with 6 characters
-    characters = string.ascii_uppercase + string.digits  # Use uppercase letters and digits
-    code = ''.join(secrets.choice(characters) for _ in range(6))
-    return code
 
-
-def send_email_verification_code(email, verification_code):
-   mail = Mail(current_app)
- 
-   subject = "Email Verification Code"
-   sender = "noreply@sadi.com"
-   email = "johnangelo.silvestre@tup.edu.ph"
-   try:
-      msg = Message(subject, sender=sender, recipients=[email])
-      msg.body = f'Hello! Your verification code is: {verification_code}'
-      mail.send(msg)
-      return True
-   except Exception as e:
-      error = str(e)
-      print(f"An error occurred while sending the email: {str(e)}")
-      return error
 class ForgotPasswordAPI(MethodView):
    def post(self):
       
@@ -114,6 +115,7 @@ class ForgotPasswordAPI(MethodView):
          
          if isEmailSent:
             return jsonify({
+               "id": str(data['_id']),
                "status": "success",
                "email": data["email"],
                "token": token,
@@ -160,7 +162,7 @@ class resedCodeAPI(MethodView):
          return jsonify({
             "status": "success",
             "email": data["email"],
-            "token": token,
+            "token": token,   
             "exp": expiration_time,
             "verification_code": verification_code
          })
@@ -171,14 +173,24 @@ class resedCodeAPI(MethodView):
 class ResetPasswordAPI(MethodView):
    def post(self):
       data = request.get_json()
+      salt = bcrypt.gensalt()
       print("data", data)
       error = reset_password_validation(data)
       if error:
          return {"status": "error", "error": error}
       
-      return {"status": "error", "message": "Setup Failed"}
+      query = {'_id': ObjectId(data['id'])}
+      update = {'$set': {
+         'password': bcrypt.hashpw(bytes(data['new_password'], 'utf-8'), salt),
+         'salt': salt
+      }}
+      updated_user = update_user("users", query, update)
       
-    
+      if updated_user:
+         return {"status": "success", "message": "Password reset successful."}
+      
+      return {"status": "error", "message": "Reset password failed."}
+     
 
 # define the API resources
 registration_view = RegisterAPI.as_view('register_api')
@@ -187,8 +199,6 @@ forgot_password_view = ForgotPasswordAPI.as_view('forgot_password_api')
 confirm_code_view = confirmCodeAPI.as_view('confirm_code_api')
 resend_code_view = resedCodeAPI.as_view('resend_code_api')
 reset_password_view = ResetPasswordAPI.as_view('reset_password_api')
-
-
 
 
 # add Rules for API Endpoints

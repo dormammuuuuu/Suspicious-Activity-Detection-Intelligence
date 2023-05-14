@@ -31,8 +31,16 @@ def get_user(collection, query, password=None):
     except Exception as e:
         return None
     
+def update_user(collection, query, update):
+    try:
+        result = mongo.db[collection].update_one(query, update)
+        if result.modified_count > 0:
+            return True
+        return False
+    except Exception as e:
+        print("update_user error:", e)
+        return False
     
-
 
 def is_existing_email(collection, email):
     try:

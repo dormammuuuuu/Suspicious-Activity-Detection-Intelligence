@@ -1,19 +1,28 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { InputBox, Button } from '../components'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import LoadingBar from 'react-top-loading-bar'
 import axios from 'axios'
 const API_BASE_URL = 'http://localhost:5000/api'
 
 const ResetPassword = () => {
    const navigate = useNavigate();
+   const location = useLocation();
    const loadingRef = useRef(null);
+   const state = location.state;
+   console.log("state: ", state)
 
    const [newPassword, setNewPassword] = useState('')
    const [confirmNewPassword, setConfirmNewPassword] = useState('')
    const [error, setError] = useState('')
    const [isSuccess, setIsSuccess] = useState(false)
 
+   useEffect(() => {
+      if (state === null || !state.token || !state.email) {
+         navigate('/404'); // Redirect to the login page if the state is invalid or missing required properties
+         console.log("4040");
+      }
+   }, [navigate, state])
 
 
    const handleNewPassword = (event) => {
@@ -30,7 +39,10 @@ const ResetPassword = () => {
       try {
          loadingRef.current.continuousStart();
          const response = await axios.post(`${API_BASE_URL}/reset-password`, {
-            new_password: newPassword, confirm_new_password: confirmNewPassword
+            id: state.id,
+            email: state.email,
+            new_password: newPassword,
+            confirm_new_password: confirmNewPassword
          });
          console.log("response: ", response.data);
          if (response.data.status === 'success') {
@@ -69,8 +81,20 @@ const ResetPassword = () => {
                ) : (
                   <>
                      <h1 className='mb-10 text-2xl font-semibold text-sblue  '>Reset Password</h1>
-                     <InputBox label='New Password' type='password' name='newPassword' onChange={handleNewPassword} error={error.new_password} />
-                     <InputBox label='Confirm Password' type='password' name='confirmPassword' onChange={handleConfirmNewPassword} error={error.confirm_new_password} />
+                     <InputBox
+                        label='New Password'
+                        type='password'
+                        name='newPassword'
+                        onChange={handleNewPassword}
+                        error={error?.new_password ?? ''}
+                     />
+                     <InputBox
+                        label='Confirm Password'
+                        type='password'
+                        name='confirmPassword'
+                        onChange={handleConfirmNewPassword}
+                        error={error?.confirm_new_password ?? ''}
+                     />
                      <div className="flex justify-end gap-3">
                         <Button className='w-32 mt-10 bg-sblue-alt hover:bg-blue-100 text-sblue' label='Cancel' onClick={handleCancel} />
                         <Button className='w-32 mt-10 bg-sblue hover:bg-blue-700 text-white' label='Confirm' onClick={handleConfirm} />
