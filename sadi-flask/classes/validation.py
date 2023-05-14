@@ -99,4 +99,19 @@ def forgot_password_validation(data):
     return error
 
     
+def reset_password_validation(data):
+    required_fields = list(data.keys())
+    error = {}
+    for field in required_fields:
+        value = data.get(field)
+        if not value:
+            error[field] = f"{field.replace('_', ' ').capitalize()} is required."
+        elif field == 'new_password':
+            if not is_valid_password(value):
+                error[field] = "Password should have at least 8 characters, one uppercase letter, one lowercase letter, and one number."
+        elif field == 'confirm_new_password':
+            if value != data.get('new_password'):
+                error[field] = "Passwords do not match."
+    print(error)
+    return error
     

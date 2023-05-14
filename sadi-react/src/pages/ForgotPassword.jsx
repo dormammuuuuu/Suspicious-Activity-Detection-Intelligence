@@ -11,7 +11,8 @@ const ForgotPassword = () => {
    const state = location.state;
 
    const loadingRef = useRef(null);
-
+   const [buttonDisabled, setButtonDisabled] = useState(false);
+   const [timerSeconds, setTimerSeconds] = useState(0);
    const [expTime, setExpTime] = useState('');
    const [userVerificationCode, setUserVerificationCode] = useState('');
    const [verificationCode, setVerificationCode] = useState('');
@@ -84,6 +85,8 @@ const ForgotPassword = () => {
             console.log(response.data);
             setExpTime(response.data.exp);
             setVerificationCode(response.data.verification_code);
+            setButtonDisabled(true); // Disable the button
+            setTimerSeconds(120); // Set the timer to 120 seconds (2 minutes)
 
          } else {
             loadingRef.current.complete();
@@ -94,6 +97,24 @@ const ForgotPassword = () => {
          console.error(error);
       }
    }
+
+
+   useEffect(() => {
+      let intervalId;
+
+      if (timerSeconds > 0) {
+         intervalId = setInterval(() => {
+            setTimerSeconds((prevSeconds) => prevSeconds - 1);
+         }, 1000);
+      } else {
+         setButtonDisabled(false); // Enable the button
+         clearInterval(intervalId);
+      }
+
+      return () => clearInterval(intervalId); // Clean up the interval on component unmount
+
+   }, [timerSeconds]);
+
    return (
       <div className="w-screen h-screen flex items-center justify-center bg-sblue-alt">
          <div className="rounded-xl bg-white p-7 max-w-md w-full relative overflow-hidden">
@@ -118,10 +139,16 @@ const ForgotPassword = () => {
                      onChange={handleCodeChange}
                      error={error.code}
                   />
+
                   <p className="text-[11px] flex  justify-end text-sgray-400 mt-3  mr-2 ">
-                     Didn’t get a code? <span type="button" className='ml-0.5 cursor-pointer' onClick={resendCode}>
-                        <u>Click to resend.</u>
-                     </span>
+                     Didn’t get a code?
+                     {timerSeconds > 0 ? (
+                        <span className='mx-0.5 cursor-pointer text-error'>{timerSeconds} seconds to send again.</span>
+                     ) : (
+                        <span type="button" className='ml-0.5 cursor-pointer' onClick={resendCode} disabled={buttonDisabled}>
+                           <u>Click to resend.</u>
+                        </span>
+                     )}
                   </p>
                   <div className="flex justify-end gap-3">
                      <Button className="w-32 mt-20 bg-sblue-alt hover:bg-blue-100 text-sblue" label="Cancel" onClick={handleCancel} />

@@ -8,7 +8,7 @@ import requests
 from flask_mail import Message, Mail
 
 
-from classes.validation import login_validation, setup_validation, forgot_password_validation
+from classes.validation import login_validation, setup_validation, forgot_password_validation, reset_password_validation
 from database import get_user, insert_user, is_existing_username
 from flask.views import MethodView
 
@@ -166,6 +166,18 @@ class resedCodeAPI(MethodView):
          })
       else:
          return jsonify({"status": "error", "error": isEmailSent['error']})
+      
+      
+class ResetPasswordAPI(MethodView):
+   def post(self):
+      data = request.get_json()
+      print("data", data)
+      error = reset_password_validation(data)
+      if error:
+         return {"status": "error", "error": error}
+      
+      return {"status": "error", "message": "Setup Failed"}
+      
     
 
 # define the API resources
@@ -174,6 +186,7 @@ login_view = LoginAPI.as_view('login_api')
 forgot_password_view = ForgotPasswordAPI.as_view('forgot_password_api')
 confirm_code_view = confirmCodeAPI.as_view('confirm_code_api')
 resend_code_view = resedCodeAPI.as_view('resend_code_api')
+reset_password_view = ResetPasswordAPI.as_view('reset_password_api')
 
 
 
@@ -202,6 +215,11 @@ auth_blueprint.add_url_rule(
 auth_blueprint.add_url_rule(
    '/api/resend-code',
    view_func=resend_code_view,
+   methods=['POST']
+)
+auth_blueprint.add_url_rule(
+   '/api/reset-password',
+   view_func=reset_password_view,
    methods=['POST']
 )
 
