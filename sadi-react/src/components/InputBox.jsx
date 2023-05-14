@@ -22,6 +22,7 @@ const Input = ({ label, type, placeholder, name, onChange, error }) => {
                 onChange={onChange}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
+
             />
             {error && (<span className='flex items-center text-error text-xs gap-x-2'><FaExclamationCircle />
                 <p>
