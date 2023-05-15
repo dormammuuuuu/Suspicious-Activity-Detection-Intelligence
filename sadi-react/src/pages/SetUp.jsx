@@ -18,9 +18,13 @@ const Setup = () => {
     const [error, setError] = useState('');
     const [setupStep, setSetupStep] = useState(1);
 
+    useEffect(() => {
+        console.log('Setup step changed to: ', setupStep)
+    }, [setupStep])
 
 
-    const registerUserAPI = async (userCredential) => {
+    // STEP 1 API
+    const registerUserCredentialsAPI = async (userCredential) => {
         try {
             loadingRef.current.continuousStart();
             axios.post('http://localhost:5000/api/setup', userCredential).then(res => {
@@ -30,11 +34,11 @@ const Setup = () => {
                 console.log(JSON.stringify(res.data, null, 2));
                 if (res.data.status === 'success') {
                     console.log('Success')
-                    setSetupStep(2);
+                    setSetupStep(prev => prev + 1);
                     // window.location.href = '/login'
                 } else {
-
                     console.log('Failed')
+                    setSetupStep(1);
                     setError(res.data.error)
                 }
 
@@ -44,14 +48,6 @@ const Setup = () => {
 
             console.log("Catched")
         }
-    }
-
-    // STEP 1 BUTTON
-    const registerUserCredentials = (userData) => {
-        console.log(userData)
-        registerUserAPI(userData);
-        // increment the step
-        setSetupStep(2);
     }
 
     // STEP 2 BUTTON
@@ -79,7 +75,7 @@ const Setup = () => {
                         className={` transform duration-500 w-full   h-full transition-transform  ${setupStep === 1 ? 'translate-x-0' : '-translate-x-[512px]'
                             }`}
                     >
-                        <RegisterInputsSetup registerUserCredentials={registerUserCredentials} error={error} />
+                        <RegisterInputsSetup registerUserCredentials={registerUserCredentialsAPI} error={error} />
                     </div>
 
                     {/* STEP 2 */}

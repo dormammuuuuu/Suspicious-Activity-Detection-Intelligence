@@ -5,7 +5,7 @@ const Input = ({ label, type, placeholder, name, onChange, error }) => {
     const [isFocused, setIsFocused] = useState(false);
 
     return (
-        <div className='flex flex-col gap-1 mb-4 w-full'>
+        <div className='flex flex-col gap-1 mb-2 w-full'>
             <label
                 htmlFor={name}
                 className={` pl-1 text-sm ${isFocused ? 'text-blue-500' : 'text-sgray-400'} ${error ? 'text-error' : ''}`}
@@ -15,7 +15,7 @@ const Input = ({ label, type, placeholder, name, onChange, error }) => {
             <input
                 type={type}
                 placeholder={placeholder}
-                className={`px-2 py-3 rounded-lg bg-sblue-alt focus:border-sblue focus:border-1 text-sm font-medium text-sgray-400 
+                className={`px-2 py-2 rounded-lg bg-sblue-alt focus:border-sblue focus:border-1 text-sm font-medium text-sgray-400 
                 ${error ? 'border-error ' : 'border-none'}
                 `}
                 name={name}
@@ -24,12 +24,11 @@ const Input = ({ label, type, placeholder, name, onChange, error }) => {
                 onBlur={() => setIsFocused(false)}
 
             />
-            {error && (<span className='flex items-center text-error text-xs gap-x-2'><FaExclamationCircle />
-                <p>
-                    {error}
-                </p>
-            </span>)}
-        </div>
+            <span className={`${!error && 'invisible'} flex items-center text-error text-xs gap-x-2 ml-1`}>
+                <FaExclamationCircle />
+                <p>{error}</p>
+            </span>
+        </div >
     );
 };
 
