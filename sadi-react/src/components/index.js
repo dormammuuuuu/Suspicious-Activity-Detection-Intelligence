@@ -30,6 +30,6 @@ export { default as UserList } from './Users'
 export { default as VideoStream } from './VideoStream'
 export { default as Yolov5 } from './Yolov5'
 export { default as AccountSettings } from './AccountSettings'
-export { Logo, Logov2 } from './Logo'
+export { Logo, Logov2, FaceFrame } from './Logo'
 
 

@@ -85,4 +85,18 @@ const Logov2 = () => {
     )
 }
 
-export { Logo, Logov2 }
+
+const FaceFrame = () => {
+    return (
+        <svg width="440" height="256" viewBox="0 0 440 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <mask id="pathMask">
+                <rect width="100%" height="100%" fill="white" />
+                <path d="M294 125C304.4 40.5999 246.666 22.4999 216.5 23.9999C175.999 24 131.5 50.5 141 128C150.5 205.5 194.833 228.167 216.5 230C238 230.167 283.6 209.4 294 125Z" fill="black" />
+            </mask>
+            <rect width="440" height="256" fill="#7299FF" fillOpacity="0.4" mask="url(#pathMask)" />
+            <path d="M294 125C304.4 40.5999 246.666 22.4999 216.5 23.9999C175.999 24 131.5 50.5 141 128C150.5 205.5 194.833 228.167 216.5 230C238 230.167 283.6 209.4 294 125Z" fill="transparent" stroke="#3D73FF" strokeWidth="4" />
+        </svg>
+    )
+}
+
+export { Logo, Logov2, FaceFrame }

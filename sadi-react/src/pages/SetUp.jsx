@@ -38,7 +38,8 @@ const Setup = () => {
                     // window.location.href = '/login'
                 } else {
                     console.log('Failed')
-                    setSetupStep(1);
+                    //TODO:  DELETE LATER - DEBUGGING PURPOSES
+                    setSetupStep(2);
                     setError(res.data.error)
                 }
 

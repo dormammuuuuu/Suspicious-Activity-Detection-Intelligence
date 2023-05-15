@@ -3,6 +3,8 @@ import { HiChevronUp, HiOutlineVideoCamera } from 'react-icons/hi';
 import classNames from 'classnames';
 import Webcam from 'react-webcam';
 
+import { FaceFrame } from '../';
+
 
 const CameraSourceDropdownSetup = () => {
    const [isOpen, setIsOpen] = useState(false);
@@ -46,8 +48,19 @@ const CameraSourceDropdownSetup = () => {
 
    return (
       <>
-         <div className='w-full h-64 rounded-xl overflow-hidden my-5'>
-            <Webcam audio={false} videoConstraints={{ deviceId: selectedDeviceId }} className='w-full h-full object-cover' />
+         <div className="w-full h-64 rounded-xl overflow-hidden my-5 relative">
+            <Webcam audio={false} videoConstraints={{ deviceId: selectedDeviceId }} className="w-full h-full object-cover" />
+
+            <div className="absolute inset-0 flex justify-center items-center">
+               <div className='w-full h-full object-cover'>
+                  <FaceFrame />
+               </div>
+               {/* <div className="w-full h-full relative">
+
+                  <div className="absolute inset-0 bg-blue-200 opacity-50"></div>
+                  <div className="absolute inset-1/4 bg-transparent border-2 border-red-500 rounded-full"></div>
+               </div> */}
+            </div>
          </div>
 
          <div className='relative'>
