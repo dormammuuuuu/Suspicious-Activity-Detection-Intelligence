@@ -12,15 +12,15 @@ const Home = () => {
    const location = useLocation();
    const path = location.pathname;
 
-  const textMap = {
-    '/': 'Dashboard',
-    '/user': 'Users',
-    '/video-stream': 'Video Playback',
-    '/account-settings': 'Account Settings',
-    '/help': 'Help',
-  };
+   const textMap = {
+      '/': 'Dashboard',
+      '/user': 'Users',
+      '/ ': 'Video Playback',
+      '/account-settings': 'Account Settings',
+      '/help': 'Help',
+   };
 
-  const title = textMap[path];
+   const title = textMap[path];
 
    useEffect(() => {
       const token = Cookies.get('token');
@@ -37,7 +37,7 @@ const Home = () => {
                <Sidebar />
             </div>
             <div className="bg-white grid-row-1 grid-row-5 col-start-2 col-end-7 rounded-xl px-6 flex items-center">
-               <h1 className=" text-2xl text-neutral-600">{ title }</h1>
+               <h1 className=" text-2xl text-neutral-600">{title}</h1>
             </div>
             <div className="bg-white row-start-2 row-end-10 col-start-2 col-end-7 rounded-xl">
                <Routes>

@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import Webcam from 'react-webcam';
 
 import { FaceFrame } from '../';
+import { json } from 'react-router-dom';
 
 
 const CameraSourceDropdownSetup = () => {
@@ -28,6 +29,10 @@ const CameraSourceDropdownSetup = () => {
       setSelectedDeviceId(deviceId);
       setIsOpen(!isOpen);
    };
+
+   useEffect(() => {
+      console.log("Devices: ", JSON.stringify(devices))
+   }, [devices])
 
    useEffect(() => {
       navigator.mediaDevices.enumerateDevices().then(handleDevices);

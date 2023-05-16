@@ -138,13 +138,18 @@ def face_capture(user):
     should_stop = False
     def gen(stop):
         detector = FaceDetector()
+        
         img_id = 0
         status = ''
         while not stop:
             success, img = cap.read()
             start = time.time()
             img, bboxs, status = detector.findFaces(img, start, img_id)
+            # Determine face mesh landmarks
+            
+            face_mesh_landmarks = detector.determineFaceMesh(img)
 
+            
             if status == 'good':
                 img_id = detector.saveFaces(user, img, bboxs, img_id)
 
