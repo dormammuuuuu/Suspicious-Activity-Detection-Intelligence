@@ -28,8 +28,8 @@ const Setup = () => {
         try {
             loadingRef.current.continuousStart();
             axios.post('http://localhost:5000/api/setup', userCredential).then(res => {
-                loadingRef.current.complete();
 
+                loadingRef.current.complete();
 
                 console.log(JSON.stringify(res.data, null, 2));
                 if (res.data.status === 'success') {

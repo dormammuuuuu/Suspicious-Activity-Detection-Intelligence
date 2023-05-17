@@ -157,37 +157,43 @@ class FaceDetector():
 
         return img
     
-    def determineFaceMesh(self, img):
-        image = cv.cvtColor(img, cv.COLOR_BGR2RGB)
-        image.flags.writeable = False
+    # def determineFaceMesh(self, img):
+    #     image = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+    #     image.flags.writeable = False
 
-        results = face_mesh.process(image)
+    #     results = face_mesh.process(image)
 
-        image.flags.writeable = True
-        image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
+    #     image.flags.writeable = True
+    #     image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
 
-        face_mesh_landmarks = []
-        if results.multi_face_landmarks:
-            for face_landmarks in results.multi_face_landmarks:
-                landmark_points = []
-                for landmark in face_landmarks.landmark:
-                    x = int(landmark.x * image.shape[1])
-                    y = int(landmark.y * image.shape[0])
-                    landmark_points.append((x, y))
-                face_mesh_landmarks.append(landmark_points)
+    #     face_mesh_landmarks = []
+    #     if results.multi_face_landmarks:
+    #         for face_landmarks in results.multi_face_landmarks:
+    #             landmark_points = []
+    #             for landmark in face_landmarks.landmark:
+    #                 x = int(landmark.x * image.shape[1])
+    #                 y = int(landmark.y * image.shape[0])
+    #                 landmark_points.append((x, y))
+    #             face_mesh_landmarks.append(landmark_points)
 
-        return face_mesh_landmarks
+    #     return face_mesh_landmarks
     
     
 
     def saveFaces(self, user, img, bboxs, img_id, width=227, height=227):
         for bbox in bboxs:
             x, y, w, h = bbox[1]
+            print(f"Bbox coordinates: x={x}, y={y}, w={w}, h={h}")
+            
             imgCrop = img[y:y+h, x:x+w]
+            print(f"Image crop shape: {imgCrop.shape}")
+            
             imgCrop = cv.resize(imgCrop, (width, height))
+            
             dirname = f'users/{user}/'
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
+            
             cv.imwrite(f'{dirname}{user}_{img_id}.jpeg', imgCrop)
 
         return img_id + 1

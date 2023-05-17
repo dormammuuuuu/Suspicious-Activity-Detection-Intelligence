@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { HiChevronUp, HiOutlineVideoCamera } from 'react-icons/hi';
 import classNames from 'classnames';
 import Webcam from 'react-webcam';
+import axios from 'axios'
 
 import { FaceFrame } from '../';
-import { json } from 'react-router-dom';
 
 
 const CameraSourceDropdownSetup = () => {
@@ -16,7 +16,7 @@ const CameraSourceDropdownSetup = () => {
       setIsOpen(!isOpen);
    };
 
-   const handleDevices = React.useCallback(mediaDevices => {
+   const handleDevices = React.useCallback((mediaDevices) => {
       const videoDevices = mediaDevices.filter(({ kind }) => kind === 'videoinput');
       setDevices(videoDevices);
       setSelectedDeviceId(videoDevices[0]?.deviceId || '');
@@ -30,9 +30,46 @@ const CameraSourceDropdownSetup = () => {
       setIsOpen(!isOpen);
    };
 
+   const captureFrame = () => {
+      const videoElement = document.querySelector('video');
+      const canvas = document.createElement('canvas');
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
+      const context = canvas.getContext('2d');
+      context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+      const frame = canvas.toDataURL('image/jpeg', 0.8);
+
+      // console.log(new Date().getTime());  // Log the capture timestamp
+
+      // Send the captured frame to Flask
+      axios.post('http://localhost:5000/api/reg_web', { frame })
+         .then(res => {
+            console.log('res:', res.data);
+            console.log(new Date().getTime());  // Log the response timestamp
+         });
+   };
+
+
+   const startCapture = () => {
+      const videoElement = document.querySelector('video');
+
+      const captureFrameLoop = () => {
+         captureFrame(); // Capture and send frame
+
+         // Continue capturing frames in a loop
+         if (!videoElement.paused && !videoElement.ended) {
+            requestAnimationFrame(captureFrameLoop);
+         }
+      };
+
+      // Start capturing frames in a loop
+      requestAnimationFrame(captureFrameLoop);
+   };
+
    useEffect(() => {
-      console.log("Devices: ", JSON.stringify(devices))
-   }, [devices])
+      navigator.mediaDevices.enumerateDevices().then(handleDevices);
+   }, [handleDevices]);
+
 
    useEffect(() => {
       navigator.mediaDevices.enumerateDevices().then(handleDevices);
@@ -67,6 +104,7 @@ const CameraSourceDropdownSetup = () => {
                </div> */}
             </div>
          </div>
+         <button onClick={startCapture}>Capture Frame</button>
 
          <div className='relative'>
             <button
