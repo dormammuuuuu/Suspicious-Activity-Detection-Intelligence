@@ -45,7 +45,7 @@ const CameraSourceDropdownSetup = () => {
       axios.post('http://localhost:5000/api/reg_web', { frame })
          .then(res => {
             console.log('res:', res.data);
-            console.log(new Date().getTime());  // Log the response timestamp
+            // console.log(new Date().getTime());  // Log the response timestamp
          });
    };
 
