@@ -163,30 +163,6 @@ def process_face_registration():
    cap.release()
    return {'message': 'Face registration processed successfully'}
 
-@app.route('/api/reg_web', methods=['POST'])
-def feed_reg():
-    frame_data = request.json['frame']
-    _, encoded_data = frame_data.split(',', 1)
-    decoded_data = base64.b64decode(encoded_data)
-    frame = np.frombuffer(decoded_data, dtype=np.uint8)
-    frame = cv.imdecode(frame, cv.IMREAD_COLOR)
-    
-
-    def gen():
-        while True:
-            ret, jpeg = cv.imencode('.jpg', frame)
-            # print("ret", ret)
-            # print("jpeg", jpeg)
-            if not ret:
-                break
-
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
-        print('done')
-            
-    res = Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-    return res
 
 
 
