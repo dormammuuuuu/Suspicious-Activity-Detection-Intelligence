@@ -45,8 +45,10 @@ class FaceDetector():
                 ih, iw, ic = image.shape
 
                 bboxC = detection.location_data.relative_bounding_box
-                bbox = int(bboxC.xmin * iw - 65), int(bboxC.ymin * ih - 100), \
-                    int(bboxC.width * iw + 130), int(bboxC.height * ih + 130)
+                # bbox = int(bboxC.xmin * iw - 65), int(bboxC.ymin * ih - 100), \
+                #     int(bboxC.width * iw + 130), int(bboxC.height * ih + 130)
+                bbox = int(bboxC.xmin * iw - 40), int(bboxC.ymin * ih - 70), \
+                    int(bboxC.width * iw + 80), int(bboxC.height * ih + 80)   
                 bboxs.append([id, bbox, detection.score])
                 image = self.fancyDraw(image, bbox)
 
@@ -195,7 +197,7 @@ class FaceDetector():
      
     def runFaceDetection(self):
       # Open the webcam
-      cap = cv.VideoCapture(1)
+      cap = cv.VideoCapture(0)
 
       # Check if the webcam is successfully opened
       if not cap.isOpened():
@@ -244,34 +246,34 @@ detector.runFaceDetection()
 
 
 
-# import cv2
+import cv2
     
     
-# def list_ports():
-#     """
-#     Test the ports and returns a tuple with the available ports and the ones that are working.
-#     """
-#     non_working_ports = []
-#     dev_port = 0
-#     working_ports = []
-#     available_ports = []
-#     while len(non_working_ports) < 6: # if there are more than 5 non working ports stop the testing. 
-#         camera = cv2.VideoCapture(dev_port)
-#         if not camera.isOpened():
-#             non_working_ports.append(dev_port)
-#             print("Port %s is not working." %dev_port)
-#         else:
-#             is_reading, img = camera.read()
-#             w = camera.get(3)
-#             h = camera.get(4)
-#             if is_reading:
-#                 print("Port %s is working and reads images (%s x %s)" %(dev_port,h,w))
-#                 working_ports.append(dev_port)
-#             else:
-#                 print("Port %s for camera ( %s x %s) is present but does not reads." %(dev_port,h,w))
-#                 available_ports.append(dev_port)
-#         dev_port +=1
-#     return available_ports,working_ports,non_working_ports
+def list_ports():
+    """
+    Test the ports and returns a tuple with the available ports and the ones that are working.
+    """
+    non_working_ports = []
+    dev_port = 0
+    working_ports = []
+    available_ports = []
+    while len(non_working_ports) < 6: # if there are more than 5 non working ports stop the testing. 
+        camera = cv2.VideoCapture(dev_port)
+        if not camera.isOpened():
+            non_working_ports.append(dev_port)
+            print("Port %s is not working." %dev_port)
+        else:
+            is_reading, img = camera.read()
+            w = camera.get(3)
+            h = camera.get(4)
+            if is_reading:
+                print("Port %s is working and reads images (%s x %s)" %(dev_port,h,w))
+                working_ports.append(dev_port)
+            else:
+                print("Port %s for camera ( %s x %s) is present but does not reads." %(dev_port,h,w))
+                available_ports.append(dev_port)
+        dev_port +=1
+    return available_ports,working_ports,non_working_ports
  
  
 
@@ -287,18 +289,21 @@ detector.runFaceDetection()
 #     camera_details = []
 
 #     for index in camera_indexes:
-#         # Try to open the camera
-#         capture = cv2.VideoCapture(index)
+#         # Try to open the camera with DirectShow backend
+#         capture = cv2.VideoCapture(index, cv2.CAP_DSHOW)
 #         if capture.isOpened():
 #             # Read camera ID and label
-#             camera_id = capture.get(cv2.CAP_PROP_ID_STRING)
-#             camera_label = capture.get(cv2.CAP_PROP_MAKE)
+#             capture.set(cv2.CAP_PROP_POS_MSEC, 0)
+#             ret, frame = capture.read()
+#             if ret:
+#                 camera_size = f"{frame.shape[1]}x{frame.shape[0]}"
+#             else:
+#                 camera_size = "Unknown"
 
 #             # Store camera details
 #             camera_info = {
 #                 'index': index,
-#                 'id': camera_id,
-#                 'label': camera_label
+#                 'camera_size': camera_size,
 #             }
 #             camera_details.append(camera_info)
 
@@ -313,6 +318,25 @@ detector.runFaceDetection()
 # # Print the camera details
 # for camera_info in details:
 #     print(f"Camera Index: {camera_info['index']}")
-#     print(f"Camera ID: {camera_info['id']}")
-#     print(f"Camera Label: {camera_info['label']}")
+#     print(f"Camera Size: {camera_info['camera_size']}")
+#     # print(f"Camera Label: {camera_info['label']}")
 #     print()
+
+
+# import cv2
+
+# cap = cv2.VideoCapture(1)
+
+# while True:
+#     ret, frame = cap.read()
+#     if ret:
+#         camera_id = f"{frame.shape[1]}x{frame.shape[0]}"
+#         print(camera_id)
+
+#     cv2.imshow('Webcam', frame)
+
+#     if cv2.waitKey(1) & 0xFF == ord('q'):
+#         break
+
+# cap.release()
+# cv2.destroyAllWindows()

@@ -1,10 +1,9 @@
 import base64
 import tempfile
 from flask import Flask,  request, redirect, session, Response, send_from_directory, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import os, json, secrets, cv2 as cv, time, shutil, configparser
 from urllib.parse import quote
-
 import numpy as np
 
 
@@ -12,6 +11,7 @@ import numpy as np
 from database import init_app
 from yolov5lite.detect import Detect
 from classes.face_detector import FaceDetector
+from classes.utils import get_available_camera_details
 
 #? Views
 from views.auth import auth_blueprint
@@ -52,7 +52,7 @@ app.config['UPLOAD_FOLDER'] = 'users'
 # print("appconi", app.config['UPLOAD_FOLDER'])
 
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "methods": ["GET", "POST"]}})
-
+app.config['CORS_ORIGIN_ALLOW_ALL'] = True
 
 
 
@@ -80,31 +80,6 @@ def get_data():
 
 stop_stream = False
 
-
-# @app.route('/api/reg_web', methods=['POST'])
-# def feed_reg():
-#     frame_data = request.json['frame']
-#     _, encoded_data = frame_data.split(',', 1)
-#     decoded_data = base64.b64decode(encoded_data)
-#     frame = np.frombuffer(decoded_data, dtype=np.uint8)
-#     frame = cv.imdecode(frame, cv.IMREAD_COLOR)
-
-#     # Specify the file path and name for saving the image frame
-#     save_path = 'users_img/image.jpg'  # Replace with your desired file path
-
-#     # Save the frame as a JPEG image
-#     cv.imwrite(save_path, frame)
-#     print(f"Image saved: {save_path}")
-
-#     # Use the saved image file as the source for cv2.VideoCapture
-#     video_capture = cv.VideoCapture(save_path)
-#     print(f"VideoCapture created: {video_capture}")
-
-#     # Rest of your OpenCV processing
-#     # ...
-
-#     # Return a response if necessary
-#     return Response(response="Frame received", status=200)
 
 
 @app.route('/api/video_feed')
@@ -164,50 +139,29 @@ def auth():
 		return redirect("/login?error={}".format(quote(error)))
 
 
-# @app.route('/api/reg_web', methods=['POST'])
-# def feed_reg():
-#     frame_data = request.json['frame']
-#     _, encoded_data = frame_data.split(',', 1)
-#     decoded_data = base64.b64decode(encoded_data)
-#     frame = np.frombuffer(decoded_data, dtype=np.uint8)
-#     frame = cv.imdecode(frame, cv.IMREAD_COLOR)
+@app.route('/api/get_available_camera', methods=['GET'])
+def get_available_camera():
+    devices_size = get_available_camera_details()
 
-#     # def gen(should_stop):
-#     #     detector = FaceDetector()
-#     #     img_id = 0
-#     #     status = ''
+    return jsonify(devices_size)
 
-#     #     while not should_stop:
-#     #         img = frame.copy()
 
-#     #         start = time.time()
-#     #         img, bboxs, status = detector.findFaces(img, start, img_id)
-
-#     #         # Determine face mesh landmarks
-#     #         # face_mesh_landmarks = detector.determineFaceMesh(img)
-
-#     #         if status == 'good':
-#     #             img_id = detector.saveFaces("Angelo", img, bboxs, img_id)
-
-#     #         if img_id == 500:
-#     #             should_stop = True
-#     #             continue
-
-#     #         ret, jpeg = cv.imencode('.jpg', img)
-#     #         if not ret:
-#     #             break
-
-#     #         yield (b'--frame\r\n'
-#     #                b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
-
-#     # should_stop = False
-#     # res = Response(gen(should_stop), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-#     # if should_stop:
-#     #     return redirect('/users')
-#     res = Response(yoloLiveStream.detect(frame), mimetype='multipart/x-mixed-replace; boundary=frame')
-#     return res
-
+@app.route('/api/process_face_registration', methods=['POST'])
+def process_face_registration():
+   data = request.get_json()
+   deviceId = data['deviceId']
+   try:
+      deviceId = int(deviceId)
+   except ValueError:
+      return {'error': 'Invalid deviceId'}
+   cap = cv.VideoCapture(deviceId)
+   while True:
+      ret, frame = cap.read()
+      if not ret:
+         break
+      # Process each frame here
+   cap.release()
+   return {'message': 'Face registration processed successfully'}
 
 @app.route('/api/reg_web', methods=['POST'])
 def feed_reg():
@@ -216,15 +170,19 @@ def feed_reg():
     decoded_data = base64.b64decode(encoded_data)
     frame = np.frombuffer(decoded_data, dtype=np.uint8)
     frame = cv.imdecode(frame, cv.IMREAD_COLOR)
+    
 
     def gen():
         while True:
             ret, jpeg = cv.imencode('.jpg', frame)
+            # print("ret", ret)
+            # print("jpeg", jpeg)
             if not ret:
                 break
 
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+        print('done')
             
     res = Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
@@ -233,42 +191,69 @@ def feed_reg():
 
 
 # The '/scanner/<user>' route is used to capture face images and detect the faces in the video.
-@app.route('/api/scanner/<user>')
-def face_capture(user):
-    cap = cv.VideoCapture(0)
+
+@app.route('/api/scanner/user=<name>&deviceKey=<deviceKey>&width=<width>&height=<height>')
+def face_capture(name, deviceKey, width, height):
+    print(f"Name: {name}")
+    print(f"Params: {deviceKey}")
+    
+    cap = cv.VideoCapture(int(deviceKey), cv.CAP_DSHOW)
+    cap.set(cv.CAP_PROP_FRAME_WIDTH, int(width))  # Set the desired width
+    cap.set(cv.CAP_PROP_FRAME_HEIGHT, int(height))  # Set the desired height
     print("cap", cap)
     should_stop = False
+    
+    if not cap.isOpened():
+        return jsonify({'cameraStatus': 'Disconnected'})
+
     def gen(stop):
         detector = FaceDetector()
-        
+
         img_id = 0
         status = ''
         while not stop:
-            success, img = cap.read()
-            start = time.time()
-            img, bboxs, status = detector.findFaces(img, start, img_id)
-            # Determine face mesh landmarks
+            success, frame = cap.read()
+            print("success", success)
+            print("img", frame)
+                
             
-            # face_mesh_landmarks = detector.determineFaceMesh(img)
+            if success:
+                start = time.time()
+                img, bboxs, status = detector.findFaces(frame, start, img_id)
+                # Determine face mesh landmarks
 
-            
-            if status == 'good':
-                img_id = detector.saveFaces(user, img, bboxs, img_id)
+                # face_mesh_landmarks = detector.determineFaceMesh(frame)
+                # # Do something with the face mesh landmarks...
+                # if len(face_mesh_landmarks) > 0:
+                #     for landmark_points in face_mesh_landmarks:
+                #         for point in landmark_points:
+                #             cv.circle(img, point, 2, (0, 255, 0), cv.FILLED)
 
-            if img_id == 500:
-                stop = True
-                continue
-            ret, jpeg = cv.imencode('.jpg', img)
-            if not ret:
+                if status == 'good':
+                    img_id = detector.saveFaces(name, img, bboxs, img_id)
+
+                if img_id == 500:
+                    stop = True
+                    break
+
+                ret, jpeg = cv.imencode('.jpg', img)
+                if not ret:
+                    break
+
+                yield (b'--frame\r\n'
+                        b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+            else:
+                app.logger.error("Failed to capture frame from the camera")
                 break
 
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+    res = Response(response=gen(should_stop), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-    res = Response(gen(should_stop), mimetype='multipart/x-mixed-replace; boundary=frame')
     if should_stop:
-        return redirect('/users')
+        cap.release()  # Release the camera capture
+        return jsonify({'cameraStatus': 'Connected', 'status': 'Process completed successfully'})  # Send a response back to React indicating process completion
+
     return res
+
 
 # The '/users/<user>/images' route is used to get a list of all the images of a specific user.
 @app.route('/users/<user>/images')
