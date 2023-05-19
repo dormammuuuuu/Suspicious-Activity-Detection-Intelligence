@@ -5,7 +5,8 @@ import { HiOutlineInformationCircle } from 'react-icons/hi'
 import { CameraSourceSetup, CameraFaceDetection } from '../';
 
 
-const FaceRegistrationSetup = ({ registerUserFace }) => {
+const FaceRegistrationSetup = ({ registerUserFace, faceRegisterName }) => {
+
    const [isSourceDone, setisSourceDone] = useState(false)
    const [deviceKey, setDeviceKey] = useState(null);
 
@@ -13,7 +14,9 @@ const FaceRegistrationSetup = ({ registerUserFace }) => {
       setDeviceKey(deviceKey);
       setisSourceDone(true);
    };
-
+   useEffect(() => {
+      console.log('FaceRegistrationSetup = faceRegisterName:', faceRegisterName);
+   }, [faceRegisterName]);
    useEffect(() => {
       console.log('deviceKey:', deviceKey);
    }, [deviceKey]);
@@ -46,7 +49,7 @@ const FaceRegistrationSetup = ({ registerUserFace }) => {
                      className={`absolute transform duration-500 w-full first-letter:  transition-transform ${isSourceDone ? 'translate-x-0' : 'translate-x-[512px]'}`}
                   >
 
-                     <CameraFaceDetection handleStoreFaceData={handleStoreFaceData} deviceKey={deviceKey} />
+                     <CameraFaceDetection handleStoreFaceData={handleStoreFaceData} deviceKey={deviceKey} faceRegisterName={faceRegisterName} />
                   </div>
             }
          </div>

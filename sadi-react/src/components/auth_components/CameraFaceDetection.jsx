@@ -4,28 +4,37 @@ import axios from 'axios';
 
 const SADI_API_URL = 'http://localhost:5000/api';
 
-const CameraFaceDetection = ({ handleStoreFaceData, deviceKey }) => {
+const CameraFaceDetection = ({ handleStoreFaceData, deviceKey, faceRegisterName }) => {
    const [vidSrc, setVidSrc] = useState('');
    const [loading, setLoading] = useState(true); // Add a loading state
-
-   const name = "Angelo";
+   console.log('faceRegisterName', faceRegisterName.replace(/\s/g, ''))
+   const name = faceRegisterName.replace(/\s/g, '');
    useEffect(() => {
       const fetchFaceScanner = async () => {
-         setTimeout(() => {
-            try {
-               const url = `${SADI_API_URL}/scanner/user=${name}&deviceKey=${deviceKey}&width=440&height=256`;
 
-               // Update the state using setVidSrc
-               setVidSrc(url);
-               setLoading(false); // Set loading to false once the data is loaded
-            } catch (error) {
-               console.error(error);
-            }
-         }, 5000); // 3000 milliseconds = 3 seconds
+         try {
+            const url = `${SADI_API_URL}/scanner/user=${name}&deviceKey=${deviceKey}&width=440&height=256`;
+
+            const response = await axios.get(url, {
+               responseType: 'blob',
+            });
+            console.log('response', response)
+
+            // Update the state using setVidSrc
+            setVidSrc(url);
+            setLoading(false); // Set loading to false once the data is loaded
+
+
+         } catch (error) {
+            console.error(error);
+         }
+         // 3000 milliseconds = 3 seconds
       };
 
       // Call the async function
-      fetchFaceScanner();
+      setTimeout(() => {
+         fetchFaceScanner();
+      }, 3000);
    }, []);
 
    useEffect(() => {
@@ -53,7 +62,7 @@ const CameraFaceDetection = ({ handleStoreFaceData, deviceKey }) => {
             </div>
          )}
 
-         <div className="absolute -bottom-16 right-0">
+         <div className="absolute -bottom-28 right-0">
             <Button className="w-32 mt-3 bg-sblue hover:bg-blue-700 text-white" label="NEXT" onClick={handleStoreFaceData} />
          </div>
       </>

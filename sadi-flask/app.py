@@ -169,31 +169,29 @@ def process_face_registration():
 # The '/scanner/<user>' route is used to capture face images and detect the faces in the video.
 
 @app.route('/api/scanner/user=<name>&deviceKey=<deviceKey>&width=<width>&height=<height>')
-def face_capture(name, deviceKey, width, height):
-    print(f"Name: {name}")
-    print(f"Params: {deviceKey}")
+@cross_origin()
+def face_capture(name, deviceKey, width, height):    
+    cv.destroyAllWindows()
     
     cap = cv.VideoCapture(int(deviceKey), cv.CAP_DSHOW)
     cap.set(cv.CAP_PROP_FRAME_WIDTH, int(width))  # Set the desired width
     cap.set(cv.CAP_PROP_FRAME_HEIGHT, int(height))  # Set the desired height
-    print("cap", cap)
     should_stop = False
-    
     if not cap.isOpened():
         return jsonify({'cameraStatus': 'Disconnected'})
 
-    def gen(stop):
+    def gen_frames(stop):
         detector = FaceDetector()
 
         img_id = 0
-        status = ''
+        statusCamera = ''
         while not stop:
             success, frame = cap.read()
             print("success", success)
             print("img", frame)
-                
             
             if success:
+                statusCamera = 'success'
                 start = time.time()
                 img, bboxs, status = detector.findFaces(frame, start, img_id)
                 # Determine face mesh landmarks
@@ -210,23 +208,32 @@ def face_capture(name, deviceKey, width, height):
 
                 if img_id == 500:
                     stop = True
+                    cap.release()
                     break
 
                 ret, jpeg = cv.imencode('.jpg', img)
                 if not ret:
                     break
-
+                
+                # Prepare the response for the current frame
+                frame_response = {
+                    'statusCamera': statusCamera,
+                    'status': status,
+                }
+                
+                # Yield the frame response to the client
                 yield (b'--frame\r\n'
-                        b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+                       b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+                # return jsonify(frame_response)
             else:
                 app.logger.error("Failed to capture frame from the camera")
+                yield jsonify({'statusCamera': 'Failed'})
+                
                 break
-
-    res = Response(response=gen(should_stop), mimetype='multipart/x-mixed-replace; boundary=frame')
-
+    res = Response(response=gen_frames(should_stop), mimetype='multipart/x-mixed-replace; boundary=frame;')
     if should_stop:
         cap.release()  # Release the camera capture
-        return jsonify({'cameraStatus': 'Connected', 'status': 'Process completed successfully'})  # Send a response back to React indicating process completion
+        return jsonify({'status': 'Process completed successfully'}) 
 
     return res
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { InputBox, Button } from '../';
 
-const RegisterInputsSetup = ({ registerUserCredentials, error }) => {
+const RegisterInputsSetup = ({ registerUserCredentials, error, setFaceRegisterName }) => {
    const [firstname, setFirstname] = useState('');
    const [lastname, setLastname] = useState('');
    const [email, setEmail] = useState('');
@@ -43,6 +43,7 @@ const RegisterInputsSetup = ({ registerUserCredentials, error }) => {
          password: password,
          // confirmpassword: confPassword,
       };
+      setFaceRegisterName("John Angelo");
 
       // Call the function with the userData object
       registerUserCredentials(userData);

@@ -17,6 +17,7 @@ const Setup = () => {
     const loadingRef = useRef(null)
     const [error, setError] = useState('');
     const [setupStep, setSetupStep] = useState(1);
+    const [faceRegisterName, setFaceRegisterName] = useState('user_face');
 
     useEffect(() => {
         console.log('Setup step changed to: ', setupStep)
@@ -71,12 +72,13 @@ const Setup = () => {
                 <HeaderSetup stepperLabel={setupStep} />
 
                 <div className='flex items-center justify-center h-full w-full relative'>
+
                     {/* STEP 1 */}
                     <div
                         className={` transform duration-500 w-full   h-full transition-transform  ${setupStep === 1 ? 'translate-x-0' : '-translate-x-[512px]'
                             }`}
                     >
-                        <RegisterInputsSetup registerUserCredentials={registerUserCredentialsAPI} error={error} />
+                        <RegisterInputsSetup registerUserCredentials={registerUserCredentialsAPI} error={error} setFaceRegisterName={setFaceRegisterName} />
                     </div>
 
                     {/* STEP 2 */}
@@ -84,10 +86,11 @@ const Setup = () => {
                         className={`absolute transform duration-500 w-full h-full transition-transform ${setupStep === 2 ? 'translate-x-0' : 'translate-x-[512px]'} ${setupStep > 2 ? 'translate-x-[512px]' : ''}`}
                     >
 
-                        {setupStep === 2 && <FaceRegistrationSetup registerUserFace={registerUserFace} />}
+                        {setupStep === 2 && <FaceRegistrationSetup registerUserFace={registerUserFace} faceRegisterName={faceRegisterName} />}
                     </div>
 
-                    {/* STEP 2 */}
+                    {/* STEP 3 */}
+
                     <div
                         className={`absolute transform duration-500 w-full h-full transition-transform ${setupStep === 3 ? 'translate-x-0' : 'translate-x-[512px]'
                             }`}

@@ -15,6 +15,9 @@ class FaceDetector():
         self.mpFaceDetection = mp.solutions.face_detection
         self.mpDraw = mp.solutions.drawing_utils
         self.mpFaceDetection = self.mpFaceDetection.FaceDetection(minDetectionCon)
+        self.left_line = 150  # X-coordinate of the left line
+        self.right_line = 490  # X-coordinate of the right line
+    
 
     def findFaces(self, img, start_time, counter, draw=True):
         # Flip the image horizontally for a later selfie-view display
@@ -41,7 +44,6 @@ class FaceDetector():
 
         if results2.detections:
             for id, detection in enumerate(results2.detections):
-                # print(detection.location_data.relative_bounding_box)
                 ih, iw, ic = image.shape
 
                 bboxC = detection.location_data.relative_bounding_box
@@ -53,8 +55,8 @@ class FaceDetector():
                 image = self.fancyDraw(image, bbox)
 
                 cv.putText(image, f'{int(detection.score[0] * 100)}%',
-                           (bbox[0], bbox[1] - 20), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 1)
-
+                        (bbox[0], bbox[1] - 20), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 1)
+        cv.rectangle(image, (self.left_line - 10, 50), (self.right_line + 10, img_h-50), (0, 255, 0), 2)
         if results.multi_face_landmarks:
             for face_landmarks in results.multi_face_landmarks:
                 for idx, lm in enumerate(face_landmarks.landmark):
@@ -63,6 +65,7 @@ class FaceDetector():
                             nose_2d = (lm.x * img_w, lm.y * img_h)
                             nose_3d = (lm.x * img_w, lm.y * img_h, lm.z * 3000)
 
+
                         x, y = int(lm.x * img_w), int(lm.y * img_h)
 
                         # Get the 2D Coordinates
@@ -70,7 +73,7 @@ class FaceDetector():
 
                         # Get the 3D Coordinates
                         face_3d.append([x, y, lm.z])       
-                
+
                 # Convert it to the NumPy array
                 face_2d = np.array(face_2d, dtype=np.float64)
 
@@ -99,39 +102,52 @@ class FaceDetector():
                 # Get the y rotation degree
                 x = angles[0] * 360
                 y = angles[1] * 360
-                z = angles[2] * 360
+                z = angles[2] * 360       
 
+  
+                print("nose_2d: ", nose_2d)
+                nose_x, nose_y = nose_2d[0] , nose_2d[1]
+                
+                if nose_2d is not None:
+                    if (nose_x < self.left_line - 10 or nose_y > self.right_line + 10 or
+                            nose_y < 50 or nose_y > img_h - 50):
+                        image = np.zeros((480, 640, 1), dtype="uint8")
+                        cv.putText(image, 'Please center your face', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
+                        status = 'err'
                 if counter < 100:
                     if ((x > 10 or x < -10) or (y > 10 or y < -10)):
-                        image = np.zeros((480, 640, 1), dtype = "uint8")
+                        image = np.zeros((480, 640, 1), dtype="uint8")
                         cv.putText(image, 'Please look at the camera', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
                         status = 'err'
                 elif counter >= 100 and counter < 200:
                     if (x < 10 or (y > 10 or y < -10)):
-                        image = np.zeros((480, 640, 1), dtype = "uint8")
+                        image = np.zeros((480, 640, 1), dtype="uint8")
                         cv.putText(image, 'Look UP to continue', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
                         status = 'err'
                 elif counter >= 200 and counter < 300:
                     if (y < 10):
-                        image = np.zeros((480, 640, 1), dtype = "uint8")
+                        image = np.zeros((480, 640, 1), dtype="uint8")
                         cv.putText(image, 'Look to the RIGHT to continue', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
                         status = 'err'
                 elif counter >= 300 and counter < 400:
                     if (x > -10 or (y > 10 or y < -10)):
-                        image = np.zeros((480, 640, 1), dtype = "uint8")
+                        image = np.zeros((480, 640, 1), dtype="uint8")
                         cv.putText(image, 'Look DOWN to continue', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
                         status = 'err'
                 elif counter >= 400 and counter < 500:
                     if (y > -10):
-                        image = np.zeros((480, 640, 1), dtype = "uint8")
+                        image = np.zeros((480, 640, 1), dtype="uint8")
                         cv.putText(image, 'Look to the LEFT to continue', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
                         status = 'err'
-
                 
+
                 end = time.time()
                 totalTime = end - start_time
                 fps = 1 / totalTime
-                cv.putText(image, f'FPS: {int(fps)}', (20, 50), cv.FONT_HERSHEY_PLAIN, 2, (255, 0, 255), 2)
+                cv.putText(image, f'FPS: {int(fps)}', (20, 50), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
+
+          
+
 
         return image, bboxs, status
 
@@ -219,12 +235,12 @@ class FaceDetector():
          result_image, bboxs, status = self.findFaces(frame, start_time, counter, draw)
 
          # Call the determineFaceMesh method to determine face mesh landmarks
-         face_mesh_landmarks = self.determineFaceMesh(frame)
-         # Do something with the face mesh landmarks...
-         if len(face_mesh_landmarks) > 0:
-               for landmark_points in face_mesh_landmarks:
-                  for point in landmark_points:
-                     cv.circle(result_image, point, 2, (0, 255, 0), cv.FILLED)
+        #  face_mesh_landmarks = self.determineFaceMesh(frame)
+        #  # Do something with the face mesh landmarks...
+        #  if len(face_mesh_landmarks) > 0:
+        #        for landmark_points in face_mesh_landmarks:
+        #           for point in landmark_points:
+        #              cv.circle(result_image, point, 2, (0, 255, 0), cv.FILLED)
                      
          # Display the resulting image
          cv.imshow('Face Detection', result_image)
@@ -246,34 +262,34 @@ detector.runFaceDetection()
 
 
 
-import cv2
+# import cv2
     
     
-def list_ports():
-    """
-    Test the ports and returns a tuple with the available ports and the ones that are working.
-    """
-    non_working_ports = []
-    dev_port = 0
-    working_ports = []
-    available_ports = []
-    while len(non_working_ports) < 6: # if there are more than 5 non working ports stop the testing. 
-        camera = cv2.VideoCapture(dev_port)
-        if not camera.isOpened():
-            non_working_ports.append(dev_port)
-            print("Port %s is not working." %dev_port)
-        else:
-            is_reading, img = camera.read()
-            w = camera.get(3)
-            h = camera.get(4)
-            if is_reading:
-                print("Port %s is working and reads images (%s x %s)" %(dev_port,h,w))
-                working_ports.append(dev_port)
-            else:
-                print("Port %s for camera ( %s x %s) is present but does not reads." %(dev_port,h,w))
-                available_ports.append(dev_port)
-        dev_port +=1
-    return available_ports,working_ports,non_working_ports
+# def list_ports():
+#     """
+#     Test the ports and returns a tuple with the available ports and the ones that are working.
+#     """
+#     non_working_ports = []
+#     dev_port = 0
+#     working_ports = []
+#     available_ports = []
+#     while len(non_working_ports) < 6: # if there are more than 5 non working ports stop the testing. 
+#         camera = cv2.VideoCapture(dev_port)
+#         if not camera.isOpened():
+#             non_working_ports.append(dev_port)
+#             print("Port %s is not working." %dev_port)
+#         else:
+#             is_reading, img = camera.read()
+#             w = camera.get(3)
+#             h = camera.get(4)
+#             if is_reading:
+#                 print("Port %s is working and reads images (%s x %s)" %(dev_port,h,w))
+#                 working_ports.append(dev_port)
+#             else:
+#                 print("Port %s for camera ( %s x %s) is present but does not reads." %(dev_port,h,w))
+#                 available_ports.append(dev_port)
+#         dev_port +=1
+#     return available_ports,working_ports,non_working_ports
  
  
 

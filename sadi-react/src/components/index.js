@@ -8,7 +8,7 @@ export { default as RegistrationDoneSetup } from './auth_components/Registration
 export { default as CameraSourceSetup } from './auth_components/CameraSourceSetup'
 export { default as CameraFaceDetection } from './auth_components/CameraFaceDetection'
 export { default as DeviceDropdown } from './auth_components/DeviceDropdown'
-
+export { default as LoadingDone } from './auth_components/LoadingDone'
 
 // DASHBOARD
 export { default as Dashboard } from './Dashboard'

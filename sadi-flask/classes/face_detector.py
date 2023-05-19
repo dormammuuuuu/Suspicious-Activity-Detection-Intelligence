@@ -15,6 +15,8 @@ class FaceDetector():
         self.mpFaceDetection = mp.solutions.face_detection
         self.mpDraw = mp.solutions.drawing_utils
         self.mpFaceDetection = self.mpFaceDetection.FaceDetection(minDetectionCon)
+        self.left_line = 130  # X-coordinate of the left line
+        self.right_line = 305  # X-coordinate of the right line
 
     def findFaces(self, img, start_time, counter, draw=True):
         # Flip the image horizontally for a later selfie-view display
@@ -45,6 +47,7 @@ class FaceDetector():
                 ih, iw, ic = image.shape
 
                 bboxC = detection.location_data.relative_bounding_box
+                # big screen
                 # bbox = int(bboxC.xmin * iw - 65), int(bboxC.ymin * ih - 100), \
                 #     int(bboxC.width * iw + 130), int(bboxC.height * ih + 130)
                 # small screen
@@ -55,7 +58,8 @@ class FaceDetector():
 
                 cv.putText(image, f'{int(detection.score[0] * 100)}%',
                            (bbox[0], bbox[1] - 20), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 1)
-
+                
+        cv.rectangle(image, (self.left_line - 10, 50), (self.right_line + 10, img_h-50), (0, 255, 0), 2)
         if results.multi_face_landmarks:
             for face_landmarks in results.multi_face_landmarks:
                 for idx, lm in enumerate(face_landmarks.landmark):
@@ -101,6 +105,15 @@ class FaceDetector():
                 x = angles[0] * 360
                 y = angles[1] * 360
                 z = angles[2] * 360
+                
+                nose_x, nose_y = nose_2d[0] , nose_2d[1]
+                
+                if nose_2d is not None:
+                    if (nose_x < self.left_line  or nose_y > self.right_line  or
+                            nose_y < 20 or nose_y > img_h - 20):
+                        image = np.zeros((480, 640, 1), dtype="uint8")
+                        cv.putText(image, 'Please center your face', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
+                        status = 'err'
 
                 if counter < 100:
                     if ((x > 10 or x < -10) or (y > 10 or y < -10)):
