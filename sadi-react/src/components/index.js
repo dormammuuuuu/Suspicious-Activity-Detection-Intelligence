@@ -13,6 +13,10 @@ export { default as LoadingDone } from './auth_components/LoadingDone'
 // DASHBOARD
 export { default as Dashboard } from './Dashboard'
 
+// HELP
+export { default as AccordionItem } from './help/AccordionItem'
+export { default as Help } from './help/Help'
+
 // GLOBAL
 export { Logo, Logov2, FaceFrame } from './Logo'
 export { default as Spinner } from './Spinner'
@@ -25,7 +29,6 @@ export { default as InputCheckBox } from './InputCheckBox'
 
 export { default as Layout } from './Layout'
 export { default as BreadcrumbStepper } from './BreadcrumbStepper'
-export { default as Help } from './Help'
 
 export { default as AccountSettingsInputField } from './AccountSettingsInputField'
 export { default as Modal } from './Modal'
