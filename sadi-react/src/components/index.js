@@ -18,7 +18,7 @@ export { default as AccordionItem } from './help/AccordionItem'
 export { default as Help } from './help/Help'
 
 // GLOBAL
-export { Logo, Logov2, FaceFrame } from './Logo'
+export { Logo, Logov2, FaceFrame } from './SvgAssets'
 export { default as Spinner } from './Spinner'
 export { default as Button } from './Button'
 export { default as InputBox } from './InputBox'

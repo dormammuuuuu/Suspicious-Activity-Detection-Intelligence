@@ -6,7 +6,7 @@ const SadiMain = () => {
 
 
    return (
-      <div className="h-full">
+      <div className="h-full p-11">
          <Routes>
             <Route path='/' element={<Dashboard />} />
             <Route path='/user' element={<UserList />} />
