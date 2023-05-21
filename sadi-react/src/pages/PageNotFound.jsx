@@ -21,9 +21,9 @@ const PageNotFound = () => {
             <span className='mt-11'>4</span>
          </div>
          <h1 className='text-2xl text-sblue font-semibold mt-4'>Oops, page not found</h1>
-         <Button className="w-44  mt-10 bg-blue-100 hover:bg-blue-200 text-sblue capitalize  text-semibold text-sm"
+         <Button className="w-44  mt-10 bg-blue-100 hover:bg-blue-200 text-sblue capitalize  text-semibold text-sm "
             label={<span className="flex items-center justify-center">
-               <HiOutlineArrowNarrowLeft className="mr-2" /> Back to Home
+               <HiOutlineArrowNarrowLeft className="mr-2 text-lg" /> <p className=''>Back to Home </p>
             </span>
             }
             onClick={() => navigate('/login')} />
