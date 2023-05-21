@@ -25,14 +25,14 @@ const sidebar = () => {
                   <div className="pl-3 my-4 text-neutral-400">
                      <p>MENU</p>
                   </div>
-                  <SidebarLink link="/" label="Dashboard">
+                  {/* <SidebarLink link="/" label="Dashboard">
                      <MdSpaceDashboard className="flex-shrink-0 w-6 h-6 transition duration-75 group-hover:text-gray-900" />
+                  </SidebarLink> */}
+                  <SidebarLink link="/video-stream" label="Video Playback">
+                     <IoVideocam className="flex-shrink-0 w-6 h-6 transition duration-75 group-hover:text-gray-900" />
                   </SidebarLink>
                   <SidebarLink link="/user" label="Users">
                      <FaUser className="flex-shrink-0 w-6 h-6 transition duration-75 group-hover:text-gray-900" />
-                  </SidebarLink>
-                  <SidebarLink link="/video-stream" label="Video Playback">
-                     <IoVideocam className="flex-shrink-0 w-6 h-6 transition duration-75 group-hover:text-gray-900" />
                   </SidebarLink>
                   <SidebarLink link="/account-settings" label="Account Settings">
                      <IoMdSettings className="flex-shrink-0 w-6 h-6 transition duration-75 group-hover:text-gray-900" />

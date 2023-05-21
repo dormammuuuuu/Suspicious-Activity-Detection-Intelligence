@@ -32,7 +32,7 @@ const Home = () => {
 
    return (
       <>
-         <div className=" p-5 grid grid-cols-6 grid-rows-9 gap-5 h-screen">
+         <div className="bg-sgray-100 p-5 grid grid-cols-6 grid-rows-9 gap-5  w-screen h-screen">
             <div className="bg-white rounded-xl row-start-1 row-end-10 col-start-1 col-end-2 flex justify-center items-center">
                <Sidebar />
             </div>

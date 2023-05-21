@@ -1,5 +1,5 @@
 import React from 'react'
-import { Logov2 } from '../Logo'
+import { Logov2 } from '../SvgAssets'
 
 const HeaderSetup = ({ stepperLabel }) => {
    return (

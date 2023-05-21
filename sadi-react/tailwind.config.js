@@ -19,6 +19,9 @@ module.exports = {
         'error-alt': '#FF757533'
 
       },
+      fontSize: {
+        '404xl': '240px',
+      },
       gridTemplateRows: {
         '8': 'repeat(8, minmax(0, 1fr))',
         '9': 'repeat(9, minmax(0, 1fr))',
