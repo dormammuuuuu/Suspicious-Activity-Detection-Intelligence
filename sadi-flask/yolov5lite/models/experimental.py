@@ -103,9 +103,19 @@ class Ensemble(nn.ModuleList):
     def forward(self, x, augment=False):
         y = []
         for module in self:
-            y.append(module(x, augment)[0])
-        # y = torch.stack(y).max(0)[0]  # max ensemble
-        # y = torch.stack(y).mean(0)  # mean ensemble
+            output = module(x, augment)[0]
+            y.append(output)
+
+        # Pad model2 with an additional dimension of size 1
+        if len(y) >= 2:
+            model1_shape = y[0].size()
+            model2_shape = y[1].size()
+            if model2_shape[2] < model1_shape[2]:
+                padding = model1_shape[2] - model2_shape[2]
+                device = y[1].device  # Get the device of model2
+                zeros = torch.zeros(model2_shape[0], model2_shape[1], padding, device=device)
+                y[1] = torch.cat((y[1], zeros), dim=2)
+
         y = torch.cat(y, 1)  # nms ensemble
         return y, None  # inference, train output
 
