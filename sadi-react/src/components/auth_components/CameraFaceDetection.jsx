@@ -11,26 +11,15 @@ const CameraFaceDetection = ({ handleStoreFaceData, deviceKey, faceRegisterName 
    const name = faceRegisterName.replace(/\s/g, '');
    useEffect(() => {
       const fetchFaceScanner = async () => {
-
          try {
             const url = `${SADI_API_URL}/scanner/user=${name}&deviceKey=${deviceKey}&width=440&height=256`;
 
-            const response = await axios.get(url, {
-               responseType: 'blob',
-            });
-            console.log('response', response)
-
-            // Update the state using setVidSrc
-            setVidSrc(url);
             setLoading(false); // Set loading to false once the data is loaded
-
-
+            setVidSrc(url);
          } catch (error) {
             console.error(error);
          }
-         // 3000 milliseconds = 3 seconds
       };
-
       // Call the async function
       setTimeout(() => {
          fetchFaceScanner();
@@ -44,7 +33,7 @@ const CameraFaceDetection = ({ handleStoreFaceData, deviceKey, faceRegisterName 
    return (
       <>
          {loading ? ( // Render the spinner loader if loading is true
-            <div className="flex justify-center items-center h-64">
+            <div className="flex justify-center items-center h-64 mb-10">
                <Spinner size={64} color="#4C51BF" />
             </div>
          ) : (
@@ -52,7 +41,7 @@ const CameraFaceDetection = ({ handleStoreFaceData, deviceKey, faceRegisterName 
                <img
                   src={vidSrc}
                   alt="Webcam Video"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-fit object-center"
                />
                <div className="absolute inset-0 flex justify-center items-center">
                   <div className="w-full h-full object-cover">

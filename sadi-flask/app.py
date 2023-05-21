@@ -146,23 +146,6 @@ def get_available_camera():
     return jsonify(devices_size)
 
 
-@app.route('/api/process_face_registration', methods=['POST'])
-def process_face_registration():
-   data = request.get_json()
-   deviceId = data['deviceId']
-   try:
-      deviceId = int(deviceId)
-   except ValueError:
-      return {'error': 'Invalid deviceId'}
-   cap = cv.VideoCapture(deviceId)
-   while True:
-      ret, frame = cap.read()
-      if not ret:
-         break
-      # Process each frame here
-   cap.release()
-   return {'message': 'Face registration processed successfully'}
-
 
 
 
@@ -184,14 +167,12 @@ def face_capture(name, deviceKey, width, height):
         detector = FaceDetector()
 
         img_id = 0
-        statusCamera = ''
         while not stop:
             success, frame = cap.read()
-            print("success", success)
-            print("img", frame)
+            # print("success", success)
+            # print("img", frame)
             
             if success:
-                statusCamera = 'success'
                 start = time.time()
                 img, bboxs, status = detector.findFaces(frame, start, img_id)
                 # Determine face mesh landmarks
@@ -207,19 +188,14 @@ def face_capture(name, deviceKey, width, height):
                     img_id = detector.saveFaces(name, img, bboxs, img_id)
 
                 if img_id == 500:
+                    global should_stop
+                    should_stop = True;
                     stop = True
-                    cap.release()
                     break
 
                 ret, jpeg = cv.imencode('.jpg', img)
                 if not ret:
                     break
-                
-                # Prepare the response for the current frame
-                frame_response = {
-                    'statusCamera': statusCamera,
-                    'status': status,
-                }
                 
                 # Yield the frame response to the client
                 yield (b'--frame\r\n'
@@ -231,6 +207,7 @@ def face_capture(name, deviceKey, width, height):
                 
                 break
     res = Response(response=gen_frames(should_stop), mimetype='multipart/x-mixed-replace; boundary=frame;')
+    print("should_stop", should_stop)
     if should_stop:
         cap.release()  # Release the camera capture
         return jsonify({'status': 'Process completed successfully'}) 

@@ -19,11 +19,6 @@ const Setup = () => {
     const [setupStep, setSetupStep] = useState(1);
     const [faceRegisterName, setFaceRegisterName] = useState('user_face');
 
-    useEffect(() => {
-        console.log('Setup step changed to: ', setupStep)
-    }, [setupStep])
-
-
     // STEP 1 API
     const registerUserCredentialsAPI = async (userCredential) => {
         try {

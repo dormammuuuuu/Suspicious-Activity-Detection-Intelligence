@@ -2,6 +2,9 @@
 import cv2 as cv
 
 def get_available_camera_details():
+    """
+    Get the details of all available cameras
+    """
     # Get the list of available camera indexes
     camera_indexes = list(range(0, 10))
     camera_details = []
@@ -29,3 +32,17 @@ def get_available_camera_details():
             capture.release()
 
     return camera_details
+
+
+# sample to run get_available_camera_details
+# details = get_camera_details()
+
+# # Print the camera details
+# for camera_info in details:
+#     print(f"Camera Index: {camera_info['index']}")
+#     print(f"Camera Size: {camera_info['camera_size']}")
+#     # print(f"Camera Label: {camera_info['label']}")
+#     print()
+
+
+
