@@ -15,8 +15,8 @@ class FaceDetector():
         self.mpFaceDetection = mp.solutions.face_detection
         self.mpDraw = mp.solutions.drawing_utils
         self.mpFaceDetection = self.mpFaceDetection.FaceDetection(minDetectionCon)
-        self.left_line = 150  # X-coordinate of the left line
-        self.right_line = 490  # X-coordinate of the right line
+        self.left_line = 130  # X-coordinate of the left line
+        self.right_line = 305  # X-coordinate of the right line
     
 
     def findFaces(self, img, start_time, counter, draw=True):
@@ -49,14 +49,14 @@ class FaceDetector():
                 bboxC = detection.location_data.relative_bounding_box
                 # bbox = int(bboxC.xmin * iw - 65), int(bboxC.ymin * ih - 100), \
                 #     int(bboxC.width * iw + 130), int(bboxC.height * ih + 130)
-                bbox = int(bboxC.xmin * iw - 40), int(bboxC.ymin * ih - 70), \
+                bbox = int(bboxC.xmin * iw - 40), int(bboxC.ymin * ih - 60), \
                     int(bboxC.width * iw + 80), int(bboxC.height * ih + 80)   
                 bboxs.append([id, bbox, detection.score])
                 image = self.fancyDraw(image, bbox)
 
                 cv.putText(image, f'{int(detection.score[0] * 100)}%',
                         (bbox[0], bbox[1] - 20), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 1)
-        cv.rectangle(image, (self.left_line - 10, 50), (self.right_line + 10, img_h-50), (0, 255, 0), 2)
+        cv.rectangle(image, (self.left_line - 10, 20), (self.right_line + 10, img_h-20), (0, 255, 0), 2)
         if results.multi_face_landmarks:
             for face_landmarks in results.multi_face_landmarks:
                 for idx, lm in enumerate(face_landmarks.landmark):
@@ -110,41 +110,49 @@ class FaceDetector():
                 
                 if nose_2d is not None:
                     if (nose_x < self.left_line - 10 or nose_y > self.right_line + 10 or
-                            nose_y < 50 or nose_y > img_h - 50):
-                        image = np.zeros((480, 640, 1), dtype="uint8")
-                        cv.putText(image, 'Please center your face', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
+                            nose_y < 20 or nose_y > img_h - 20):
+                        overlay = np.ones((img_h, img_w, 3), dtype="uint8") * 255  # Create a white overlay
+                        alpha = 0.7  # Opacity of 70%
+                        # Add text to the overlay
+                        self.center_text(overlay, 'Please center', 'your face')
+                        # Blend the overlay with the original image
+                        image = cv.addWeighted(image, 1 - alpha, overlay, alpha, 0)
                         status = 'err'
-                if counter < 100:
-                    if ((x > 10 or x < -10) or (y > 10 or y < -10)):
-                        image = np.zeros((480, 640, 1), dtype="uint8")
-                        cv.putText(image, 'Please look at the camera', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
-                        status = 'err'
-                elif counter >= 100 and counter < 200:
-                    if (x < 10 or (y > 10 or y < -10)):
-                        image = np.zeros((480, 640, 1), dtype="uint8")
-                        cv.putText(image, 'Look UP to continue', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
-                        status = 'err'
-                elif counter >= 200 and counter < 300:
-                    if (y < 10):
-                        image = np.zeros((480, 640, 1), dtype="uint8")
-                        cv.putText(image, 'Look to the RIGHT to continue', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
-                        status = 'err'
-                elif counter >= 300 and counter < 400:
-                    if (x > -10 or (y > 10 or y < -10)):
-                        image = np.zeros((480, 640, 1), dtype="uint8")
-                        cv.putText(image, 'Look DOWN to continue', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
-                        status = 'err'
-                elif counter >= 400 and counter < 500:
-                    if (y > -10):
-                        image = np.zeros((480, 640, 1), dtype="uint8")
-                        cv.putText(image, 'Look to the LEFT to continue', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
-                        status = 'err'
-                
+                    elif counter < 100:
+                        if ((x > 10 or x < -10) or (y > 10 or y < -10)):
+                            overlay = np.ones((img_h, img_w, 3), dtype="uint8") * 255  # Create a white overlay
+                            alpha = 0.7  # Opacity of 70%
+                            # Add text to the overlay
+                            self.center_text(overlay, 'Please look at', 'the camera')
+                            # Blend the overlay with the original image
+                            image = cv.addWeighted(image, 1 - alpha, overlay, alpha, 0)
+                            status = 'err'
+                    elif counter >= 100 and counter < 200:
+                        if (x < 10 or (y > 10 or y < -10)):
+                            image = np.zeros((480, 640, 1), dtype="uint8")
+                            cv.putText(image, 'Look UP to continue', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
+                            status = 'err'
+                    elif counter >= 200 and counter < 300:
+                        if (y < 10):
+                            image = np.zeros((480, 640, 1), dtype="uint8")
+                            cv.putText(image, 'Look to the RIGHT to continue', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
+                            status = 'err'
+                    elif counter >= 300 and counter < 400:
+                        if (x > -10 or (y > 10 or y < -10)):
+                            image = np.zeros((480, 640, 1), dtype="uint8")
+                            cv.putText(image, 'Look DOWN to continue', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
+                            status = 'err'
+                    elif counter >= 400 and counter < 500:
+                        if (y > -10):
+                            image = np.zeros((480, 640, 1), dtype="uint8")
+                            cv.putText(image, 'Look to the LEFT to continue', (20, 450), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
+                            status = 'err'
+                    
 
                 end = time.time()
                 totalTime = end - start_time
                 fps = 1 / totalTime
-                cv.putText(image, f'FPS: {int(fps)}', (20, 50), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
+                # cv.putText(image, f'FPS: {int(fps)}', (20, 50), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
 
           
 
@@ -210,10 +218,35 @@ class FaceDetector():
             cv.imwrite(f'{dirname}{user}_{img_id}.jpeg', imgCrop)
 
         return img_id + 1
+        
+    def center_text(self, image, text_top, text_bottom):
+        img_h, img_w, img_c = image.shape
+        print("center_text")
+        text = 'Please center'
+        text_width = cv.getTextSize(text_top, cv.FONT_HERSHEY_PLAIN, 1, 2)[0][0]
+        text_height = cv.getTextSize(text_top, cv.FONT_HERSHEY_PLAIN, 1, 2)[0][1]
+
+        center_x = int(img_w/2) - int(text_width/2)
+        center_y = int(img_h/2) + int(text_height/2)
+
+        cv.putText(image, text_top, (center_x, center_y), cv.FONT_HERSHEY_PLAIN, 1.2, (0, 0, 0), 2)
+        
+        
+        bottom_text = 'your face'
+        bottom_text_width = cv.getTextSize(text_bottom, cv.FONT_HERSHEY_PLAIN, 1, 2)[0][0]
+        bottom_text_height = cv.getTextSize(text_bottom, cv.FONT_HERSHEY_PLAIN, 1, 2)[0][1]
+
+        bottom_center_x = int(img_w/2) - int(bottom_text_width/2)
+        bottom_center_y = center_y + int(text_height/2) + int(bottom_text_height/2)
+
+        cv.putText(image, text_bottom, (bottom_center_x, bottom_center_y + 7), cv.FONT_HERSHEY_PLAIN, 1.2, (0, 0, 0), 2)
+
      
     def runFaceDetection(self):
       # Open the webcam
-      cap = cv.VideoCapture(0)
+      cap = cv.VideoCapture(0, cv.CAP_DSHOW)
+      cap.set(cv.CAP_PROP_FRAME_WIDTH, 440)  # Set the desired width
+      cap.set(cv.CAP_PROP_FRAME_HEIGHT, 256)  # Se
 
       # Check if the webcam is successfully opened
       if not cap.isOpened():

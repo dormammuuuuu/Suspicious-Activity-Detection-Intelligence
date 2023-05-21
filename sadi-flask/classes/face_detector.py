@@ -59,7 +59,7 @@ class FaceDetector():
                 cv.putText(image, f'{int(detection.score[0] * 100)}%',
                            (bbox[0], bbox[1] - 20), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 1)
                 
-        cv.rectangle(image, (self.left_line - 10, 50), (self.right_line + 10, img_h-50), (0, 255, 0), 2)
+        cv.rectangle(image, (self.left_line - 10, 20), (self.right_line + 10, img_h-20), (0, 255, 0), 2)
         if results.multi_face_landmarks:
             for face_landmarks in results.multi_face_landmarks:
                 for idx, lm in enumerate(face_landmarks.landmark):
