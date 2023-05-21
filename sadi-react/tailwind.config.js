@@ -20,7 +20,7 @@ module.exports = {
 
       },
       fontSize: {
-        '404xl': '200px',
+        '404xl': '240px',
       },
       gridTemplateRows: {
         '8': 'repeat(8, minmax(0, 1fr))',
