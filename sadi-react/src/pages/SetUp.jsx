@@ -60,7 +60,7 @@ const Setup = () => {
     }
 
     return (
-        <div className='flex items-center justify-center h-screen bg-sblue-alt'>
+        <div className='flex items-center justify-center h-screen bg-sblue-alt w-ul'>
             <div className='flex flex-col items-center  max-w-lg w-full  h-[733px] px-9 py-7 rounded-lg bg-white relative overflow-hidden'>
                 <LoadingBar
                     color='#6875F5'
