@@ -10,11 +10,11 @@ const SidebarLink = (props) => {
     return (
         <NavLink to={link}
             className={({ isActive }) => clsx(
-            "flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100",
-            isActive ? "text-blue-500 bg-violet-50" : " text-neutral-400"
+                "flex items-center p-2 text-base font-normal rounded-lg hover:bg-sblue-alt hover:text-sblue",
+                isActive ? "text-sblue bg-sblue-alt" : " text-sgray-300"
             )}>
-                {children}
-                <span className="ml-3 text-lg">{label}</span>
+            {children}
+            <span className="ml-3 text-lg">{label}</span>
         </NavLink>
     )
 }

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const Yolov5 = () => {
+const VideoPlayback = () => {
     let location = useLocation();
 
     const [src, setSrc] = useState(`http://localhost:5000/api/yolov5`);
 
     useEffect(() => {
-          setSrc(`http://localhost:5000/api/yolov5`);
-      }, [location.pathname]);
+        setSrc(`http://localhost:5000/api/yolov5`);
+    }, [location.pathname]);
 
 
     return (
@@ -21,4 +21,4 @@ const Yolov5 = () => {
     );
 }
 
-export default Yolov5;
+export default VideoPlayback;
