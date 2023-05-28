@@ -5,7 +5,7 @@ const Layout = ( props ) => {
   return (
     <div className='h-fill p-5 relative'>
         <div className="relative overflow-x-auto h-full">
-            <div className="p-5 text-left text-gray-900 flex flex-col">
+            <div className="text-left text-gray-900 flex flex-col">
                 { children }
             </div>
         </div>

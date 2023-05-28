@@ -12,7 +12,7 @@ from database import init_app
 from yolov5lite.detect import Detect
 from classes.face_detector import FaceDetector
 from classes.utils import get_available_camera_details
-
+from database import read_user, update_user
 #? Views
 from views.auth import auth_blueprint
 
@@ -213,6 +213,38 @@ def face_capture(name, deviceKey, width, height):
         return jsonify({'status': 'Process completed successfully'}) 
 
     return res
+
+@app.route('/api/get-details/<id>', methods=['get'])
+def get_user_details(id):
+    user_id = id
+    user = read_user("users", user_id)
+    if user:
+        return jsonify(user)
+    return jsonify({"status": "error", "message": "Failed to get user details."})
+
+@app.route('/api/update-details/<id>', methods=['POST'])
+def update_user_details(id):
+    try:
+        user_id = id
+        update_data = request.json  # Assuming you're using Flask's request object to get the update data
+
+        # Prepare the update document
+        update = {
+            "firstname": update_data.get("firstname"),
+            "lastname": update_data.get("lastname"),
+            "username": update_data.get("username"),
+            "email": update_data.get("email"),
+            "number": update_data.get("number")
+        }
+
+        result = update_user("users", user_id, update)
+
+        if result:
+            return jsonify({"status": "success", "message": "User details updated successfully."})
+        else:
+            return jsonify({"status": "error", "message": "Failed to update user details."})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
 
 
 # The '/users/<user>/images' route is used to get a list of all the images of a specific user.

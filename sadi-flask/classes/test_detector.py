@@ -244,7 +244,7 @@ class FaceDetector():
 
     def runFaceDetection(self):
       # Open the webcam
-      cap = cv.VideoCapture(0, cv.CAP_DSHOW)
+      cap = cv.VideoCapture(0)
       cap.set(cv.CAP_PROP_FRAME_WIDTH, 440)  # Set the desired width
       cap.set(cv.CAP_PROP_FRAME_HEIGHT, 256)  # Se
 
