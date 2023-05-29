@@ -9,7 +9,7 @@ import numpy as np
 
 
 from database import init_app
-from yolov5lite.detect import Detect
+from yolov5.detect import run
 from classes.face_detector import FaceDetector
 from classes.utils import get_available_camera_details
 from database import read_user, update_user
@@ -31,8 +31,8 @@ app.config['MAIL_PASSWORD'] = 'ktykxsnyxxxxwodu' # On Allow less secure app in g
 
 
 
-# Initialize the YOLOv5 Detector
-yoloLiveStream = Detect()
+# # Initialize the YOLOv5 Detector
+# yoloLiveStream = Detect()
 
 
 if not os.path.exists('user.ini'):
@@ -125,7 +125,8 @@ def stop_video_feed():
 @app.route('/api/yolov5', methods=['GET'])
 def inference():
     print('inference')
-    return Response(yoloLiveStream.detect(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    result = run()  # Call the run() function to get the result
+    return Response(result, mimetype='multipart/x-mixed-replace; boundary=frame')
 
 # The '/authenticate' route is used to handle login form submission and checks the credentials with the data in user.json file.
 @app.route("/authenticate", methods=['POST'])
