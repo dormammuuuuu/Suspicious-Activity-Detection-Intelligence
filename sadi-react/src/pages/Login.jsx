@@ -18,6 +18,7 @@ const Login = () => {
    useEffect(() => {
       const token = Cookies.get('token');
       console.log("token", token)
+      console.log("user_id", Cookies.get('user_id'))
       if (token) {
          navigate("/dashboard");
       }
@@ -44,6 +45,7 @@ const Login = () => {
                if (res.data.status === 'success') {
                   console.log(res.data)
                   Cookies.set('token', res.data.token, { expires: 3600 });
+                  Cookies.set('user_id', res.data.user, { expires: 3600 });
                   navigate("/dashboard");
                } else {
                   setError(res.data.error)

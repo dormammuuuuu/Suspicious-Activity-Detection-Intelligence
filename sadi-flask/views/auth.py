@@ -82,7 +82,7 @@ class LoginAPI(MethodView):
       if data:
          payload = {'username': data['username'], 'email': data['email']}
          token = jwt.encode(payload, current_app.secret_key, algorithm='HS256')
-         return {"status": "success", "message": "Login successful.", "token": token}
+         return {"status": "success", "message": "Login successful.", "token": token, "user": data['_id']}
       elif data == None:
          error = {"username": "Could'nt find your sadi account."}
       else:
