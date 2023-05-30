@@ -35,7 +35,7 @@ const Setup = () => {
                 } else {
                     console.log('Failed')
                     //TODO:  DELETE LATER - DEBUGGING PURPOSES
-                    setSetupStep(2);
+                    // setSetupStep(2);
                     setError(res.data.error)
                 }
 

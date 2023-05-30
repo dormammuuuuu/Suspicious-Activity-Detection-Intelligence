@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { InputBox, Button } from '../';
 
 const RegisterInputsSetup = ({ registerUserCredentialsAPI, error, setFaceRegisterName }) => {
+   const buttonRef = useRef(null);
    const [firstname, setFirstname] = useState('');
    const [lastname, setLastname] = useState('');
    const [email, setEmail] = useState('');
@@ -49,18 +50,30 @@ const RegisterInputsSetup = ({ registerUserCredentialsAPI, error, setFaceRegiste
       registerUserCredentialsAPI(userData);
    };
 
+
+   const handleKeyPress = (event) => {
+      if (event.key === 'Enter') {
+         event.preventDefault();
+         handleStoreData();
+      }
+   };
+
+
+
+
+
    return (
       <div className='w-full h-full '>
          <div className='flex gap-5'>
-            <InputBox label="First Name" type="text" name="firstname" onChange={handleFirstnameChange} error={error.firstname} />
-            <InputBox label="Last Name" type="text" name="lastname" onChange={handleLastnameChange} error={error.lastname} />
+            <InputBox label="First Name" type="text" name="firstname" onChange={handleFirstnameChange} onKeyPress={handleKeyPress} error={error.firstname} />
+            <InputBox label="Last Name" type="text" name="lastname" onChange={handleLastnameChange} onKeyPress={handleKeyPress} error={error.lastname} />
          </div>
-         <InputBox label="Email" type="email" name="email" onChange={handleEmailChange} error={error.email} />
-         <InputBox label="Username" type="text" name="username" onChange={handleUsernameChange} error={error.username} />
-         <InputBox label="Password" type="password" name="password" onChange={handlePasswordChange} error={error.password} />
-         <InputBox label="Mobile no." type="text" name="number" onChange={handleNumberChange} error={error.number} />
+         <InputBox label="Email" type="email" name="email" onChange={handleEmailChange} onKeyPress={handleKeyPress} error={error.email} />
+         <InputBox label="Username" type="text" name="username" onChange={handleUsernameChange} onKeyPress={handleKeyPress} error={error.username} />
+         <InputBox label="Password" type="password" name="password" onChange={handlePasswordChange} onKeyPress={handleKeyPress} error={error.password} />
+         <InputBox label="Mobile no." type="text" name="number" onChange={handleNumberChange} onKeyPress={handleKeyPress} error={error.number} />
          <div className="absolute bottom-0 right-0">
-            <Button className="w-32 mt-3 bg-sblue hover:bg-blue-700 text-white" label="NEXT" onClick={handleStoreData} />
+            <Button className="w-32 mt-3 bg-sblue hover:bg-blue-700 text-white" label="NEXT" ref={buttonRef} onClick={handleStoreData} />
          </div>
       </div>
    );

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { FaExclamationCircle } from 'react-icons/fa'
 
-const Input = ({ label, type, placeholder, name, onChange, error }) => {
+const Input = ({ label, type, placeholder, name, onChange, onKeyPress, error }) => {
     const [isFocused, setIsFocused] = useState(false);
 
     return (
@@ -20,6 +20,7 @@ const Input = ({ label, type, placeholder, name, onChange, error }) => {
                 `}
                 name={name}
                 onChange={onChange}
+                onKeyPress={onKeyPress}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
 

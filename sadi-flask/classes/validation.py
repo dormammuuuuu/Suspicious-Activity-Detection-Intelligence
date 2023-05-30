@@ -35,14 +35,20 @@ def is_valid_mobile_number(mobile_number):
 def is_valid_password(password):
     # Regular expression to match a password with at least 8 characters, 
     # one uppercase letter, one lowercase letter, and one number
-    pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
-    return re.match(pattern, password) is not None
+    pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#%^&()_+{}?:<>,.])[a-zA-Z\d!@#%^&()_+{}?:<>,.]{8,}$"
+
+    # Check if the password matches the regular expression
+    if re.match(pattern, password):
+        return True
+    else:
+        return False
 
 def setup_validation(data):
     required_fields = list(data.keys())
     error = {}
     for field in required_fields:
         value = data.get(field)
+        print('value', value, field)
         if not value:
             error[field] = f"{field.capitalize()} is required."
         elif field == 'firstname':
@@ -71,8 +77,10 @@ def setup_validation(data):
             if not is_valid_mobile_number(value):
                 error[field] = "Please provide a valid number."
         elif field == 'password':
+            print("password", value)
+            print(is_valid_password(value))
             if not is_valid_password(value):
-                error[field] = "Password should have at least 8 characters, one uppercase letter, one lowercase letter, and one number."
+                error[field] = "Password should have contains at least 8 characters, one uppercase letter, one lowercase letter, and one number, one special character."
         # elif field == 'confirmpassword':
         #     if value != data.get('password'):
         #         error[field] = "Passwords do not match."
