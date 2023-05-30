@@ -17,8 +17,8 @@ const Login = () => {
 
    useEffect(() => {
       const token = Cookies.get('token');
-      console.log("token", token)
-      console.log("user_id", Cookies.get('user_id'))
+      // console.log("token", token)
+      // console.log("user_id", Cookies.get('user_id'))
       if (token) {
          navigate("/dashboard");
       }
@@ -32,6 +32,13 @@ const Login = () => {
       setPassword(event.target.value)
    }
 
+   const handleKeyPress = (event) => {
+      if (event.key === 'Enter') {
+         event.preventDefault();
+         handleLogin();
+      }
+   };
+
    const handleLogin = async () => {
       try {
          loadingRef.current.continuousStart();
@@ -41,9 +48,9 @@ const Login = () => {
          })
             .then(res => {
                loadingRef.current.complete();
-               console.log(res.data)
+               // console.log(res.data)
                if (res.data.status === 'success') {
-                  console.log(res.data)
+                  // console.log(res.data)
                   Cookies.set('token', res.data.token, { expires: 3600 });
                   Cookies.set('user_id', res.data.user, { expires: 3600 });
                   navigate("/dashboard");
@@ -61,7 +68,7 @@ const Login = () => {
          loadingRef.current.continuousStart();
          const response = await axios.post(`${API_BASE_URL}/forgot-password`, { username: username });
 
-         console.log(response.data);
+         // console.log(response.data);
          if (response.data.status === 'success') {
             loadingRef.current.complete();
             navigate('/forgot-password', { state: response.data });
@@ -91,8 +98,8 @@ const Login = () => {
             <Logov2 />
             <h1 className='text-center mt-5 mb-10 text-2xl font-semibold text-sblue  '>Login</h1>
             {/* <p className='text-red-500 text-xs mb-3'>{message}</p> */}
-            <InputBox label='Username' type='text' name='username' onChange={handleUsernameChange} error={error.username} />
-            <InputBox label='Password' type='password' name='password' onChange={handlePasswordChange} error={error.password} />
+            <InputBox label='Username' type='text' name='username' onChange={handleUsernameChange} onKeyPress={handleKeyPress} error={error.username} />
+            <InputBox label='Password' type='password' name='password' onChange={handlePasswordChange} onKeyPress={handleKeyPress} error={error.password} />
             <span
                type='button'
                className='text-sblue hover:text-blue-700 font-bold text-xs flex  justify-end mr-2 cursor-pointer'
