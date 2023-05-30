@@ -48,7 +48,6 @@ const FaceRegistrationSetup = ({ registerUserFace, faceRegisterName }) => {
                   <div
                      className={`absolute transform duration-500 w-full first-letter:  transition-transform ${isSourceDone ? 'translate-x-0' : 'translate-x-[512px]'}`}
                   >
-
                      <CameraFaceDetection handleStoreFaceData={handleStoreFaceData} deviceKey={deviceKey} faceRegisterName={faceRegisterName} />
                   </div>
             }
