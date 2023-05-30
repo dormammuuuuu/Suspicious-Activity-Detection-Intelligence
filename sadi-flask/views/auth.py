@@ -180,11 +180,12 @@ class ResetPasswordAPI(MethodView):
       if error:
          return {"status": "error", "error": error}
       
-      query = {'_id': ObjectId(data['id'])}
-      update = {'$set': {
+      query = ObjectId(data['id'])
+      update = {
          'password': bcrypt.hashpw(bytes(data['new_password'], 'utf-8'), salt),
          'salt': salt
-      }}
+      }
+
       updated_user = update_user("users", query, update)
       
       if updated_user:

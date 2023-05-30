@@ -51,8 +51,10 @@ def read_user(collection, query):
         return None
     
 def update_user(collection, query, update):
+    print("update_user: ", query, update)
     try:
         query_id = {"_id": ObjectId(query)}
+        print('query_id: ', query_id)
         update_data = {"$set": update}  # Wrap the update in $set operator to update specific fields
         result = mongo.db[collection].update_one(query_id, update_data)
         if result.modified_count > 0:
