@@ -109,7 +109,7 @@ const UserCameraSourceInput = ({ handleSourceDone }) => {
             </div>
          </div>
          {/* <button onClick={sendVideoSource}>Capture Frame</button> */}
-         <div className='w-[440px]'>
+         <div className='w-[220px]'>
             <DeviceDropdown
                devices={devices}
                selectedDeviceId={selectedDeviceId}
@@ -118,7 +118,7 @@ const UserCameraSourceInput = ({ handleSourceDone }) => {
                isOpen={isOpen}
             />
          </div>
-         <Button className="w-[440px] mt-3 bg-sblue hover:bg-blue-700 text-white font-normal" label="Choose video source" onClick={handleNext} />
+         <Button className="w-[220px] mt-3 bg-sblue hover:bg-blue-700 text-white font-normal" label="Register Face" onClick={handleNext} />
 
 
       </>

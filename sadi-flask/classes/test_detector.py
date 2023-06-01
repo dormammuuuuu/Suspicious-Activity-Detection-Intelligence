@@ -15,11 +15,11 @@ class FaceDetector():
         self.mpFaceDetection = mp.solutions.face_detection
         self.mpDraw = mp.solutions.drawing_utils
         self.mpFaceDetection = self.mpFaceDetection.FaceDetection(minDetectionCon)
-        self.left_line = 140  # X-coordinate of the left line
-        self.right_line = 301  # X-coordinate of the right line
+        self.left_line = 138  # X-coordinate of the left line
+        self.right_line = 297  # X-coordinate of the right line
     
 
-    def findFaces(self, img, start_time, counter, draw=True):
+    def findFaces(self, img, start_time, counter):
         # Flip the image horizontally for a later selfie-view display
         # Also convert the color space from BGR to RGB
         image = cv.cvtColor(cv.flip(img, 1), cv.COLOR_BGR2RGB)
@@ -47,16 +47,26 @@ class FaceDetector():
                 ih, iw, ic = image.shape
 
                 bboxC = detection.location_data.relative_bounding_box
-                # bbox = int(bboxC.xmin * iw - 65), int(bboxC.ymin * ih - 100), \
-                #     int(bboxC.width * iw + 130), int(bboxC.height * ih + 130)
-                bbox = int(bboxC.xmin * iw - 40), int(bboxC.ymin * ih - 60), \
-                    int(bboxC.width * iw + 80), int(bboxC.height * ih + 80)   
+                xmin = int(bboxC.xmin * iw - 40)
+                ymin = int(bboxC.ymin * ih - 60)
+                xmax = int(bboxC.width * iw + 80)
+                ymax = int(bboxC.height * ih + 80)
+
+                # Ensure the bounding box coordinates are within the valid range
+                xmin = max(0, xmin)
+                ymin = max(0, ymin)
+                xmax = min(iw, xmax)
+                ymax = min(ih, ymax)
+
+                bbox = (xmin, ymin, xmax, ymax)
                 bboxs.append([id, bbox, detection.score])
+                print('bbox:', bbox)
                 image = self.fancyDraw(image, bbox)
+
 
                 cv.putText(image, f'{int(detection.score[0] * 100)}%',
                         (bbox[0], bbox[1] - 20), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 1)
-        cv.rectangle(image, (self.left_line, 30), (self.right_line, img_h-30), (0, 255, 0), 2)
+        cv.rectangle(image, (self.left_line, 30), (self.right_line +24, img_h-30), (0, 255, 0), 2)
         if results.multi_face_landmarks:
             for face_landmarks in results.multi_face_landmarks:
                 for idx, lm in enumerate(face_landmarks.landmark):
@@ -109,7 +119,7 @@ class FaceDetector():
                 nose_x, nose_y = nose_2d[0] , nose_2d[1]
                 
                 if nose_2d is not None:
-                    if (nose_x < self.left_line  or nose_x > self.right_line  or
+                    if (nose_x < self.left_line  or nose_x > self.right_line +24  or
                             nose_y < 30 or nose_y > img_h - 30):
                         overlay = np.ones((img_h, img_w, 3), dtype="uint8") * 255  # Create a white overlay
                         alpha = 0.7  # Opacity of 70%
@@ -212,18 +222,49 @@ class FaceDetector():
       return face_mesh_landmarks
     
     
+    def saveFaces(self, user, img, bboxs, img_id, width=440, height=256):
+        for i in range(len(bboxs)):
+            bbox_i = bboxs[i]
+            x_i, y_i, w_i, h_i = bbox_i[1]
+            imgCrop_i = img[y_i:y_i+h_i, x_i:x_i+w_i]
+            imgCrop_i = cv.resize(imgCrop_i, (width, height))
 
-    def saveFaces(self, user, img, bboxs, img_id, width=227, height=227):
-        for bbox in bboxs:
-            x, y, w, h = bbox[1]
-            imgCrop = img[y:y+h, x:x+w]
-            imgCrop = cv.resize(imgCrop, (width, height))
-            dirname = f'users/{user}/'
-            if not os.path.exists(dirname):
-                os.makedirs(dirname)
-            cv.imwrite(f'{dirname}{user}_{img_id}.jpeg', imgCrop)
+            # Check for overlap with previous bounding boxes
+            is_overlap = False
+            for j in range(i):
+                bbox_j = bboxs[j]
+                x_j, y_j, w_j, h_j = bbox_j[1]
 
-        return img_id + 1
+                # Calculate the intersection area
+                x_overlap = max(0, min(x_i + w_i, x_j + w_j) - max(x_i, x_j))
+                y_overlap = max(0, min(y_i + h_i, y_j + h_j) - max(y_i, y_j))
+                intersection = x_overlap * y_overlap
+
+                # If there is any intersection, set overlap flag and break the loop
+                if intersection > 0:
+                    is_overlap = True
+                    break
+
+            # Save the image if there is no overlap
+            if not is_overlap:
+                dirname = f'users/{user}/'
+                if not os.path.exists(dirname):
+                    os.makedirs(dirname)
+                cv.imwrite(f'{dirname}{user}_{img_id}.jpeg', imgCrop_i)
+                img_id += 1
+
+        return img_id
+    # def saveFaces(self, user, img, bboxs, img_id, width=227, height=227):
+    #     for bbox in bboxs:
+    #         x, y, w, h = bbox[1]
+    #         imgCrop = img[y:y+h, x:x+w]
+    #         imgCrop = cv.resize(imgCrop, (width, height))
+    #         dirname = f'users/{user}/'
+    #         if not os.path.exists(dirname):
+    #             os.makedirs(dirname)
+    #         cv.imwrite(f'{dirname}{user}_{img_id}.jpeg', imgCrop)
+
+    #     return img_id + 1
         
     def center_text(self, image, text_top, text_bottom):
         img_h, img_w, img_c = image.shape
@@ -244,7 +285,7 @@ class FaceDetector():
 
     def runFaceDetection(self):
       # Open the webcam
-      cap = cv.VideoCapture(1, cv.CAP_DSHOW)
+      cap = cv.VideoCapture(0, cv.CAP_DSHOW)
       cap.set(cv.CAP_PROP_FRAME_WIDTH, 440)  # Set the desired width
       cap.set(cv.CAP_PROP_FRAME_HEIGHT, 256)  # Se
 
@@ -264,8 +305,17 @@ class FaceDetector():
          # Call the findFaces method to detect faces in the frame
          start_time = time.time()
          counter = 0
-         draw = True
-         result_image, bboxs, status = self.findFaces(frame, start_time, counter, draw)
+         result_image, bboxs, status = self.findFaces(frame, start_time, counter)
+         
+         if status == 'good':
+            counter = detector.saveFaces("angelo", result_image, bboxs, counter)
+            print(counter)
+            
+         if counter == 500:
+            global should_stop
+            should_stop = True;
+            stop = True
+            break
 
          # Call the determineFaceMesh method to determine face mesh landmarks
         #  face_mesh_landmarks = self.determineFaceMesh(frame)

@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 
 import { HiOutlineInformationCircle } from 'react-icons/hi'
 import { IoIosArrowDown } from 'react-icons/io'
-import { BreadcrumbStepper, StepTwoUserFaceRegistration, CloseModalButton, StepOneInputName } from '../'
+import { BreadcrumbStepper, StepTwoUserFaceRegistration, StepThreeDoneFaceRegistration, CloseModalButton, StepOneInputName } from '../'
 
 
 const SADI_API_URL = 'http://localhost:5000/api'
@@ -13,7 +13,6 @@ const UserFaceRegistrationModal = ({ closeModal, users }) => {
   const [newFaceUser, setNewFaceUser] = useState('');
   const [error, setError] = useState({})
   const [progressCount, setProgressCount] = useState(0);
-  const [showDropDown, setshowDropDown] = useState(false)
   const [vidSrc, setVidSrc] = useState('');
   const [showScanner, setShowScanner] = useState(false);
 
@@ -56,14 +55,12 @@ const UserFaceRegistrationModal = ({ closeModal, users }) => {
     }
   }
 
-  const handleDropDownBtn = () => {
-    setshowDropDown(!showDropDown);
-  }
+
 
   const registerUserFace = () => {
     // registerUserAPI(userData);
     // increment the step
-    progressCount(2);
+    setProgressCount(2);
   }
 
 
@@ -76,32 +73,35 @@ const UserFaceRegistrationModal = ({ closeModal, users }) => {
     >
 
       <div className="relative w-full h-full max-w-4xl  md:h-auto">
-        <div className="relative bg-white rounded-lg shadow  h-[642px]">
+        <div className="relative overflow-hidden bg-white rounded-lg shadow  h-[642px]">
           <CloseModalButton closeModal={closeModal} />
 
           <div className="px-6 py-9 lg:px-8 h-full ">
-            <BreadcrumbStepper />
+            <BreadcrumbStepper progressCount={progressCount} />
             <div className='flex justify-center   h-full w-full relative'>
-              {/* {progressCount === 0 && */}
-              <StepOneInputName
-                newFaceUser={newFaceUser}
-                handleNewUserInput={handleNewUserInput}
-                handleRegisterBtn={handleRegisterBtn}
-                error={error}
-                progressCount={progressCount}
-              />
-              {/* // } */}
-              {/* {progressCount === 1 && */}
+              {progressCount === 0 &&
+                <StepOneInputName
+                  newFaceUser={newFaceUser}
+                  handleNewUserInput={handleNewUserInput}
+                  handleRegisterBtn={handleRegisterBtn}
+                  error={error}
+                  progressCount={progressCount}
+                />
+              }
+
               <StepTwoUserFaceRegistration
                 registerUserFace={registerUserFace}
                 faceRegisterName={newFaceUser}
                 progressCount={progressCount}
               />
 
-              {/* } */}
-              {
-                progressCount === 2 && <div>Done</div>
+              {progressCount === 2 &&
+                <StepThreeDoneFaceRegistration
+                  progressCount={progressCount}
+                  closeModal={closeModal}
+                />
               }
+
             </div>
           </div>
 

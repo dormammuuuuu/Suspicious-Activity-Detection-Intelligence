@@ -53,7 +53,7 @@ const Login = () => {
                   // console.log(res.data)
                   Cookies.set('token', res.data.token, { expires: 3600 });
                   Cookies.set('user_id', res.data.user, { expires: 3600 });
-                  navigate("/dashboard");
+                  navigate("/");
                } else {
                   setError(res.data.error)
                }

@@ -12,7 +12,7 @@ const VideoPlayback = () => {
 
 
     return (
-        <div className="p-10">
+        <div className="">
             <div className="space-y-2">
                 <p className="text-lg font-bold">CCTV Livestream</p>
             </div>

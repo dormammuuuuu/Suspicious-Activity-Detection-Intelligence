@@ -34,6 +34,7 @@ export { default as CloseModalButton } from './users/CloseModalButton'
 export { default as StepOneInputName } from './users/StepOneInputName'
 export { default as UserCameraSourceInput } from './users/UserCameraSourceInput'
 export { default as StepTwoUserFaceRegistration } from './users/StepTwoUserFaceRegistration'
+export { default as StepThreeDoneFaceRegistration } from './users/StepThreeDoneFaceRegistration'
 
 // Help
 export { default as AccordionItem } from './help/AccordionItem'
