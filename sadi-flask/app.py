@@ -6,9 +6,10 @@ from flask_cors import CORS, cross_origin
 import os, json, secrets, cv2 as cv, time, shutil, configparser
 from urllib.parse import quote
 import numpy as np
+import asyncio
+import datetime
 
-
-
+from facerec_module import train
 from database import init_app
 from yolov5.detect import run
 from classes.face_detector import FaceDetector
@@ -54,9 +55,6 @@ app.config['UPLOAD_FOLDER'] = 'users'
 
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "methods": ["GET", "POST"]}})
 app.config['CORS_ORIGIN_ALLOW_ALL'] = True
-
-
-
     
 
 
@@ -139,7 +137,7 @@ def get_available_camera():
 
 
 # The '/scanner/<user>' route is used to capture face images and detect the faces in the video.
-
+should_stop = False
 @app.route('/api/scanner/user=<name>&deviceKey=<deviceKey>&width=<width>&height=<height>')
 @cross_origin()
 def face_capture(name, deviceKey, width, height):    
@@ -148,16 +146,16 @@ def face_capture(name, deviceKey, width, height):
     cap = cv.VideoCapture(int(deviceKey), cv.CAP_DSHOW)
     cap.set(cv.CAP_PROP_FRAME_WIDTH, int(width))  # Set the desired width
     cap.set(cv.CAP_PROP_FRAME_HEIGHT, int(height))  # Set the desired height
-    should_stop = False
     if not cap.isOpened():
         return jsonify({'cameraStatus': 'Disconnected'})
     print("cap", cap)
 
-    def gen_frames(stop):
+    def gen_frames():
+        global should_stop
         detector = FaceDetector()
 
         img_id = 0
-        while not stop:
+        while not should_stop:
             success, frame = cap.read()
             # print("success", success)
             # print("img", frame)
@@ -178,10 +176,9 @@ def face_capture(name, deviceKey, width, height):
                     img_id = detector.saveFaces(name, img, bboxs, img_id)
 
                 if img_id == 500:
-                    global should_stop
-                    should_stop = True;
-                    stop = True
-                    break
+                    cap.release()  # Release the camera capture
+                    asyncio.run(train_new_face())
+                    return jsonify({'status': 'Process completed successfully'}) 
 
                 ret, jpeg = cv.imencode('.jpg', img)
                 if not ret:
@@ -196,12 +193,7 @@ def face_capture(name, deviceKey, width, height):
                 yield jsonify({'statusCamera': 'Failed'})
                 
                 break
-    res = Response(response=gen_frames(should_stop), mimetype='multipart/x-mixed-replace; boundary=frame;')
-    print("should_stop", should_stop)
-    if should_stop:
-        cap.release()  # Release the camera capture
-        return jsonify({'status': 'Process completed successfully'}) 
-
+    res = Response(response=gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame;')
     return res
 
 @app.route('/api/get-details/<id>', methods=['get'])
@@ -211,6 +203,18 @@ def get_user_details(id):
     if user:
         return jsonify(user)
     return jsonify({"status": "error", "message": "Failed to get user details."})
+
+
+
+# Used to train the model with the captured face images.
+async def train_face():
+    print ("Training face")
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    classifier = train("users", model_save_path=f"models/{timestamp}.clf")
+
+async def train_new_face():
+    task = asyncio.create_task(train_face())
+    await task
 
 @app.route('/api/update-details/<id>', methods=['POST'])
 def update_user_details(id):
@@ -266,9 +270,15 @@ def delete_users():
     
     for user in users:
         shutil.rmtree("users/{}".format(user))
-
+        os.remove("encodings/{}.txt".format(user))
+    
+    # Check if there are files to be trained
+    if len(os.listdir("users/")) > 0 and len(os.listdir("encodings/")) > 0:
+        asyncio.run(train_face()) # Retrain model after deleting
+    
     return {"status": "success", "message": "Users deleted successfully."}
 
+    
 
 @app.route('/users/<user>/<path:filename>')
 def serve_image(user, filename) :

@@ -246,7 +246,7 @@ class FaceDetector():
         cv.putText(image, text_bottom, (bottom_center_x  , bottom_center_y + 5), cv.FONT_HERSHEY_PLAIN, 1.2, (0, 0, 0), 2)
 
     
-    def saveFaces(self, user, img, bboxs, img_id, width=440, height=256):
+    def saveFaces(self, user, img, bboxs, img_id, width=256, height=256):
         for i in range(len(bboxs)):
             bbox_i = bboxs[i]
             x_i, y_i, w_i, h_i = bbox_i[1]

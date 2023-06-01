@@ -186,7 +186,7 @@ if __name__ == "__main__":
     # process one frame in every 30 frames for speed
     process_this_frame = 14
     print('Starting camera...')
-    url = 1
+    url = 0
     cap = cv2.VideoCapture(url)
     while 1 > 0:
         ret, frame = cap.read()
