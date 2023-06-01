@@ -33,3 +33,5 @@ sadi-flask/test/
 **/__pycache__/
 #? end - sadi-flask 
 sadi-flask/user.ini
+sadi_env/
+dlib/

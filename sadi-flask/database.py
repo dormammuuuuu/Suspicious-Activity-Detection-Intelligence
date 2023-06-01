@@ -6,8 +6,8 @@ from bson import ObjectId
 mongo = PyMongo()
 
 def init_app(app):
-    # app.config["MONGO_URI"] = "mongodb+srv://dormammu:S3YLkUE7UQsv0GuB@cluster0.3skq370.mongodb.net/user?retryWrites=true&w=majority"
-    app.config["MONGO_URI"] = "mongodb://localhost:27017/SADI"
+    app.config["MONGO_URI"] = "mongodb+srv://dormammu:S3YLkUE7UQsv0GuB@cluster0.3skq370.mongodb.net/user?retryWrites=true&w=majority"
+    # app.config["MONGO_URI"] = "mongodb://localhost:27017/SADI"
     mongo.init_app(app)
 
 def insert_user(collection, user):
