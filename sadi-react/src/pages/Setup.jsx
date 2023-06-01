@@ -35,7 +35,7 @@ const Setup = () => {
                 } else {
                     console.log('Failed')
                     //TODO:  DELETE LATER - DEBUGGING PURPOSES
-                    setSetupStep(2);
+                    // setSetupStep(2);
                     setError(res.data.error)
                 }
 
@@ -55,7 +55,7 @@ const Setup = () => {
     }
 
     return (
-        <div className='flex items-center justify-center h-screen bg-sblue-alt w-ul'>
+        <div className='flex items-center justify-center h-screen bg-sblue-alt w-screen'>
             <div className='flex flex-col items-center  max-w-lg w-full  h-[733px] px-9 py-7 rounded-lg bg-white relative overflow-hidden'>
                 <LoadingBar
                     color='#6875F5'
@@ -73,7 +73,7 @@ const Setup = () => {
                         className={` transform duration-500 w-full   h-full transition-transform  ${setupStep === 1 ? 'translate-x-0' : '-translate-x-[512px]'
                             }`}
                     >
-                        <RegisterInputsSetup registerUserCredentials={registerUserCredentialsAPI} error={error} setFaceRegisterName={setFaceRegisterName} />
+                        <RegisterInputsSetup registerUserCredentialsAPI={registerUserCredentialsAPI} error={error} setFaceRegisterName={setFaceRegisterName} />
                     </div>
 
                     {/* STEP 2 */}

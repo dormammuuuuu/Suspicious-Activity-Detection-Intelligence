@@ -15,7 +15,7 @@ class FaceDetector():
         self.mpFaceDetection = mp.solutions.face_detection
         self.mpDraw = mp.solutions.drawing_utils
         self.mpFaceDetection = self.mpFaceDetection.FaceDetection(minDetectionCon)
-        self.left_line = 138  # X-coordinate of the left line
+        self.left_line = 150  # X-coordinate of the left line
         self.right_line = 297  # X-coordinate of the right line
 
     def findFaces(self, img, start_time, counter, draw=True):
@@ -43,23 +43,39 @@ class FaceDetector():
 
         if results2.detections:
             for id, detection in enumerate(results2.detections):
-                # print(detection.location_data.relative_bounding_box)
                 ih, iw, ic = image.shape
 
                 bboxC = detection.location_data.relative_bounding_box
-                # big screen
-                # bbox = int(bboxC.xmin * iw - 65), int(bboxC.ymin * ih - 100), \
-                #     int(bboxC.width * iw + 130), int(bboxC.height * ih + 130)
-                # small screen
-                bbox = int(bboxC.xmin * iw - 40), int(bboxC.ymin * ih - 70), \
-                    int(bboxC.width * iw + 80), int(bboxC.height * ih + 80)   
+                xmin = int(bboxC.xmin * iw - 40)
+                ymin = int(bboxC.ymin * ih - 60)
+                xmax = int(bboxC.width * iw + 80)
+                ymax = int(bboxC.height * ih + 80)
+
+                # Ensure the bounding box coordinates are within the valid range
+                xmin = max(0, xmin)
+                ymin = max(0, ymin)
+                xmax = min(iw, xmax)
+                ymax = min(ih, ymax)
+
+                bbox = (xmin, ymin, xmax, ymax)
+                
                 bboxs.append([id, bbox, detection.score])
+           
+                        
                 image = self.fancyDraw(image, bbox)
 
                 cv.putText(image, f'{int(detection.score[0] * 100)}%',
-                           (bbox[0], bbox[1] - 20), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 1)
-        # Create a rectangle that sets you are not in the center        
-        # cv.rectangle(image, (self.left_line, 30), (self.right_line + 24, img_h-30), (0, 255, 0), 2)
+                        (bbox[0], bbox[1] - 20), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 1)
+        else: 
+            overlay = np.ones((img_h, img_w, 3), dtype="uint8") * 255  # Create a white overlay
+            alpha = 0.7  # Opacity of 70%
+            # Add text to the overlay
+            self.center_text(overlay, 'Face not', 'detected')
+            # Blend the overlay with the original image
+            image = cv.addWeighted(image, 1 - alpha, overlay, alpha, 0)
+            status = 'err'
+            
+        # cv.rectangle(image, (self.left_line, 30), (self.right_line +24, img_h-30), (0, 255, 0), 2)
         if results.multi_face_landmarks:
             for face_landmarks in results.multi_face_landmarks:
                 for idx, lm in enumerate(face_landmarks.landmark):
@@ -104,8 +120,10 @@ class FaceDetector():
                 # Get the y rotation degree
                 x = angles[0] * 360
                 y = angles[1] * 360
-                z = angles[2] * 360
-                
+                z = angles[2] * 360       
+
+  
+                # print("nose_2d: ", nose_2d)
                 nose_x, nose_y = nose_2d[0] , nose_2d[1]
                 
                 if nose_2d is not None:
@@ -158,7 +176,9 @@ class FaceDetector():
                 end = time.time()
                 totalTime = end - start_time
                 fps = 1 / totalTime
-                     # cv.putText(image, f'FPS: {int(fps)}', (20, 50), cv.FONT_HERSHEY_PLAIN, 2, (255, 0, 255), 2)
+                # cv.putText(image, f'FPS: {int(fps)}', (20, 50), cv.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 2)
+
+          
 
         return image, bboxs, status
 
@@ -223,24 +243,38 @@ class FaceDetector():
         bottom_center_y = int((img_h + text_top_height + text_bottom_height) / 2) + 7
 
         cv.putText(image, text_top, (center_x , center_y), cv.FONT_HERSHEY_PLAIN, 1.2, (0, 0, 0), 2)
-        cv.putText(image, text_bottom, (bottom_center_x, bottom_center_y + 5), cv.FONT_HERSHEY_PLAIN, 1.2, (0, 0, 0), 2)
+        cv.putText(image, text_bottom, (bottom_center_x  , bottom_center_y + 5), cv.FONT_HERSHEY_PLAIN, 1.2, (0, 0, 0), 2)
 
-    def saveFaces(self, user, img, bboxs, img_id, width=227, height=227):
-        for bbox in bboxs:
-            x, y, w, h = bbox[1]
-            # print(f"Bbox coordinates: x={x}, y={y}, w={w}, h={h}")
-            
-            imgCrop = img[y:y+h, x:x+w]
-            # print(f"Image crop shape: {imgCrop.shape}")
-            
-            imgCrop = cv.resize(imgCrop, (width, height))
-            
-            dirname = f'users/{user}/'
-            if not os.path.exists(dirname):
-                os.makedirs(dirname)
-            
-            cv.imwrite(f'{dirname}{user}_{img_id}.jpeg', imgCrop)
-
-        return img_id + 1
     
+    def saveFaces(self, user, img, bboxs, img_id, width=440, height=256):
+        for i in range(len(bboxs)):
+            bbox_i = bboxs[i]
+            x_i, y_i, w_i, h_i = bbox_i[1]
+            imgCrop_i = img[y_i:y_i+h_i, x_i:x_i+w_i]
+            imgCrop_i = cv.resize(imgCrop_i, (width, height))
+
+            # Check for overlap with previous bounding boxes
+            is_overlap = False
+            for j in range(i):
+                bbox_j = bboxs[j]
+                x_j, y_j, w_j, h_j = bbox_j[1]
+
+                # Calculate the intersection area
+                x_overlap = max(0, min(x_i + w_i, x_j + w_j) - max(x_i, x_j))
+                y_overlap = max(0, min(y_i + h_i, y_j + h_j) - max(y_i, y_j))
+                intersection = x_overlap * y_overlap
+
+                # If there is any intersection, set overlap flag and break the loop
+                if intersection > 0:
+                    is_overlap = True
+                    break
+
+            # Save the image if there is no overlap
+            if not is_overlap:
+                dirname = f'users/{user}/'
+                if not os.path.exists(dirname):
+                    os.makedirs(dirname)
+                cv.imwrite(f'{dirname}{user}_{img_id}.jpeg', imgCrop_i)
+                img_id += 1
+        return img_id
     

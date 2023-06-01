@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { HiChevronUp, HiOutlineVideoCamera } from 'react-icons/hi';
 
 const DeviceDropdown = ({ devices, selectedDeviceId, handleDeviceChange, handleClick, isOpen }) => (
-   <div className='relative'>
+   <div className='relative w-full'>
       <button
          className="relative w-full text-sgray-400 hover:text-sblue focus:text-sblue border border-sgray-400 hover:border-sblue focus:border-sblue focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex justify-between items-center transition duration-500 ease-in-out"
          type="button"

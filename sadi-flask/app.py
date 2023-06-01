@@ -1,6 +1,7 @@
 import base64
+import random
 import tempfile
-from flask import Flask,  request, redirect, session, Response, send_from_directory, jsonify
+from flask import Flask,  request, redirect, send_file, session, Response, send_from_directory, jsonify, url_for
 from flask_cors import CORS, cross_origin
 import os, json, secrets, cv2 as cv, time, shutil, configparser
 from urllib.parse import quote
@@ -56,21 +57,8 @@ app.config['CORS_ORIGIN_ALLOW_ALL'] = True
 
 
 
-# The '/api/users/view' route is used to get a list of all the users in the 'users' directory.
-@app.route('/api/users/view', methods=['GET'])
-def get_users():
-    if not os.path.exists(app.config['UPLOAD_FOLDER']):
-        os.mkdir(app.config['UPLOAD_FOLDER'])
-    users = os.listdir(app.config['UPLOAD_FOLDER'])
-    return jsonify(users)
+    
 
-# The '/api/users/delete' route is used to delete a specific user.
-@app.route('/api/users/delete', methods=['POST'])
-def delete_user():
-    data = request.get_json()
-    user = data['name']
-    shutil.rmtree("users/{}".format(user))
-    return {"status": "success", "message": "User deleted successfully."}
 
 # The '/api/data' route is used to get a json data.
 @app.route('/api/data', methods=['GET'])
@@ -163,6 +151,7 @@ def face_capture(name, deviceKey, width, height):
     should_stop = False
     if not cap.isOpened():
         return jsonify({'cameraStatus': 'Disconnected'})
+    print("cap", cap)
 
     def gen_frames(stop):
         detector = FaceDetector()
@@ -248,15 +237,42 @@ def update_user_details(id):
         return jsonify({"status": "error", "message": str(e)})
 
 
-# The '/users/<user>/images' route is used to get a list of all the images of a specific user.
-@app.route('/users/<user>/images')
-def get_images(user):
-    images = os.listdir(app.config['UPLOAD_FOLDER'] + '/' + user)
-    return jsonify(images)
+
+# The '/api/users/view' route is used to get a list of all the users in the 'users' directory.
+@app.route('/api/users/view', methods=['GET'])
+def get_users():
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.mkdir(app.config['UPLOAD_FOLDER'])
+    users = os.listdir(app.config['UPLOAD_FOLDER'])
+    user_data = []
+
+    for user in users:
+        user_images = os.listdir(app.config['UPLOAD_FOLDER'] + '/' + user)
+        if user_images:
+            random.shuffle(user_images)  # Randomize the image list
+            image_path = app.config['UPLOAD_FOLDER'] + '/' + user + '/' + user_images[0]
+            user_data.append({
+                'name': user,
+                'image': image_path
+            })
+
+    return jsonify(user_data)
+
+# The '/api/users/delete' route is used to delete specific users.
+@app.route('/api/users/delete', methods=['POST'])
+def delete_users():
+    data = request.get_json()
+    users = data['names']
+    
+    for user in users:
+        shutil.rmtree("users/{}".format(user))
+
+    return {"status": "success", "message": "Users deleted successfully."}
+
 
 @app.route('/users/<user>/<path:filename>')
-def serve_image(user, filename):
-    print (user, filename)
+def serve_image(user, filename) :
+    # print (user, filename)
     return send_from_directory(app.config['UPLOAD_FOLDER'] + '/' + user + '/', filename)
 
 if __name__ == '__main__':

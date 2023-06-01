@@ -51,8 +51,8 @@ const CameraFaceDetection = ({ handleStoreFaceData, deviceKey, faceRegisterName 
             </div>
          )}
 
-         <div className="absolute -bottom-28 right-0">
-            <Button className="w-32 mt-3 bg-sblue hover:bg-blue-700 text-white" label="NEXT" onClick={handleStoreFaceData} />
+         <div className=" flex justify-center">
+            <Button className="w-[220px] mt-16 bg-sblue hover:bg-blue-700 text-white" label="NEXT" onClick={handleStoreFaceData} />
          </div>
       </>
    );

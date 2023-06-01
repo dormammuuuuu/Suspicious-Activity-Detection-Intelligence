@@ -11,8 +11,6 @@ export { default as Layout } from './Layout'
 //Sidebar
 export { default as Sidebar } from './Sidebar'
 
-
-
 // Auth components
 // --- Setup
 export { default as HeaderSetup } from './auth_components/HeaderSetup'
@@ -27,6 +25,17 @@ export { default as LoadingDone } from './auth_components/LoadingDone'
 // Video Playback 
 export { default as VideoPlayback } from './VideoPlayback'
 
+// Users
+export { default as UserList } from './users/Users'
+export { default as UserFaceRegistrationModal } from './users/UserFaceRegistrationModal'
+export { default as BreadcrumbStepper } from './users/BreadcrumbStepper'
+export { default as InformationHelper } from './users/InformationHelper'
+export { default as CloseModalButton } from './users/CloseModalButton'
+export { default as StepOneInputName } from './users/StepOneInputName'
+export { default as UserCameraSourceInput } from './users/UserCameraSourceInput'
+export { default as StepTwoUserFaceRegistration } from './users/StepTwoUserFaceRegistration'
+export { default as StepThreeDoneFaceRegistration } from './users/StepThreeDoneFaceRegistration'
+
 // Help
 export { default as AccordionItem } from './help/AccordionItem'
 export { default as Help } from './help/Help'
@@ -35,13 +44,9 @@ export { default as Help } from './help/Help'
 
 
 
-
-export { default as BreadcrumbStepper } from './BreadcrumbStepper'
 export { default as AccountSettingsInputField } from './AccountSettingsInputField'
-export { default as Modal } from './Modal'
 export { default as SidebarLink } from './SidebarLink'
 export { default as Test } from './Test'
-export { default as UserList } from './Users'
 export { default as VideoStream } from './VideoStream'
 export { default as AccountSettings } from './AccountSettings'
 

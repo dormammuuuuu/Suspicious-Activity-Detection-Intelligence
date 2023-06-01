@@ -2,7 +2,7 @@
 import secrets
 import string
 from bson import ObjectId
-from flask import Blueprint, request, current_app, jsonify
+from flask import Blueprint, render_template, request, current_app, jsonify
 import jwt, bcrypt
 from datetime import datetime, timedelta
 import requests
@@ -30,12 +30,13 @@ def generate_verification_code():
 def send_email_verification_code(email, verification_code):
    mail = Mail(current_app)
  
-   subject = "Email Verification Code"
+   subject = "[SADI] Email Verification Code"
    sender = "noreply@sadi.com"
-   email = "johnangelo.silvestre@tup.edu.ph"
+   # email = "johnangelo.silvestre@tup.edu.ph"
    try:
       msg = Message(subject, sender=sender, recipients=[email])
-      msg.body = f'Hello! Your verification code is: {verification_code}'
+      # msg.body = f'Hello! Your verification code is: {verification_code}'
+      msg.html = render_template("email-verification-template.html",verification_code=verification_code)
       mail.send(msg)
       return True
    except Exception as e:
@@ -95,8 +96,8 @@ class LoginAPI(MethodView):
 
 class ForgotPasswordAPI(MethodView):
    def post(self):
-      
       data = request.get_json()
+      print("data", data)
       username = data['username']
       error = forgot_password_validation(data)
       if error:
@@ -179,11 +180,12 @@ class ResetPasswordAPI(MethodView):
       if error:
          return {"status": "error", "error": error}
       
-      query = {'_id': ObjectId(data['id'])}
-      update = {'$set': {
+      query = ObjectId(data['id'])
+      update = {
          'password': bcrypt.hashpw(bytes(data['new_password'], 'utf-8'), salt),
          'salt': salt
-      }}
+      }
+
       updated_user = update_user("users", query, update)
       
       if updated_user:
