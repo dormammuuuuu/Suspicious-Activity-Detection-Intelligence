@@ -24,4 +24,7 @@ flask_mail
 
 
 #Face Recognition
-face_reco
+face_recognition
+
+# YOLOv5 
+ultralytics

@@ -67,6 +67,7 @@ def run(
     if is_url and is_file:
         source = check_file(source)  # download
 
+    frame_counter = 14
     # Directories
     save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
     (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
@@ -155,7 +156,9 @@ def run(
             # Stream results
             im0 = annotator.result()
             if view_img:
-                predictions = predict(im0, model_path=ROOT / 'models/2023-05-17_19-20-29.clf')
+                frame_counter = frame_counter + 1
+                if frame_counter % 15 == 0:
+                    predictions = predict(im0, model_path=ROOT / 'models/2023-05-17_19-20-29.clf')
                 im0 = show_prediction_labels_on_image(im0, predictions)
                 if platform.system() == 'Linux' and p not in windows:
                     windows.append(p)
@@ -210,7 +213,7 @@ def predict(X_frame, knn_clf=None, model_path=None, distance_threshold=0.45):
         with open(model_path, 'rb') as f:
             knn_clf = pickle.load(f)
 
-    X_face_locations = face_recognition.face_locations(X_frame)
+    X_face_locations = face_recognition.face_locations(X_frame, model="cnn")
 
     # If no faces are found in the image, return an empty result.
     if len(X_face_locations) == 0:
