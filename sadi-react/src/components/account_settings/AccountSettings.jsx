@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import Layout from './Layout'
+import Layout from '../Layout'
 import AccountSettingsInputField from './AccountSettingsInputField'
 import { MdEdit } from 'react-icons/md';
 import axios from 'axios'
 import Cookies from 'js-cookie';
 
 const API_BASE_URL = 'http://localhost:5000/api'
-
-
 const AccountSettings = () => {
     const [edit, setEdit] = useState(true);
     const [firstname, setFirstname] = useState('');
@@ -23,7 +21,6 @@ const AccountSettings = () => {
 
     useEffect(() => {
         // Fetch user data from the API
-
         const fetchUserData = async () => {
             try {
                 const user_id = Cookies.get('user_id'); // Replace with the actual user_id value
@@ -59,9 +56,6 @@ const AccountSettings = () => {
             console.error('Error updating user data:', error);
         }
     };
-
-
-
 
     return (
         <Layout>

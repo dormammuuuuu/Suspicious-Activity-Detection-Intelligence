@@ -27,7 +27,7 @@ const UserList = () => {
 
   const trashFace = () => {
     const userNames = getUserNames();
-    console.log('userNames', userNames);
+    // console.log('userNames', userNames);
 
     deleteUsers(userNames);
     setSelectedDelete([]);
@@ -39,7 +39,7 @@ const UserList = () => {
         'Content-Type': 'application/json'
       }
     }).then(response => {
-      console.log(response.data);
+      // console.log(response.data);
       setUsers(users.filter(user => !names.includes(user.name)));
     });
   }
@@ -113,7 +113,7 @@ const UserList = () => {
           </div>
         ) : (
           <div className='flex items-center justify-center h-full'>
-            <p className='text-3xl text-sblue'>No user found</p>
+            <p className='text-3xl text-sgray'>No user found</p>
           </div>
         )
       }

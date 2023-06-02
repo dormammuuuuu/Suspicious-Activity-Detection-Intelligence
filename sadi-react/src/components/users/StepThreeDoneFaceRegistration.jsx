@@ -4,14 +4,6 @@ import { Button, LoadingDone } from '../';
 const StepThreeDoneFaceRegistration = ({ progressCount, closeModal }) => {
    const [loading, setLoading] = useState(true);
    const [showButton, setShowButton] = useState(false);
-
-
-   const redirectToLogin = () => {
-      window.location.href = '/login';
-   };
-
-
-
    useEffect(() => {
       setTimeout(() => {
          setLoading(false);

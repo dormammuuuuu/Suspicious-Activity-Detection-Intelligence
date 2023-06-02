@@ -1,8 +1,6 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import { IoVideocam, IoHelpCircle, IoLogOut } from 'react-icons/io5'
-import { MdSpaceDashboard } from 'react-icons/md'
 import { FaUser } from 'react-icons/fa'
 import { IoMdSettings } from 'react-icons/io'
 import { Logov3 } from '../components'

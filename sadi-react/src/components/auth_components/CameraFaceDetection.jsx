@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, FaceFrame, Spinner } from '../';
+import { FaceFrame, Spinner } from '../';
 import axios from 'axios';
 
 const SADI_API_URL = 'http://localhost:5000/api';
@@ -7,7 +7,6 @@ const SADI_API_URL = 'http://localhost:5000/api';
 const CameraFaceDetection = ({ handleStoreFaceData, deviceKey, faceRegisterName }) => {
    const [vidSrc, setVidSrc] = useState('');
    const [loading, setLoading] = useState(true); // Add a loading state
-   const [complete, setComplete] = useState(false); // Add a complete state
    console.log('faceRegisterName', faceRegisterName.replace(/\s/g, ''))
    const name = faceRegisterName.replace(/\s/g, '');
    useEffect(() => {
