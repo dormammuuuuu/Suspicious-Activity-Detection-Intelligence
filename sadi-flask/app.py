@@ -171,8 +171,9 @@ def face_capture(name, deviceKey, width, height):
 
                 if img_id == 500:
                     cap.release()  # Release the camera capture
-                    asyncio.run(train_new_face())
                     should_stop = True
+                    
+                    asyncio.run(train_new_face())
                     return jsonify({'status': 'Process completed successfully'}) 
 
                 ret, jpeg = cv.imencode('.jpg', img)

@@ -34,7 +34,7 @@ const CameraFaceDetection = ({ handleStoreFaceData, deviceKey, faceRegisterName 
 
       setInterval(() => {
          handleStop();
-      }, 500);
+      }, 1000);
    }, []);
 
    return (

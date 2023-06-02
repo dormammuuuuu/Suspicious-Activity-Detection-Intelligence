@@ -88,7 +88,7 @@ const UserList = () => {
 
       {
         users.length > 0 ? (
-          <div className='w-full overflow-hidden flex flex-wrap gap-2'>
+          <div className='w-full overflow-hidden flex justify-center flex-wrap gap-2'>
             {users.map((user, idx) => (
               <div
                 key={user.name}
@@ -112,8 +112,8 @@ const UserList = () => {
             ))}
           </div>
         ) : (
-          <div className='flex items-center justify-center h-fill'>
-            <p>No user found</p>
+          <div className='flex items-center justify-center h-full'>
+            <p className='text-3xl text-sblue'>No user found</p>
           </div>
         )
       }
