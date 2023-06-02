@@ -14,12 +14,6 @@ const StepTwoUserFaceRegistration = ({ registerUserFace, faceRegisterName, progr
       setDeviceKey(deviceKey);
       setisSourceDone(true);
    };
-   useEffect(() => {
-      console.log('FaceRegistrationSetup = faceRegisterName:', faceRegisterName);
-   }, [faceRegisterName]);
-   useEffect(() => {
-      console.log('deviceKey:', deviceKey);
-   }, [deviceKey]);
 
 
    const handleStoreFaceData = () => {

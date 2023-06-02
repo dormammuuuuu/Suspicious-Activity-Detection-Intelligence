@@ -14,12 +14,6 @@ const FaceRegistrationSetup = ({ registerUserFace, faceRegisterName }) => {
       setDeviceKey(deviceKey);
       setisSourceDone(true);
    };
-   useEffect(() => {
-      console.log('FaceRegistrationSetup = faceRegisterName:', faceRegisterName);
-   }, [faceRegisterName]);
-   useEffect(() => {
-      console.log('deviceKey:', deviceKey);
-   }, [deviceKey]);
 
 
    const handleStoreFaceData = () => {

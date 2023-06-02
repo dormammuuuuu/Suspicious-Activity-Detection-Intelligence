@@ -9,9 +9,9 @@ const AccountSettingsInputField = (props) => {
 
   return (
     <div className='flex flex-col gap-y-2'>
-      <label className="text-black/80 text-neutral-400" htmlFor={name}>{label}</label>
+      <label className=" text-sgray-300" htmlFor={name}>{label}</label>
       <input
-        className="border-none bg-violet-50 disabled:bg-transparent rounded-md"
+        className="border-none px-2 py-2 rounded-lg bg-sblue-alt focus:border-sblue focus:border-1 text-sm font-medium text-sgray-400"
         type={type}
         name={name}
         id={name}

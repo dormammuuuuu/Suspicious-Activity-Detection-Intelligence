@@ -27,8 +27,8 @@ const UserFaceRegistrationModal = ({ closeModal, users }) => {
     } else {
       setError('')
     }
-    console.log(newFaceUser)
-    console.log("error", error)
+    // console.log(newFaceUser)
+    // console.log("error", error)
   }
 
 
@@ -40,18 +40,6 @@ const UserFaceRegistrationModal = ({ closeModal, users }) => {
       setError({ userFace: "This face is already registered." });
     } else {
       setProgressCount(1)
-    }
-  }
-
-  const handleStartVideoBtn = async () => {
-    setShowScanner((prevState) => !prevState)
-    try {
-      console.log(`url api: ${SADI_API_URL}/scanner/${newFaceUser}`)
-      console.log(`url fixed: http://localhost:5000/api/scanner/${newFaceUser}`)
-      console.log('vidSrc', vidSrc)
-      setVidSrc(`${SADI_API_URL}/scanner/${newFaceUser}`);
-    } catch (error) {
-      console.error(error);
     }
   }
 

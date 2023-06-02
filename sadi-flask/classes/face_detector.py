@@ -207,6 +207,15 @@ class FaceDetector():
         return img
     
     def determineFaceMesh(self, img):
+            #face_capture > genframes > while > if success > detector.findFaces
+                # Determine face mesh landmarks
+                # face_mesh_landmarks = detector.determineFaceMesh(frame)
+                # # Do something with the face mesh landmarks...
+                # if len(face_mesh_landmarks) > 0:
+                #     for landmark_points in face_mesh_landmarks:
+                #         for point in landmark_points:
+                #             cv.circle(img, point, 2, (0, 255, 0), cv.FILLED)
+
       image = cv.cvtColor(img, cv.COLOR_BGR2RGB)
       
       image.flags.writeable = False

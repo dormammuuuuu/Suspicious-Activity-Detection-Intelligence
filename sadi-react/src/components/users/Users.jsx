@@ -11,18 +11,7 @@ const UserList = () => {
   const [selectedDelete, setSelectedDelete] = useState([]);
   const closeModal = () => setActiveModal(null);
 
-  useEffect(() => {
-    axios.get('http://localhost:5000/api/users/view')
-      .then(response => {
-        console.log(response.data);
-        setUsers(response.data);
-      });
-  }, []);
 
-
-  useEffect(() => {
-    console.log('selectedDelete', selectedDelete);
-  }, [selectedDelete]);
 
 
   const handleSelect = (idx) => {
@@ -41,6 +30,7 @@ const UserList = () => {
     console.log('userNames', userNames);
 
     deleteUsers(userNames);
+    setSelectedDelete([]);
   }
 
   const deleteUsers = (names) => {
@@ -54,6 +44,20 @@ const UserList = () => {
     });
   }
 
+  const getFaceUsers = () => {
+    axios.get('http://localhost:5000/api/users/view')
+      .then(response => {
+        // console.log(response.data);
+        setUsers(response.data);
+      });
+
+  }
+  useEffect(() => {
+    getFaceUsers()
+  }, []);
+  useEffect(() => {
+    getFaceUsers()
+  }, [activeModal]);
 
   return (
     <Layout>

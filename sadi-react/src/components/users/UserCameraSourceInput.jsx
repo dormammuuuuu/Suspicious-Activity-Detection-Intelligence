@@ -50,12 +50,12 @@ const UserCameraSourceInput = ({ handleSourceDone }) => {
          });
       });
 
-      try {
-         const frameSizes = await Promise.all(promises);
-         console.log('Frame Sizes:', frameSizes);
-      } catch (error) {
-         console.log('Error retrieving frame sizes:', error);
-      }
+      // try {
+      //    const frameSizes = await Promise.all(promises);
+      //    console.log('Frame Sizes:', frameSizes);
+      // } catch (error) {
+      //    console.log('Error retrieving frame sizes:', error);
+      // }
    }, []);
 
 
@@ -63,7 +63,7 @@ const UserCameraSourceInput = ({ handleSourceDone }) => {
    const handleDeviceChange = (event, key) => {
 
       const deviceId = event.target.closest('li').dataset.sourceId;
-      console.log('Selected device', deviceId)
+      // console.log('Selected device', deviceId)
       setSelectedDeviceId(deviceId);
       setIsOpen(!isOpen);
       setDeviceKey(key);

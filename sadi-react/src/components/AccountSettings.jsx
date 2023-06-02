@@ -34,11 +34,11 @@ const AccountSettings = () => {
                 setUsername(response.data.username);
                 setEmail(response.data.email);
                 setNumber(response.data.number);
-              } catch (error) {
+            } catch (error) {
                 console.error('Error fetching user data:', error);
-              }
+            }
         };
-    
+
         fetchUserData();
     }, []);
 
@@ -59,35 +59,35 @@ const AccountSettings = () => {
             console.error('Error updating user data:', error);
         }
     };
-    
 
-    
+
+
 
     return (
         <Layout>
-            <div className='flex justify-between items-center p-2'>
+            <div className='flex justify-between items-center p-2  text-sgray-400'>
                 <div>
                     <p className="font-semibold">Change Account Settings</p>
                 </div>
                 <button type="button" id="add-user"
-                    className="flex gap-2 items-center text-gray-500 bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-xl text-base px-5 py-2.5"
+                    className="flex gap-2 items-center text-sblue border border-sblue focus:ring-2  font-medium rounded-xl text-base px-5 py-2.5 transition duration-300  ease-in-out  hover:scale-105 hover:bg-sblue-alt-hover"
                     onClick={editToggle}>
-                        <MdEdit />
-                        <span>Edit</span>
+                    <MdEdit />
+                    <span>Edit</span>
                 </button>
             </div>
             <div className='w-full overflow-hidden p-5'>
                 <div className='mb-10'>
-                    <p className='font-semibold'>{ !edit && "Edit " }Personal Information</p>
+                    <p className='font-semibold  text-sgray-400'>{!edit && "Edit "}Personal Information</p>
                 </div>
                 <div className='grid grid-cols-3 gap-10 gap-y-10'>
-                    <AccountSettingsInputField name="firstname" type="text" label="First Name" disabled={edit} value={firstname} onChange={setFirstname}/>
-                    <AccountSettingsInputField name="lastname" type="text" label="Last Name" disabled={edit} value={lastname} onChange={setLastname}/>
-                    <AccountSettingsInputField name="username" type="text" label="Username" disabled={edit} value={username} onChange={setUsername}/>
-                    <AccountSettingsInputField name="email" type="email" label="Email" disabled={edit} value={email} onChange={setEmail}/>
-                    <AccountSettingsInputField name="mobile" type="text" label="Mobile Number" disabled={edit} value={number} onChange={setNumber}/>
+                    <AccountSettingsInputField name="firstname" type="text" label="First Name" disabled={edit} value={firstname} onChange={setFirstname} />
+                    <AccountSettingsInputField name="lastname" type="text" label="Last Name" disabled={edit} value={lastname} onChange={setLastname} />
+                    <AccountSettingsInputField name="username" type="text" label="Username" disabled={edit} value={username} onChange={setUsername} />
+                    <AccountSettingsInputField name="email" type="email" label="Email" disabled={edit} value={email} onChange={setEmail} />
+                    <AccountSettingsInputField name="mobile" type="text" label="Mobile Number" disabled={edit} value={number} onChange={setNumber} />
                     <span></span>
-                    { !edit &&
+                    {!edit &&
                         <>
                             <AccountSettingsInputField name="password" type="password" label="Password" disabled={edit} />
                             <AccountSettingsInputField name="password-confirmation" type="password" label="Confirm Password" disabled={edit} />
@@ -96,10 +96,10 @@ const AccountSettings = () => {
 
                 </div>
             </div>
-            { !edit &&
-                <button onClick={handleSave} className='absolute right-10 bottom-10 z-30 bg-blue-500 text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 px-4 py-3 rounded-xl'>
+            {!edit &&
+                <button onClick={handleSave} className='absolute right-10 bottom-10 z-30 bg-sblue text-white hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 px-4 py-3 rounded-xl'>
                     Save Changes
-                </button> 
+                </button>
             }
         </Layout>
     )

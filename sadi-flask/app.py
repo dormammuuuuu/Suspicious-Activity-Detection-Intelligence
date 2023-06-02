@@ -31,7 +31,7 @@ app.config['MAIL_PASSWORD'] = 'ktykxsnyxxxxwodu' # On Allow less secure app in g
 
 # mail = Mail(app)
 
-
+should_stop = False
 
 # # Initialize the YOLOv5 Detector
 # yoloLiveStream = Detect()
@@ -49,7 +49,7 @@ else:
     config.read('user.ini')
 
 app.secret_key = config['sadi-config']['uuid']
-#! pwede tamggalin
+
 app.config['UPLOAD_FOLDER'] = 'users'
 # print("appconi", app.config['UPLOAD_FOLDER'])
 
@@ -63,10 +63,6 @@ app.config['CORS_ORIGIN_ALLOW_ALL'] = True
 def get_data():
 	data = {'key': 'value'}
 	return jsonify(data) 
-
-stop_stream = False
-
-
 
 @app.route('/api/video_feed')
 def video_feed():
@@ -101,6 +97,7 @@ def stop_video_feed():
     stop_stream = True
     return "Video stream stopped"
 
+
 # def video_inference():
 #     result_frame = detect.detect() # detect objects in the frame
 #     # ret, buffer = cv.imencode('.jpg', result_frame)
@@ -134,10 +131,14 @@ def get_available_camera():
 
 
 
-
+should_stop = False
+@app.route('/api/get-recognition-status', methods=['GET'])
+def get_recognition_status():
+    global should_stop
+    print (should_stop)
+    return jsonify({'status': should_stop})
 
 # The '/scanner/<user>' route is used to capture face images and detect the faces in the video.
-should_stop = False
 @app.route('/api/scanner/user=<name>&deviceKey=<deviceKey>&width=<width>&height=<height>')
 @cross_origin()
 def face_capture(name, deviceKey, width, height):    
@@ -151,7 +152,8 @@ def face_capture(name, deviceKey, width, height):
     print("cap", cap)
 
     def gen_frames():
-        global should_stop
+        global should_stop  # Declare should_stop as global before using it
+        should_stop = False  # Set should_stop to False initially
         detector = FaceDetector()
 
         img_id = 0
@@ -163,21 +165,14 @@ def face_capture(name, deviceKey, width, height):
             if success:
                 start = time.time()
                 img, bboxs, status = detector.findFaces(frame, start, img_id)
-                # Determine face mesh landmarks
-
-                # face_mesh_landmarks = detector.determineFaceMesh(frame)
-                # # Do something with the face mesh landmarks...
-                # if len(face_mesh_landmarks) > 0:
-                #     for landmark_points in face_mesh_landmarks:
-                #         for point in landmark_points:
-                #             cv.circle(img, point, 2, (0, 255, 0), cv.FILLED)
-
+            
                 if status == 'good':
                     img_id = detector.saveFaces(name, img, bboxs, img_id)
 
                 if img_id == 500:
                     cap.release()  # Release the camera capture
                     asyncio.run(train_new_face())
+                    should_stop = True
                     return jsonify({'status': 'Process completed successfully'}) 
 
                 ret, jpeg = cv.imencode('.jpg', img)
@@ -270,13 +265,13 @@ def delete_users():
     
     for user in users:
         shutil.rmtree("users/{}".format(user))
-        os.remove("encodings/{}.txt".format(user))
+        os.remove("encodings/{}.txt".format(user))  
     
     # Check if there are files to be trained
     if len(os.listdir("users/")) > 0 and len(os.listdir("encodings/")) > 0:
         asyncio.run(train_face()) # Retrain model after deleting
     
-    return {"status": "success", "message": "Users deleted successfully."}
+    return {"status": "success", "message": "Users deleted successfully."}  
 
     
 
