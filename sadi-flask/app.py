@@ -136,6 +136,8 @@ should_stop = False
 def get_recognition_status():
     global should_stop
     print (should_stop)
+    if should_stop:
+        asyncio.run(train_new_face())
     return jsonify({'status': should_stop})
 
 # The '/scanner/<user>' route is used to capture face images and detect the faces in the video.
@@ -173,7 +175,6 @@ def face_capture(name, deviceKey, width, height):
                     cap.release()  # Release the camera capture
                     should_stop = True
                     
-                    asyncio.run(train_new_face())
                     return jsonify({'status': 'Process completed successfully'}) 
 
                 ret, jpeg = cv.imencode('.jpg', img)
