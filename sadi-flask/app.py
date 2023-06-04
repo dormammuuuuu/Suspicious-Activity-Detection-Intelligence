@@ -8,6 +8,8 @@ from urllib.parse import quote
 import numpy as np
 import asyncio
 import datetime
+import bcrypt
+from classes.validation import change_password_validation
 
 from facerec_module import train
 from database import init_app
@@ -237,7 +239,29 @@ def update_user_details(id):
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
 
+@app.route('/api/update-password/<id>', methods=['POST'])
+@cross_origin()
+def update_user_password(id):
+    try:
+        user_id = id
+        update_data = request.get_json()
+        salt = bcrypt.gensalt()
+        print("update_data", update_data)
+        print("user_id", user_id)
+        
+        error = change_password_validation(update_data)
+        if error:
+            return {"status": "error", "error": error}
+        
+        # Assuming you have a function to update the user's password in your backend
+        # result = update_password(user_id, update_data.get("oldPassword"), update_data.get("newPassword"))
 
+        # if result:
+        #     return jsonify({"status": "success", "message": "Password updated successfully."})
+        # else:
+        #     return jsonify({"status": "error", "message": "Failed to update password."})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
 
 # The '/api/users/view' route is used to get a list of all the users in the 'users' directory.
 @app.route('/api/users/view', methods=['GET'])
@@ -336,7 +360,7 @@ def get_image(folder_name, image_file):
         # Handle any exceptions that may occur during the image retrieval
         return jsonify({'error': str(e)}), 500
 
-
+#new password
 
 
 if __name__ == '__main__':
