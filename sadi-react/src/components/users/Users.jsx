@@ -8,7 +8,7 @@ import { HiOutlineTrash } from 'react-icons/hi';
 const UserList = () => {
   const [users, setUsers] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
-  const [selectedDelete, setSelectedDelete] = useState([]);
+  const [selectedDelete, setSelectedDelete] = useState(['angelo']);
   const closeModal = () => setActiveModal(null);
 
 
@@ -61,26 +61,23 @@ const UserList = () => {
 
   return (
     <Layout>
-      <div className='flex justify-between items-center p-2 text-sgray-400'>
-        <div>
-          <p className="font-semibold ">List of Faces</p>
-        </div>
+      <div className='flex justify-between  text-sgray-400'>
+        <h1 className="text-lg font-bold text-sgray-400 py-1 px-2">List of Users</h1>
         <div className='flex gap-x-3'>
           {selectedDelete.length > 0 &&
             <button type="button" id="delete-user"
-              className="flex gap-2 items-center text-error border border-error focus:ring-1 focus:ring-error font-semibold rounded-xl text-base px-1.5 py-1.5 transition duration-300  ease-in-out  hover:scale-105 hover:bg-error-alt"
+              className="flex gap-2 items-center text-error border border-error focus:ring-1 focus:ring-error font-semibold rounded-xl text-base px-3 py-1.5 transition duration-300  ease-in-out  hover:scale-105 hover:bg-error-alt"
               onClick={trashFace}>
-              <HiOutlineTrash className='text-2xl' />
-              {/* <span>Add</span> */}
+              <HiOutlineTrash className='text-xl flex items-center justify-center' />
+              <span>Delete face</span>
             </button>
-
           }
 
           <button type="button" id="add-user"
-            className="flex gap-2 items-center text-sblue border border-sblue focus:ring-2 font-semibold rounded-lg text-base px-1.5 py-1.5 transition duration-300  ease-in-out  hover:scale-105 hover:bg-sblue-alt-hover"
+            className="flex gap-2 items-center text-sblue border border-sblue focus:ring-2 font-semibold rounded-lg text-base px-3 py-1.5 transition duration-300  ease-in-out  hover:scale-105 hover:bg-sblue-alt-hover"
             onClick={() => setActiveModal('add-user')}>
-            <MdPersonAddAlt1 className='text-2xl' />
-            {/* <span>Add</span> */}
+            <MdPersonAddAlt1 className='text-xl flex items-center justify-center' />
+            <span>Add user</span>
           </button>
         </div>
       </div>

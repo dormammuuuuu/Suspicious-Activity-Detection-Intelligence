@@ -1,20 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import { useLocation } from "react-router-dom";
+import React, { useState } from 'react'
 
-import { HiOutlineInformationCircle } from 'react-icons/hi'
-import { IoIosArrowDown } from 'react-icons/io'
 import { BreadcrumbStepper, StepTwoUserFaceRegistration, StepThreeDoneFaceRegistration, CloseModalButton, StepOneInputName } from '../'
 
 
-const SADI_API_URL = 'http://localhost:5000/api'
 
 const UserFaceRegistrationModal = ({ closeModal, users }) => {
-  let location = useLocation();
   const [newFaceUser, setNewFaceUser] = useState('');
   const [error, setError] = useState({})
   const [progressCount, setProgressCount] = useState(0);
-  const [vidSrc, setVidSrc] = useState('');
-  const [showScanner, setShowScanner] = useState(false);
+
 
   const handleNewUserInput = (event) => {
     setNewFaceUser(event.target.value);

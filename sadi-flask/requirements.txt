@@ -28,3 +28,5 @@ face_recognition
 
 # YOLOv5 
 ultralytics
+
+scikit-learn

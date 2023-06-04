@@ -282,6 +282,33 @@ def serve_image(user, filename) :
     # print (user, filename)
     return send_from_directory(app.config['UPLOAD_FOLDER'] + '/' + user + '/', filename)
 
+
+@app.route('/api/view-history/get-folders', methods=['GET'])
+def get_folders():
+    folder_path = './yolov5/runs-playback'
+    folders = []
+
+    try:
+        # Get the list of folders in the specified directory
+        folder_names = next(os.walk(folder_path))[1]
+        
+        # Iterate over the folder names and retrieve additional information
+        for folder_name in folder_names:
+            folder_id = folder_name.split('-')[0]  # Extract the folder ID from the name
+            date_created = os.path.getctime(os.path.join(folder_path, folder_name))  # Get the folder creation date
+            
+            folders.append({
+                'id': folder_id,
+                'name': folder_name,
+                'date_created': date_created
+            })
+    except Exception as e:
+        # Handle any exceptions that may occur during the retrieval of folder names
+        return jsonify({'error': str(e)}), 500
+
+    return jsonify({'folders': folders}), 200
+
+
 if __name__ == '__main__':
     #? Views
     from views.auth import auth_blueprint     

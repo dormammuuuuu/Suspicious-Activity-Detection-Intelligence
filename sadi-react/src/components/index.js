@@ -24,7 +24,10 @@ export { default as DeviceDropdown } from './auth_components/DeviceDropdown'
 export { default as LoadingDone } from './auth_components/LoadingDone'
 
 // Video Playback 
-export { default as VideoPlayback } from './VideoPlayback'
+export { default as VideoPlaybackLayout } from './video_playback/VideoPlaybackLayout'
+export { default as VideoPlayback } from './video_playback/VideoPlayback'
+export { default as ViewHistory } from './video_playback/ViewHistory'
+export { default as ViewHistorySlug } from './video_playback/ViewHistorySlug'
 
 // Users
 export { default as UserList } from './users/Users'

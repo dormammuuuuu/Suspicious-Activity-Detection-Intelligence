@@ -1,14 +1,12 @@
 import React from 'react'
 
-const Layout = ( props ) => {
+const Layout = (props) => {
   const { children } = props;
   return (
-    <div className='h-fill p-5 relative'>
-        <div className="relative overflow-x-auto h-full">
-            <div className="text-left text-gray-900 flex flex-col">
-                { children }
-            </div>
-        </div>
+    <div className='h-full relative'>
+      <div className="relative h-full w-full">
+        {children}
+      </div>
     </div>
   )
 }
