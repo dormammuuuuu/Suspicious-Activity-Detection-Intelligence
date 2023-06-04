@@ -13,7 +13,11 @@ const VideoPlayback = () => {
 
     return (
         <VideoPlaybackLayout>
-            <img className="mx-auto" key={location.pathname} src={src} alt="Video" />
+            <div className='m-5 h-full w-full flex flex-col items-center'>
+                <div className=' w-full mx-auto flex justify-center h-modal'>
+                    <img className=" h-full object-contain  overflow-hidden rounded-xl" key={location.pathname} src={src} alt="Video" />
+                </div>
+            </div>
         </VideoPlaybackLayout>
     );
 }

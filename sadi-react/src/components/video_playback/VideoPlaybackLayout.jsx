@@ -8,12 +8,13 @@ const VideoPlaybackLayout = (props) => {
    const navigate = useNavigate();
    const location = useLocation();
    const currentPath = location.pathname;
-   console.log(currentPath);
    const { slug } = useParams();
-   console.log(slug);
    const gotoLiveVideo = () => navigate('/');
    const gotoViewHistory = () => navigate('/view-history');
-   const gotoViewHistoryDetails = () => navigate(`/view-history/:slug`);
+   const gotoViewHistoryDetails = () => {
+      navigate(`/view-history/${slug}`)
+      props.handleBackClick();
+   }
 
 
    const formatLabel = (label) => {
@@ -50,19 +51,24 @@ const VideoPlaybackLayout = (props) => {
                         className="flex items-center justify-center  rounded-lg hover:bg-sblue-alt hover:text-sblue py-1 px-2"
                         onClick={gotoViewHistoryDetails}
                      >
-                        <h1 className="">Folder Name</h1>
+                        <h1 className="">{slug}</h1>
                      </button>
                   </>)}
                </div>
             </div>
-            <div className='flex gap-x-3'>
-               <button type="button" id="add-user"
-                  className="flex gap-2 items-center text-sblue border border-sblue focus:ring-2 font-semibold rounded-lg text-base px-3 py-1.5 transition duration-300  ease-in-out  hover:scale-105 hover:bg-sblue-alt-hover"
-                  onClick={gotoViewHistory}>
-                  <FaHistory className='text-sm flex items-center justify-center' />
-                  <span>View history</span>
-               </button>
-            </div>
+
+            {
+               currentPath === '/' &&
+               <div className='flex gap-x-3'>
+                  <button type="button" id="add-user"
+                     className="flex gap-2 items-center text-sblue border border-sblue focus:ring-2 font-semibold rounded-lg text-base px-3 py-1.5 transition duration-300  ease-in-out  hover:scale-105 hover:bg-blue-50"
+                     onClick={gotoViewHistory}>
+                     <FaHistory className='text-sm flex items-center justify-center' />
+                     <span>View history</span>
+                  </button>
+               </div>
+            }
+
          </div>
          {children}
       </Layout>

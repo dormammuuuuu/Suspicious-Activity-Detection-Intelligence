@@ -294,7 +294,7 @@ def get_folders():
         
         # Iterate over the folder names and retrieve additional information
         for folder_name in folder_names:
-            folder_id = folder_name.split('-')[0]  # Extract the folder ID from the name
+            folder_id = folder_name  # Extract the folder ID from the name
             date_created = os.path.getctime(os.path.join(folder_path, folder_name))  # Get the folder creation date
             
             folders.append({
@@ -302,11 +302,41 @@ def get_folders():
                 'name': folder_name,
                 'date_created': date_created
             })
+            
+        # print(folders)
     except Exception as e:
         # Handle any exceptions that may occur during the retrieval of folder names
         return jsonify({'error': str(e)}), 500
 
     return jsonify({'folders': folders}), 200
+
+
+@app.route('/api/view-history/get-folders/<folder_name>', methods=['GET'])
+def get_folder_images(folder_name):
+    folder_path = f'./yolov5/runs-playback/{folder_name}'
+
+    try:
+        # Get the list of image files in the specified folder
+        image_files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
+    except Exception as e:
+        # Handle any exceptions that may occur during the retrieval of image files
+        return jsonify({'error': str(e)}), 500
+
+    return jsonify({'images': image_files}), 200
+
+
+@app.route('/api/view-history/get-folders/<folder_name>/<image_file>', methods=['GET'])
+def get_image(folder_name, image_file):
+    folder_path = f'./yolov5/runs-playback/{folder_name}'
+
+    try:
+        # Serve the requested image file from the specified folder
+        return send_from_directory(folder_path, image_file)
+    except Exception as e:
+        # Handle any exceptions that may occur during the image retrieval
+        return jsonify({'error': str(e)}), 500
+
+
 
 
 if __name__ == '__main__':
