@@ -32,6 +32,7 @@ sadi-flask/users/
 sadi-flask/test/
 sadi-flask/encodings/
 sadi-flask/models/
+sadi-flask/runs-playback/
 **/__pycache__/
 #? end - sadi-flask 
 sadi-flask/user.ini
