@@ -10,6 +10,7 @@ import asyncio
 import datetime
 import torch
 import torch.backends.cudnn as cudnn
+import threading
 # from facerec_module import train
 
 import bcrypt
@@ -140,65 +141,59 @@ def get_available_camera():
 
 
 
-should_stop = False
 @app.route('/api/get-recognition-status', methods=['GET'])
 def get_recognition_status():
     global should_stop
-    print (should_stop)
-    if should_stop:
-        asyncio.run(train_new_face())
     return jsonify({'status': should_stop})
 
 # The '/scanner/<user>' route is used to capture face images and detect the faces in the video.
 @app.route('/api/scanner/user=<name>&deviceKey=<deviceKey>&width=<width>&height=<height>')
 @cross_origin()
-def face_capture(name, deviceKey, width, height):    
+def face_capture(name, deviceKey, width, height):
     cv.destroyAllWindows()
-    
     cap = cv.VideoCapture(int(deviceKey), cv.CAP_DSHOW)
-    cap.set(cv.CAP_PROP_FRAME_WIDTH, int(width))  # Set the desired width
-    cap.set(cv.CAP_PROP_FRAME_HEIGHT, int(height))  # Set the desired height
+    cap.set(cv.CAP_PROP_FRAME_WIDTH, int(width))
+    cap.set(cv.CAP_PROP_FRAME_HEIGHT, int(height))
+    
     if not cap.isOpened():
         return jsonify({'cameraStatus': 'Disconnected'})
-    print("cap", cap)
 
     def gen_frames():
-        global should_stop  # Declare should_stop as global before using it
-        should_stop = False  # Set should_stop to False initially
+        global should_stop
+        should_stop = False
         detector = FaceDetector()
-
         img_id = 0
+
         while not should_stop:
             success, frame = cap.read()
-            # print("success", success)
-            # print("img", frame)
-            
+
             if success:
                 start = time.time()
                 img, bboxs, status = detector.findFaces(frame, start, img_id)
-            
+
                 if status == 'good':
                     img_id = detector.saveFaces(name, img, bboxs, img_id)
 
                 if img_id == 500:
-                    cap.release()  # Release the camera capture
+                    cap.release()
                     should_stop = True
-                    
-                    return jsonify({'status': 'Process completed successfully'}) 
+                    thread = threading.Thread(target=train_face)  # Start training in a new thread
+                    thread.start()
+                    yield jsonify({'status': 'Process completed successfully'})
+                    return
 
                 ret, jpeg = cv.imencode('.jpg', img)
                 if not ret:
                     break
-                
-                # Yield the frame response to the client
+
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
-                # return jsonify(frame_response)
+
             else:
                 app.logger.error("Failed to capture frame from the camera")
                 yield jsonify({'statusCamera': 'Failed'})
-                
                 break
+
     res = Response(response=gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame;')
     return res
 
@@ -213,10 +208,13 @@ def get_user_details(id):
 
 
 # Used to train the model with the captured face images.
-async def train_face():
+def train_face():
+    global should_stop  # Declare should_stop as global before using it
     print ("Training face")
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    # classifier = train("users", model_save_path=f"models/{timestamp}.clf")
+    classifier = train("users", model_save_path=f"models/{timestamp}.clf")
+    time.sleep(5)  # Placeholder for the training process
+    should_stop = False  # Set should_stop back to False after training completes
 
 async def train_new_face():
     task = asyncio.create_task(train_face())

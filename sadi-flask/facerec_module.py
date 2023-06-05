@@ -8,7 +8,7 @@ import datetime
 import pickle
 from PIL import Image, ImageDraw
 import face_recognition
-from face_recognition.face_recognition_cli import image_files_in_folder
+from yolov5.face_recognition.face_recognition_cli import image_files_in_folder
 import numpy as np
 
 
@@ -16,8 +16,6 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'JPG'}
 
 
 def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree', verbose=True):
-    
-
     # Folder to save text files
     encodings_folder = "encodings/"
 
@@ -26,6 +24,9 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
         os.makedirs(encodings_folder)
 
     # Loop through each person in the training set
+    num_persons = len(os.listdir(train_dir))
+    processed_persons = 0
+
     for class_dir in os.listdir(train_dir):
         X = []
         y = []
@@ -41,10 +42,15 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
             encodings, labels = load_encodings_from_text(txt_file_path)
             X.extend(encodings)
             y.extend(labels)
+            processed_persons += 1
             continue
 
         # Loop through each training image for the current person
-        for img_path in image_files_in_folder(os.path.join(train_dir, class_dir)):
+        image_files = image_files_in_folder(os.path.join(train_dir, class_dir))
+        num_images = len(image_files)
+        processed_images = 0
+
+        for i, img_path in enumerate(image_files, 1):
             image = face_recognition.load_image_file(img_path)
             face_bounding_boxes = face_recognition.face_locations(image)
 
@@ -53,13 +59,23 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
                 if verbose:
                     print("Image {} not suitable for training: {}".format(img_path, "Didn't find a face" if len(face_bounding_boxes) < 1 else "Found more than one face"))
             else:
-                # Add face encoding for current image to the training set
+                # Add face encoding for the current image to the training set
                 X.append(face_recognition.face_encodings(image, known_face_locations=face_bounding_boxes)[0])
                 y.append(class_dir)
+
+            processed_images += 1
+            # Calculate and display the percentage
+            progress = processed_images / num_images * 100
+            print(f"Processing images: {progress:.2f}% ({processed_images}/{num_images})\r", end='')
 
         # Save face encodings to a text file
         if len(X) > 0:
             save_encodings_to_text(X, y, txt_file_path)
+
+        processed_persons += 1
+        # Calculate and display the percentage
+        progress = processed_persons / num_persons * 100
+        print(f"Processing persons: {progress:.2f}% ({processed_persons}/{num_persons})\r", end='')
 
     # Load existing encodings from text files
     for txt_file in os.listdir(encodings_folder):
