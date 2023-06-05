@@ -9,24 +9,26 @@ pymongo[srv]
 Flask-PyMongo
 PyJWT
 bcrypt
+sklearn
 
-# SADI YOLOv5 Lite
-matplotlib>=3.2.2
-Pillow
-PyYAML>=5.3.1
-scipy>=1.4.1
-tqdm>=4.41.0
-tensorboard>=2.4.1
-seaborn>=0.11.0
-pandas
-thop  # FLOPS computation
-flask_mail
+# # SADI YOLOv5 Lite
+# matplotlib>=3.2.2
+# Pillow
+# PyYAML>=5.3.1
+# scipy>=1.4.1
+# tqdm>=4.41.0
+# tensorboard>=2.4.1
+# seaborn>=0.11.0
+# pandas
+# thop  # FLOPS computation
+# flask_mail
 
 
-#Face Recognition
-face_recognition
+# #Face Recognition
+# face_recognition
+# python track.py --source rtsp://admin:SADIvision04@192.168.1.64:554/Streaming/Channels/2 --yolo_model weights/person.pt weights/hammer.pt weights/heavygun.pt weights/knife.pt  weights/scissor.pt  weights/pistol.pt
 
 # YOLOv5 
 ultralytics
-
 scikit-learn
+

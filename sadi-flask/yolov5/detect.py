@@ -1,4 +1,3 @@
-# YOLOv5 🚀 by Ultralytics, AGPL-3.0 license
 import argparse
 import os
 import platform
@@ -19,19 +18,11 @@ from utils.general import (LOGGER, Profile, check_file, check_img_size, check_im
                            increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh)
 from utils.plots import Annotator, colors, save_one_box
 from utils.torch_utils import select_device, smart_inference_mode
-import numpy as np
-
-# Face Recog Imports
-from face_recognition.face_recognition_cli import image_files_in_folder
-from PIL import Image, ImageDraw
-import face_recognition
-import pickle
 
 @smart_inference_mode()
 def run(
-        weights=[ROOT / 'weights/hammer.pt', ROOT / 'weights/heavygun.pt', ROOT / 'weights/knife.pt', ROOT / 'weights/scissor.pt', ROOT / 'weights/pistol.pt'],
-        source='0',  # file/dir/URL/glob/screen/0(webcam)
-        # source='rtsp://admin:SADIvision04@192.168.1.64:554/Streaming/Channels/2',  # file/dir/URL/glob/screen/0(webcam)
+        weights=ROOT / 'yolov5s.pt',  # model path or triton URL
+        source=ROOT / 'data/images',  # file/dir/URL/glob/screen/0(webcam)
         data=ROOT / 'data/coco128.yaml',  # dataset.yaml path
         imgsz=(640, 640),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
@@ -67,7 +58,6 @@ def run(
     if is_url and is_file:
         source = check_file(source)  # download
 
-    frame_counter = 14
     # Directories
     save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
     (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
@@ -156,20 +146,11 @@ def run(
             # Stream results
             im0 = annotator.result()
             if view_img:
-                frame_counter = frame_counter + 1
-                if frame_counter % 15 == 0:
-                    predictions = predict(im0, model_path=ROOT / 'models/2023-05-17_19-20-29.clf')
-                im0 = show_prediction_labels_on_image(im0, predictions)
                 if platform.system() == 'Linux' and p not in windows:
                     windows.append(p)
                     cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
                     cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
-
-                ret, buffer = cv2.imencode('.jpg', im0)
-                frame = buffer.tobytes()
-                yield (b'--frame\r\n'
-                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-                # cv2.imshow(str(p), im0)
+                cv2.imshow(str(p), im0)
                 cv2.waitKey(1)  # 1 millisecond
 
             # Save results (image with detections)
@@ -203,63 +184,47 @@ def run(
     if update:
         strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
-def predict(X_frame, knn_clf=None, model_path=None, distance_threshold=0.45):
-    if knn_clf is None and model_path is None:
-        raise Exception(
-            "Must supply knn classifier either thourgh knn_clf or model_path")
 
-    # Load a trained KNN model (if one was passed in)
-    if knn_clf is None:
-        with open(model_path, 'rb') as f:
-            knn_clf = pickle.load(f)
-
-    X_face_locations = face_recognition.face_locations(X_frame, model="cnn")
-
-    # If no faces are found in the image, return an empty result.
-    if len(X_face_locations) == 0:
-        return []
-
-    # Find encodings for faces in the test image
-    faces_encodings = face_recognition.face_encodings(
-        X_frame, known_face_locations=X_face_locations)
-
-    # Use the KNN model to find the best matches for the test face
-    closest_distances = knn_clf.kneighbors(faces_encodings, n_neighbors=1)
-    are_matches = [closest_distances[0][i][0] <=
-                distance_threshold for i in range(len(X_face_locations))]
-
-    # Predict classes and remove classifications that aren't within the threshold
-    return [(pred, loc) if rec else ("unknown", loc) for pred, loc, rec in zip(knn_clf.predict(faces_encodings), X_face_locations, are_matches)]
-
-def show_prediction_labels_on_image(frame, predictions):
-    pil_image = Image.fromarray(frame)
-    draw = ImageDraw.Draw(pil_image)
-
-    for name, (top, right, bottom, left) in predictions:
-        # enlarge the predictions for the full sized image.
-        # top *= 2
-        # right *= 2
-        # bottom *= 2
-        # left *= 2
-        # Draw a box around the face using the Pillow module
-        draw.rectangle(((left, top), (right, bottom)), outline=(0, 0, 255))
-
-        # There's a bug in Pillow where it blows up with non-UTF-8 text when using the default bitmap font
-        name = name.encode("UTF-8")
-
-        # Draw a label with a name below the face
-        text_width, text_height = draw.textsize(name)
-        draw.rectangle(((left, bottom - text_height - 10), (right, bottom)), fill=(0, 0, 255), outline=(0, 0, 255))
-        draw.text((left + 6, bottom - text_height - 5), name, fill=(255, 255, 255, 255))
-
-    # Remove the drawing library from memory as per the Pillow docs.
-    del draw
-    # Save image in open-cv format to be able to show it.
-
-    opencvimage = np.array(pil_image)
-    return opencvimage
+def parse_opt():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'yolov5s.pt', help='model path or triton URL')
+    parser.add_argument('--source', type=str, default=ROOT / 'data/images', help='file/dir/URL/glob/screen/0(webcam)')
+    parser.add_argument('--data', type=str, default=ROOT / 'data/coco128.yaml', help='(optional) dataset.yaml path')
+    parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
+    parser.add_argument('--conf-thres', type=float, default=0.25, help='confidence threshold')
+    parser.add_argument('--iou-thres', type=float, default=0.45, help='NMS IoU threshold')
+    parser.add_argument('--max-det', type=int, default=1000, help='maximum detections per image')
+    parser.add_argument('--device', default='', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
+    parser.add_argument('--view-img', action='store_true', help='show results')
+    parser.add_argument('--save-txt', action='store_true', help='save results to *.txt')
+    parser.add_argument('--save-conf', action='store_true', help='save confidences in --save-txt labels')
+    parser.add_argument('--save-crop', action='store_true', help='save cropped prediction boxes')
+    parser.add_argument('--nosave', action='store_true', help='do not save images/videos')
+    parser.add_argument('--classes', nargs='+', type=int, help='filter by class: --classes 0, or --classes 0 2 3')
+    parser.add_argument('--agnostic-nms', action='store_true', help='class-agnostic NMS')
+    parser.add_argument('--augment', action='store_true', help='augmented inference')
+    parser.add_argument('--visualize', action='store_true', help='visualize features')
+    parser.add_argument('--update', action='store_true', help='update all models')
+    parser.add_argument('--project', default=ROOT / 'runs/detect', help='save results to project/name')
+    parser.add_argument('--name', default='exp', help='save results to project/name')
+    parser.add_argument('--exist-ok', action='store_true', help='existing project/name ok, do not increment')
+    parser.add_argument('--line-thickness', default=3, type=int, help='bounding box thickness (pixels)')
+    parser.add_argument('--hide-labels', default=False, action='store_true', help='hide labels')
+    parser.add_argument('--hide-conf', default=False, action='store_true', help='hide confidences')
+    parser.add_argument('--half', action='store_true', help='use FP16 half-precision inference')
+    parser.add_argument('--dnn', action='store_true', help='use OpenCV DNN for ONNX inference')
+    parser.add_argument('--vid-stride', type=int, default=1, help='video frame-rate stride')
+    opt = parser.parse_args()
+    opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
+    print_args(vars(opt))
+    return opt
 
 
-# if __name__ == '__main__':
-#     opt = parse_opt()
-#     main(opt)
+def main(opt):
+    check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
+    run(**vars(opt))
+
+
+if __name__ == '__main__':
+    opt = parse_opt()
+    main(opt)
