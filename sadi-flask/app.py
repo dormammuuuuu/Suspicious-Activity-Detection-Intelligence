@@ -8,10 +8,12 @@ from urllib.parse import quote
 import numpy as np
 import asyncio
 import datetime
-
-from facerec_module import train
+import torch
+import torch.backends.cudnn as cudnn
+# from facerec_module import train
 from database import init_app
-from yolov5.detect import run
+# from yolov5.detect import run
+from track import Track
 from classes.face_detector import FaceDetector
 from classes.utils import get_available_camera_details
 from database import read_user, update_user
@@ -107,8 +109,10 @@ def stop_video_feed():
 
 @app.route('/api/yolov5', methods=['GET'])
 def inference():
+    track = Track()
+    
     print('inference')
-    result = run()  # Call the run() function to get the result
+    result = track.run()  # Call the run() function to get the result
     return Response(result, mimetype='multipart/x-mixed-replace; boundary=frame')
 
 # The '/authenticate' route is used to handle login form submission and checks the credentials with the data in user.json file.
@@ -205,7 +209,7 @@ def get_user_details(id):
 async def train_face():
     print ("Training face")
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    classifier = train("users", model_save_path=f"models/{timestamp}.clf")
+    # classifier = train("users", model_save_path=f"models/{timestamp}.clf")
 
 async def train_new_face():
     task = asyncio.create_task(train_face())
