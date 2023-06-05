@@ -40,6 +40,16 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
+# Create a timestamp folder with this folder 2023-05-06
+# Create a timestamp folder with this folder 2023-05-06_12-34-56
+timestamp = time.strftime('%Y-%d-%m', time.localtime())
+save_dir = 'runs-playback/' + timestamp
+
+# Check if the folder exists, if not, set the value of existing_folder to False
+if not os.path.exists(save_dir):
+    existing_folder = False
+else:
+    existing_folder = True
 
 class Track:  
     def __init__(self):
@@ -57,6 +67,7 @@ class Track:
                            'weights/pistol.pt']  # path to model file
         self.deep_sort_model = 'osnet_x0_25'  # path to deep sort model file
         self.source = 'rtsp://admin:SADIvision04@192.168.1.64:554/Streaming/Channels/2'  # source
+        self.source = '0'  # source
         self.out = 'inference/output'
         self.imgsz = (640,480)  # inference size (pixels)
         self.conf_thres = 0.4  # confidence threshold
@@ -65,7 +76,7 @@ class Track:
         self.device = 0  # cuda device, i.e. 0 or 0,1,2,3 or cpu
         self.show_vid = True  # show video output  
         self.save_vid = True  # save video output
-        self.save_txt = True  # save txt output
+        self.save_txt = False  # save txt output
         self.classes = None  # filter by class: --class 0, or --class 0 2 3
         self.agnostic_nms = False  # class-agnostic NMS
         self.augment = False  # augmented inference
@@ -75,9 +86,9 @@ class Track:
         self.visualize = False  # visualize features
         self.max_det = 1000 # maximum detections per image
         self.dnn = False  # use DNN for ONNX models
-        self.project = 'runs/track'  # save results to project/name
-        self.name = 'exp'  # save results to project/name
-        self.exist_ok = False  # existing project/name ok, do not increment
+        self.project = save_dir  # save results to project/name
+        self.name = ''  # save results to project/name
+        self.exist_ok = existing_folder  # existing project/name ok, do not increment
         self.mp_holistic = mp.solutions.holistic # Holistic model
         
     def run(self):
@@ -142,13 +153,16 @@ class Track:
         names = model.module.names if hasattr(model, 'module') else model.names
 
         # extract what is in between the last '/' and last '.'
-        txt_file_name = self.source.split('/')[-1].split('.')[0]
-        txt_path = str(Path(save_dir)) + '/' + txt_file_name + '.txt'
+        # txt_file_name = self.source.split('/')[-1].split('.')[0]
+        # txt_path = str(Path(save_dir)) + '/' + txt_file_name + '.txt'
 
         if pt and device.type != 'cpu':
             model(torch.zeros(1, 3, *imgsz).to(device).type_as(next(model.model.parameters())))  # warmup
         dt, seen = [0.0, 0.0, 0.0, 0.0], 0
         for frame_idx, (path, img, im0s, vid_cap, s) in enumerate(dataset):
+            detected_classes = []
+            deadly_weapons = ['hammer', 'heavygun', 'knife', 'scissor', 'pistol']
+
             t1 = time_sync()
             img = torch.from_numpy(img).to(device)
             img = img.half() if self.half else img.float()  # uint8 to fp16/32
@@ -171,6 +185,7 @@ class Track:
             with self.mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
             # Process detections
                 for i, det in enumerate(pred):  # detections per image
+
                     seen += 1
                     if webcam:  # batch_size >= 1
                         p, im0, _ = path[i], im0s[i].copy(), dataset.count
@@ -191,12 +206,14 @@ class Track:
                         
                         no_person = 0
                         # Print results
+
                         for c in det[:, -1].unique():
                             n = (det[:, -1] == c).sum()  # detections per class
                             s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
+                            detected_classes.append(names[int(c)])
                             if (f'{names[int(c)]}' == 'person'):
                                 no_person = n
-                        
+                        print ("Detected classes", detected_classes)
                         print(f"Number of people detected: {no_person}")
                         xywhs = xyxy2xywh(det[:, 0:4])
                         confs = det[:, 4]
@@ -273,11 +290,18 @@ class Track:
                     im0 = annotator.result()
                     if self.show_vid:
                         LOGGER.info(f'{str(p)}: {self.count}')
-                        cv2.imshow(str(p), im0)
-                        # ret, buffer = cv2.imencode('.jpg', im0)
-                        # frame = buffer.tobytes()
-                        # yield (b'--frame\r\n'
-                        #         b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                        
+                        if any(element in detected_classes for element in deadly_weapons):
+                            current_time = time.strftime('%H-%M-%S', time.localtime())
+                            file_path = str(save_dir) + '/weapon_' + str(current_time) + '.jpg'
+                            print ("saving to ", file_path)
+                            cv2.imwrite(file_path, im0)
+                        # cv2.imshow(str(p), im0)
+                        
+                        ret, buffer = cv2.imencode('.jpg', im0)
+                        frame = buffer.tobytes()
+                        yield (b'--frame\r\n'
+                                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
                         cv2.waitKey(1)  # 
 
                     # Save results (image with detections)

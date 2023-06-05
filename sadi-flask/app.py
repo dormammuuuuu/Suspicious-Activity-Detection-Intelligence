@@ -316,7 +316,7 @@ def serve_image(user, filename) :
 
 @app.route('/api/view-history/get-folders', methods=['GET'])
 def get_folders():
-    folder_path = './yolov5/runs-playback'
+    folder_path = './runs-playback'
     folders = []
 
     try:
@@ -344,10 +344,10 @@ def get_folders():
 
 @app.route('/api/view-history/get-folders/<folder_name>', methods=['GET'])
 def get_folder_images(folder_name):
-    folder_path = f'./yolov5/runs-playback/{folder_name}'
+    folder_path = f'./runs-playback/{folder_name}'
 
     try:
-        # Get the list of image files in the specified folder
+        # Get the list of image files in the specifded folder
         image_files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
     except Exception as e:
         # Handle any exceptions that may occur during the retrieval of image files
@@ -358,7 +358,7 @@ def get_folder_images(folder_name):
 
 @app.route('/api/view-history/get-folders/<folder_name>/<image_file>', methods=['GET'])
 def get_image(folder_name, image_file):
-    folder_path = f'./yolov5/runs-playback/{folder_name}'
+    folder_path = f'./runs-playback/{folder_name}'
 
     try:
         # Serve the requested image file from the specified folder
