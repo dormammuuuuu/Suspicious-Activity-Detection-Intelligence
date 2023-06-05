@@ -27,6 +27,7 @@ from yolov5.utils.general import (LOGGER, check_img_size, non_max_suppression, s
                                   check_imshow, xyxy2xywh, increment_path)
 from yolov5.utils.torch_utils import select_device, time_sync
 from yolov5.utils.plots import Annotator, colors
+from yolov5.utils.torch_utils import smart_inference_mode
 from deep_sort.utils.parser import get_config
 from deep_sort.deep_sort import DeepSort
 
@@ -67,7 +68,7 @@ class Track:
                            'weights/pistol.pt']  # path to model file
         self.deep_sort_model = 'osnet_x0_25'  # path to deep sort model file
         self.source = 'rtsp://admin:SADIvision04@192.168.1.64:554/Streaming/Channels/2'  # source
-        self.source = '0'  # source
+        # self.source = '0'  # source
         self.out = 'inference/output'
         self.imgsz = (640,480)  # inference size (pixels)
         self.conf_thres = 0.4  # confidence threshold
@@ -153,8 +154,8 @@ class Track:
         names = model.module.names if hasattr(model, 'module') else model.names
 
         # extract what is in between the last '/' and last '.'
-        # txt_file_name = self.source.split('/')[-1].split('.')[0]
-        # txt_path = str(Path(save_dir)) + '/' + txt_file_name + '.txt'
+        txt_file_name = self.source.split('/')[-1].split('.')[0]
+        txt_path = str(Path(save_dir)) + '/' + txt_file_name + '.txt'
 
         if pt and device.type != 'cpu':
             model(torch.zeros(1, 3, *imgsz).to(device).type_as(next(model.model.parameters())))  # warmup
