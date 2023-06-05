@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
-import axios from 'axios'
 
 import { FaceFrame, DeviceDropdown, Button } from '../';
 
 
 const CameraSourceSetup = ({ handleSourceDone }) => {
-   const webcamRef = useRef(null);
    const [isStreaming, setIsStreaming] = useState(true);
    const [isOpen, setIsOpen] = useState(false);
    const [selectedDeviceId, setSelectedDeviceId] = useState('');

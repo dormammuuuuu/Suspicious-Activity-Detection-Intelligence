@@ -3,18 +3,11 @@ import { Button, LoadingDone } from '../';
 
 const StepThreeDoneFaceRegistration = ({ progressCount, closeModal }) => {
    const [loading, setLoading] = useState(true);
-
-
-   const redirectToLogin = () => {
-      window.location.href = '/login';
-   };
-
-
-
+   const [showButton, setShowButton] = useState(false);
    useEffect(() => {
       setTimeout(() => {
          setLoading(false);
-
+         setShowButton(true)
       }, 3000);
    }, []);
 
@@ -29,10 +22,11 @@ const StepThreeDoneFaceRegistration = ({ progressCount, closeModal }) => {
                   bodyText='You have successfully registered your account. You may now proceed to login.'
                />
 
-
-               <div className="flex justify-center absolute bottom-16 w-full">
-                  <Button className="w-[220px] bg-sblue hover:bg-blue-700 text-white" label="Close" onClick={closeModal} />
-               </div>
+               {showButton &&
+                  <div className="flex justify-center absolute bottom-16 w-full">
+                     <Button className="w-[220px] bg-sblue hover:bg-blue-700 text-white" label="Close" onClick={closeModal} />
+                  </div>
+               }
             </>
          }
       </div>

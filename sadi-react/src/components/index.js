@@ -10,6 +10,7 @@ export { default as Layout } from './Layout'
 
 //Sidebar
 export { default as Sidebar } from './Sidebar'
+export { default as SidebarLink } from './SidebarLink'
 
 // Auth components
 // --- Setup
@@ -23,7 +24,10 @@ export { default as DeviceDropdown } from './auth_components/DeviceDropdown'
 export { default as LoadingDone } from './auth_components/LoadingDone'
 
 // Video Playback 
-export { default as VideoPlayback } from './VideoPlayback'
+export { default as VideoPlaybackLayout } from './video_playback/VideoPlaybackLayout'
+export { default as VideoPlayback } from './video_playback/VideoPlayback'
+export { default as ViewHistory } from './video_playback/ViewHistory'
+export { default as ViewHistorySlug } from './video_playback/ViewHistorySlug'
 
 // Users
 export { default as UserList } from './users/Users'
@@ -41,14 +45,12 @@ export { default as AccordionItem } from './help/AccordionItem'
 export { default as Help } from './help/Help'
 
 
+// Acccount Settings
+export { default as AccountSettingsInputField } from './account_settings/AccountSettingsInputField'
+export { default as AccountSettings } from './account_settings/AccountSettings'
 
-
-
-export { default as AccountSettingsInputField } from './AccountSettingsInputField'
-export { default as SidebarLink } from './SidebarLink'
+//Test
 export { default as Test } from './Test'
-export { default as VideoStream } from './VideoStream'
-export { default as AccountSettings } from './AccountSettings'
 
 
 // // DASHBOARD

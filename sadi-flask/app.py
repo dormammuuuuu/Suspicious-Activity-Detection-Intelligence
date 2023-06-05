@@ -11,6 +11,11 @@ import datetime
 import torch
 import torch.backends.cudnn as cudnn
 # from facerec_module import train
+
+import bcrypt
+from classes.validation import change_password_validation
+from facerec_module import train
+
 from database import init_app
 # from yolov5.detect import run
 from track import Track
@@ -140,6 +145,8 @@ should_stop = False
 def get_recognition_status():
     global should_stop
     print (should_stop)
+    if should_stop:
+        asyncio.run(train_new_face())
     return jsonify({'status': should_stop})
 
 # The '/scanner/<user>' route is used to capture face images and detect the faces in the video.
@@ -175,8 +182,8 @@ def face_capture(name, deviceKey, width, height):
 
                 if img_id == 500:
                     cap.release()  # Release the camera capture
-                    asyncio.run(train_new_face())
                     should_stop = True
+                    
                     return jsonify({'status': 'Process completed successfully'}) 
 
                 ret, jpeg = cv.imencode('.jpg', img)
@@ -239,7 +246,29 @@ def update_user_details(id):
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
 
+@app.route('/api/update-password/<id>', methods=['POST'])
+@cross_origin()
+def update_user_password(id):
+    try:
+        user_id = id
+        update_data = request.get_json()
+        salt = bcrypt.gensalt()
+        print("update_data", update_data)
+        print("user_id", user_id)
+        
+        error = change_password_validation(update_data)
+        if error:
+            return {"status": "error", "error": error}
+        
+        # Assuming you have a function to update the user's password in your backend
+        # result = update_password(user_id, update_data.get("oldPassword"), update_data.get("newPassword"))
 
+        # if result:
+        #     return jsonify({"status": "success", "message": "Password updated successfully."})
+        # else:
+        #     return jsonify({"status": "error", "message": "Failed to update password."})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
 
 # The '/api/users/view' route is used to get a list of all the users in the 'users' directory.
 @app.route('/api/users/view', methods=['GET'])
@@ -283,6 +312,63 @@ def delete_users():
 def serve_image(user, filename) :
     # print (user, filename)
     return send_from_directory(app.config['UPLOAD_FOLDER'] + '/' + user + '/', filename)
+
+
+@app.route('/api/view-history/get-folders', methods=['GET'])
+def get_folders():
+    folder_path = './yolov5/runs-playback'
+    folders = []
+
+    try:
+        # Get the list of folders in the specified directory
+        folder_names = next(os.walk(folder_path))[1]
+        
+        # Iterate over the folder names and retrieve additional information
+        for folder_name in folder_names:
+            folder_id = folder_name  # Extract the folder ID from the name
+            date_created = os.path.getctime(os.path.join(folder_path, folder_name))  # Get the folder creation date
+            
+            folders.append({
+                'id': folder_id,
+                'name': folder_name,
+                'date_created': date_created
+            })
+            
+        # print(folders)
+    except Exception as e:
+        # Handle any exceptions that may occur during the retrieval of folder names
+        return jsonify({'error': str(e)}), 500
+
+    return jsonify({'folders': folders}), 200
+
+
+@app.route('/api/view-history/get-folders/<folder_name>', methods=['GET'])
+def get_folder_images(folder_name):
+    folder_path = f'./yolov5/runs-playback/{folder_name}'
+
+    try:
+        # Get the list of image files in the specified folder
+        image_files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
+    except Exception as e:
+        # Handle any exceptions that may occur during the retrieval of image files
+        return jsonify({'error': str(e)}), 500
+
+    return jsonify({'images': image_files}), 200
+
+
+@app.route('/api/view-history/get-folders/<folder_name>/<image_file>', methods=['GET'])
+def get_image(folder_name, image_file):
+    folder_path = f'./yolov5/runs-playback/{folder_name}'
+
+    try:
+        # Serve the requested image file from the specified folder
+        return send_from_directory(folder_path, image_file)
+    except Exception as e:
+        # Handle any exceptions that may occur during the image retrieval
+        return jsonify({'error': str(e)}), 500
+
+#new password
+
 
 if __name__ == '__main__':
     #? Views
