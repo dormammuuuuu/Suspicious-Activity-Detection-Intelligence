@@ -29,7 +29,7 @@ sadi-react/yarn-error.log*
 
 #? start - sadi-flask 
 sadi-flask/users/
-sadi-flask/test/
+# sadi-flask/test/
 sadi-flask/encodings/
 sadi-flask/models/
 **/__pycache__/
