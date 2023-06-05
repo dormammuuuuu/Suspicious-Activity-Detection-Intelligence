@@ -1,17 +1,17 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { useCallback } from 'react'
+import React, { useContext } from 'react'
+// import { useCallback } from 'react'
 
 // Use the context API to share data between components
-const API_ENDPOINT = 'http://localhost:5000/api/'
+// const API_ENDPOINT = 'http://localhost:5000/api/'
 const AppContext = React.createContext()
 
 
 const AppProvider = ({ children }) => {
-   const [loading, setLoading] = useState(true)
-   const [samplePassData, setSamplePassData] = useState("Jelo pogi!")
+   // const [loading, setLoading] = useState(true)
+   // const [samplePassData, setSamplePassData] = useState("Jelo pogi!")
    // Use state to store the data
 
-   // fetch data from the API and store it in the state 
+   // fetch data from the API and store it in the state
    //     usecallback to prevent infinite loop
    //     try and catch to handle errors
 
@@ -82,8 +82,8 @@ const AppProvider = ({ children }) => {
    return (
       <AppContext.Provider value={
          {
-            loading,
-            samplePassData,
+            // loading,
+            // samplePassData,
          }
       }>
          {children}

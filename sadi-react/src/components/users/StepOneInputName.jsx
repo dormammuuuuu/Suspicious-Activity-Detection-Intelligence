@@ -2,6 +2,12 @@ import React from 'react'
 
 import { InputBox, Button, InformationHelper } from '../'
 const StepOneInputName = ({ newFaceUser, handleNewUserInput, error, handleRegisterBtn, progressCount }) => {
+   const handleKeyPress = (event) => {
+      if (event.key === 'Enter') {
+         event.preventDefault();
+         handleRegisterBtn()
+      }
+   };
    return (
       <div className={`md:w-5/6 md:mx-auto  h-4/5 transform duration-500  absolute transition-transform ${progressCount === 0 ? 'translate-x-0' : '-translate-x-[110%]'
          }`}>
@@ -10,7 +16,7 @@ const StepOneInputName = ({ newFaceUser, handleNewUserInput, error, handleRegist
 
          <div className='flex justify-center flex-col items-center h-full '>
             <div className='flex justify-center flex-col items-center w-full h-full md:w-3/6 pt-7'>
-               <InputBox placeholder="Name" type="text" name="newFaceUser" onChange={handleNewUserInput} value={newFaceUser} error={error.userFace} />
+               <InputBox placeholder="Name" type="text" name="newFaceUser" onChange={handleNewUserInput} onKeyPress={handleKeyPress} value={newFaceUser} error={error.userFace} />
 
 
             </div>
