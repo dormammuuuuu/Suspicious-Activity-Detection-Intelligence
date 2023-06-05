@@ -1,5 +1,6 @@
 import re 
-from database import is_existing_email, is_existing_username 
+from database import is_existing_email, is_existing_username , read_user
+import bcrypt
 
 # def is_valid_email(email):
 #     # Regular expression to match an email address
@@ -116,10 +117,38 @@ def reset_password_validation(data):
             error[field] = f"{field.replace('_', ' ').capitalize()} is required."
         elif field == 'new_password':
             if not is_valid_password(value):
-                error[field] = "Password should have at least 8 characters, one uppercase letter, one lowercase letter, and one number."
+                error[field] = "Password should have at least 8 characters, one uppercase letter, one lowercase letter, one number and special character."
         elif field == 'confirm_new_password':
             if value != data.get('new_password'):
                 error[field] = "Passwords do not match."
     print(error)
     return error
     
+    
+def change_password_validation(data, query_user_id):
+    required_fields = list(data.keys())
+    print('validation:  quert_user_id', query_user_id)
+    error =  {}
+    
+    old_password = None
+    user = read_user("users", query_user_id)
+    print('validation: user', user)
+    if user:
+        old_password = user.get('password')
+        
+    for field in required_fields: 
+        value = data.get(field)
+        print('value', value, field)
+        if not value: 
+            error[field] = f"{field.replace('_', ' ').capitalize()} is required."
+        elif field == 'old_password':
+            if not bcrypt.checkpw(value.encode('utf-8'), old_password.encode('utf-8')):
+                error[field] = "Old password is incorrect."
+        elif field == 'new_password':
+            if not is_valid_password(value):
+                error[field] = "Password should have at least 8 characters, one uppercase letter, one lowercase letter, one number and special character."
+        elif field == 'confirm_new_password':
+            if value != data.get('new_password'):
+                error[field] = "Passwords do not match."
+    
+    return error
