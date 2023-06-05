@@ -16,8 +16,21 @@ class Pose:
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         return image, results
     
-    def extract_keypoints(self,     results):
+    def extract_keypoints(self, results):
         pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(33*4)
         return pose
-               
+    
+    def pred_action(self, sequence, threshold=0.5):
+        
+        # print(self.action_model.summary())
+        
+        print(np.array(sequence).shape)        
+        res = self.action_model.predict(np.expand_dims(sequence, axis=0))[0]
+        
+        label = 'None'
+        if res[np.argmax(res)] > threshold: 
+            label = f'{self.actions[np.argmax(res)]} {res[np.argmax(res)]}'
+        
+        return label
+            
 

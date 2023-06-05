@@ -202,11 +202,11 @@ class Track:
                         confs = det[:, 4]
                         clss = det[:, 5]
                         # q
-                        if len(self.person_id) == 0:
-                            if no_person != 0:
-                                self.seq_array = [[] for _ in range(no_person)]
-                        else:
-                            self.seq_array = self.sequence
+                        # if len(self.person_id) == 0:
+                        #     if no_person != 0:
+                        #         self.seq_array = [[] for _ in range(no_person)]
+                        # else:
+                        #     self.seq_array = self.sequence
                         
                         # pass detections to deepsort
                         t4 = time_sync()
@@ -214,17 +214,17 @@ class Track:
                         t5 = time_sync()
                         dt[3] += t5 - t4
 
-                        temp_person_id = []
+                        # temp_person_id = []
                         
-                        if len(outputs) > 0:
-                            for j, (output, conf) in enumerate(zip(outputs, confs)):
-                                cls = output[5]
-                                id = output[4]
-                                if(f'{names[int(cls)]}' == 'person'):
-                                    print(output[4])        
-                                    temp_person_id.append(id)
+                        # if len(outputs) > 0:
+                        #     for j, (output, conf) in enumerate(zip(outputs, confs)):
+                        #         cls = output[5]
+                        #         id = output[4]
+                        #         if(f'{names[int(cls)]}' == 'person'):
+                        #             print(output[4])        
+                        #             temp_person_id.append(id)
                                     
-                                print(temp_person_id)
+                        #         print(temp_person_id)
                         # draw boxes for visualization
                         if len(outputs) > 0:
                             for j, (output, conf) in enumerate(zip(outputs, confs)):
@@ -237,18 +237,34 @@ class Track:
                                 c = int(cls)  # integer class
                                 label = f'{id} {names[c]} {conf:.2f}'
                                 
+                                self.count_obj(bboxes,w,h,id)
                                 # cnt = 
-                                if(f'{names[int(cls)]}' == 'person'):
-                                    print('person')
+                                # if(f'{names[int(cls)]}' == 'person'):
+                                #     print('person')
                                     
-                                    self.count_obj(bboxes,w,h,id)
+                            
                                     
-                                    crop_img = im0[int(bboxes[1]):int(bboxes[3]), int(bboxes[0]):int(bboxes[2])]
+                                #     crop_img = im0[int(bboxes[1]):int(bboxes[3]), int(bboxes[0]):int(bboxes[2])]
                                 
-                                    poseImg, poseResult = pose.mediapipe_detection(crop_img, holistic)
-                                    keypoints = pose.extract_keypoints(poseResult)
+                                #     poseImg, poseResult = pose.mediapipe_detection(crop_img, holistic)
+                                #     keypoints = pose.extract_keypoints(poseResult)
                                     
-                                
+                                #     print(f'self seq:{len(self.sequence)}')
+                                    
+                                #     if len(self.sequence) == 0:
+                                #         # loop 30 times
+                                #         for _ in range(30):
+                                #             self.sequence.append(keypoints)
+                                #     else:
+                                #         self.sequence.append(keypoints)
+                 
+                                #     self.sequence = self.sequence[-30:]
+                                #     self.predicted_action = pose.pred_action(self.sequence)
+                                    
+                                #     print(f'fuuck  {self.predicted_action}')
+                                    
+                                #     label += f'fuuck  {self.predicted_action}'
+                           
                                 annotator.box_label(bboxes, label, color=colors(c, True))
 
                                 if self.save_txt:
@@ -262,6 +278,19 @@ class Track:
                                         f.write(('%g ' * 10 + '\n') % (frame_idx + 1, id, bbox_left,  # MOT format
                                                                     bbox_top, bbox_w, bbox_h, -1, -1, -1, -1))
 
+                
+                        poseImg, poseResult = pose.mediapipe_detection(im0, holistic)
+                        keypoints = pose.extract_keypoints(poseResult)
+                        self.sequence.append(keypoints)
+                        self.sequence = self.sequence[-30:]
+                        
+                        if len(self.sequence) == 30:  
+                            self.predicted_action = pose.pred_action(self.sequence)
+                            text = self.predicted_action
+                            cv2.putText(im0, text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                        # add text to the top left of the  frame the pred_action
+                       
+                        
                         LOGGER.info(f'{s}Done. YOLO:({t3 - t2:.3f}s), DeepSort:({t5 - t4:.3f}s)')
                         # print(f'count: {self.count}')
 
