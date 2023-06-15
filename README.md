@@ -58,3 +58,6 @@ If you're using CUDA 11.7, paste this in your terminal
 ```
 python app.py
 ```
+
+
+Project Closed.
